@@ -8,7 +8,9 @@ import Repos from './modules/Repos'
 import Repo from './modules/Repo'
 import Home from './modules/Home'
 
-render(
-  <Router routes={routes} history={browserHistory}/>,
-  document.getElementById('app')
-)
+window.onload = function() {
+    render(
+	   <Router routes={routes} history={browserHistory}/>,
+	   document.getElementById('app')
+    )
+}
