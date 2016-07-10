@@ -8,6 +8,11 @@
     "start:prod": "webpack && node server.js"
   },
   "author": "Nick Troccoli",
+  "license": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nickster28/MyMaret-Web"
+  },
   "dependencies": {
     "compression": "^1.6.2",
     "express": "^4.14.0",
@@ -15,6 +20,7 @@
     "if-env": "^1.0.0",
     "parse": "^1.9.0",
     "react": "^0.14.7",
+    "react-document-title": "^2.0.2",
     "react-dom": "^0.14.7",
     "react-router": "^2.0.0"
   },

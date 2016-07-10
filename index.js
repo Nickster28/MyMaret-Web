@@ -5,7 +5,7 @@ import Parse from 'Parse'
 import App from './components/App'
 import Analytics from './components/Analytics'
 import Login from './components/Login'
-import Newspaper from './components/Newspaper'
+import Editions from './components/Editions'
 import Home from './components/Home'
 import NotFound from './components/NotFound'
 
@@ -33,15 +33,15 @@ Parse.initialize("mymaret-api-prod");
 
 render((
 	<Router history={browserHistory}>
-	  <Route path="/" component={App}>
-	   	<IndexRedirect to="/analytics" />
-	   	<Route path="login" component={Login} onEnter={checkLoginBypass} />
-	   	<Route component={Home}>
-	   		<Route path="newspaper" component={Newspaper} onEnter={requireLogin} />
-	   		<Route path="analytics" component={Analytics} onEnter={requireLogin} />
-	   	</Route>
-	  </Route>
-	  <Route path='404' component={NotFound} />
-	  <Redirect from='*' to='/404' />
+	  	<Route path="/" component={App}>
+	   		<IndexRedirect to="/analytics" />
+	   		<Route path="login" component={Login} onEnter={checkLoginBypass} />
+	   		<Route component={Home}>
+	   			<Route path="editions" component={Editions} onEnter={requireLogin} />
+	   			<Route path="analytics" component={Analytics} onEnter={requireLogin} />
+	   		</Route>
+	  	</Route>
+		<Route path='404' component={NotFound} />
+	  	<Redirect from='*' to='/404' />
 	</Router>
 ), document.getElementById('app'))

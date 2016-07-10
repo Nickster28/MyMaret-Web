@@ -1,12 +1,12 @@
 import React from 'react'
+import DocumentTitle from 'react-document-title'
 
 export default React.createClass({
-  render() {
-    return (
-    	<div>
-    		<h1>MyMaret</h1>
-    		{this.props.children}
-    	</div>
-    )
-  }
-})
+  	render() {
+    	return (
+    		<DocumentTitle title="MyMaret">
+    			<div>{this.props.children}</div>
+    		</DocumentTitle>
+    	)
+  	}
+});
