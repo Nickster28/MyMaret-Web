@@ -25325,7 +25325,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	_parse2.default.initialize("mymaret-api-prod");
-	_parse2.default.serverURL = "http://www.mymaret-api-prod.herokuapp.com/parse";
+	_parse2.default.serverURL = "https://www.mymaret-api-prod.herokuapp.com/parse";
 
 	_parse2.default.User.current = function () {
 	  return false;
