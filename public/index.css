@@ -1,3 +1,49 @@
-.active {
-  color: green;
+#loginScreen {
+	position: absolute;
+    height: 100%;
+    width: 100%;
+
+    background: -webkit-linear-gradient(bottom, rgba(34, 141, 22, 1), rgba(20, 84, 32, 1));
+    /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom, rgba(34, 141, 22, 1), rgba(20, 84, 32, 1));
+    /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom, rgba(34, 141, 22, 1), rgba(20, 84, 32, 1));
+    /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom, rgba(34, 141, 22, 1), rgba(20, 84, 32, 1));
+    /* Standard syntax */
+}
+#loginBox,
+#mymaretLoginLogo,
+#loginForm {
+    position: absolute;
+}
+#loginBox {
+    text-align: center;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+}
+#mymaretLoginLogo {
+    margin-left: auto;
+    margin-right: auto;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: auto;
+    height: 50%;
+}
+#loginForm {
+    left: 10%;
+    top: 60%;
+    width: 80%;
+}
+#loginForm input {
+    margin-bottom: 6px;
+}
+@media (max-width: 768px) {
+    #loginBox {
+        left: 0%;
+        width: 100%;
+    }
 }

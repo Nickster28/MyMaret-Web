@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Router, Route, browserHistory, IndexRedirect, Redirect } from 'react-router'
-import Parse from 'Parse'
+import Parse from './ParseWrapper'
 import App from './components/App'
 import Analytics from './components/Analytics'
 import Login from './components/Login'
@@ -9,7 +9,6 @@ import Editions from './components/Editions'
 import Home from './components/Home'
 import NotFound from './components/NotFound'
 
-Parse.User.current = function() { return true; }
 
 // Check if user has not logged in yet, and redirect to login page
 function requireLogin(nextState, replace) {
@@ -28,8 +27,6 @@ function checkLoginBypass(nextState, replace) {
 		});
 	}
 }
-
-Parse.initialize("mymaret-api-prod");
 
 render((
 	<Router history={browserHistory}>
