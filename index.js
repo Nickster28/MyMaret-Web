@@ -15,6 +15,14 @@ function requireLogin(nextState, replace) {
 	}
 }
 
+function checkLoginBypass(nextState, replace) {
+	if (Parse.User.current()) {
+		replace({
+			pathname: '/'
+		});
+	}
+}
+
 window.onload = function() {
 	Parse.initialize("mymaret-api-prod");
 
@@ -22,7 +30,7 @@ window.onload = function() {
 	  <Router history={browserHistory}>
 	   	<Route path="/" component={App}>
 	   		<IndexRedirect to="/analytics"/>
-	   		<Route path="login" component={Login}/>
+	   		<Route path="login" component={Login} onEnter={checkLoginBypass}/>
 	   		<Route path="newspaper" component={Newspaper} onEnter={requireLogin}/>
 	   		<Route path="analytics" component={Analytics} onEnter={requireLogin}/>
 	   	</Route>
