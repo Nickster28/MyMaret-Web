@@ -7,6 +7,7 @@ import Analytics from './components/Analytics'
 import Login from './components/Login'
 import Newspaper from './components/Newspaper'
 
+// Check if user has not logged in yet, and redirect to login page
 function requireLogin(nextState, replace) {
 	if (!Parse.User.current()) {
 		replace({
@@ -15,6 +16,7 @@ function requireLogin(nextState, replace) {
 	}
 }
 
+// Check if user is already logged in, and redirect to main page
 function checkLoginBypass(nextState, replace) {
 	if (Parse.User.current()) {
 		replace({
