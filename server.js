@@ -1,7 +1,7 @@
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { match, RouterContext } from 'react-router'
-import routes from './modules/routes'
+import routes from './components/routes'
 
 var express = require('express')
 var path = require('path')
@@ -13,6 +13,18 @@ app.use(compression())
 
 // serve our static stuff like index.css
 app.use(express.static(path.join(__dirname, 'public')))
+
+// If running in prod, auto-redirect to https.
+if (app.get('env') == 'production') {
+  app.set('trust proxy');
+  app.use(function(req, res, next) {
+    if (req.protocol != 'https') {
+      res.redirect("https://" + req.hostname + req.originalUrl);
+    } else {
+      next();
+    }
+  });
+}
 
 // send all requests to index.html so browserHistory in React Router works
 app.get('*', function (req, res) {
