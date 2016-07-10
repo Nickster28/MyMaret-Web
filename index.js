@@ -29,21 +29,19 @@ function checkLoginBypass(nextState, replace) {
 	}
 }
 
-window.onload = function() {
-	Parse.initialize("mymaret-api-prod");
+Parse.initialize("mymaret-api-prod");
 
-  render((
-	  <Router history={browserHistory}>
-	   	<Route path="/" component={App}>
-	   		<IndexRedirect to="/analytics" />
-	   		<Route path="login" component={Login} onEnter={checkLoginBypass} />
-	   		<Route component={Home}>
-	   			<Route path="newspaper" component={Newspaper} onEnter={requireLogin} />
-	   			<Route path="analytics" component={Analytics} onEnter={requireLogin} />
-	   		</Route>
+render((
+	<Router history={browserHistory}>
+	  <Route path="/" component={App}>
+	   	<IndexRedirect to="/analytics" />
+	   	<Route path="login" component={Login} onEnter={checkLoginBypass} />
+	   	<Route component={Home}>
+	   		<Route path="newspaper" component={Newspaper} onEnter={requireLogin} />
+	   		<Route path="analytics" component={Analytics} onEnter={requireLogin} />
 	   	</Route>
-	   	<Route path='404' component={NotFound} />
-	   	<Redirect from='*' to='/404' />
-	  </Router>
-  ), document.getElementById('app'))
-}
+	  </Route>
+	  <Route path='404' component={NotFound} />
+	  <Redirect from='*' to='/404' />
+	</Router>
+), document.getElementById('app'))
