@@ -12,11 +12,13 @@ app.use(express.static(path.join(__dirname, 'public')))
 // If running in prod, auto-redirect to https.
 // Thanks to http://jaketrent.com/post/https-redirect-node-heroku/
 if (app.get('env') == 'production') {
+    console.log("Enabling trust proxy");
     app.enable('trust proxy');
 }
 
 // send all requests to index.html so browserHistory in React Router works
 app.get('*', function (req, res) {
+    console.log("Request protocol = " + req.protocol);
     if (app.get('env') == 'production' && req.protocol != 'https') {
         res.redirect("https://" + req.hostname + req.originalUrl);
     } else {
