@@ -1,8 +1,7 @@
 {
-  "name": "tutorial",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "MyMaret-Web",
+  "version": "0.0.1",
+  "description": "A Parse+React+Flux web dashboard for MyMaret newspaper configuration and analytics.",
   "scripts": {
     "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
     "start:dev": "webpack-dev-server --inline --content-base public/ --history-api-fallback",
@@ -11,8 +10,7 @@
     "build:server": "webpack --config webpack.server.config.js",
     "build": "npm run build:client && npm run build:server"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Nick Troccoli",
   "dependencies": {
     "compression": "^1.6.2",
     "express": "^4.14.0",
