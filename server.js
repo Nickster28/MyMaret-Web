@@ -12,6 +12,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 // If running in prod, auto-redirect to https.
 // Thanks to http://jaketrent.com/post/https-redirect-node-heroku/
 if (app.get('env') == 'production') {
+    console.log("PRODUCTIONNNNNN!");
     app.set('trust proxy');
     app.use(function(req, res, next) {
         if (req.protocol != 'https') {
