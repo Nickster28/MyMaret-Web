@@ -6,21 +6,21 @@ var app = express()
 
 app.use(compression())
 
+// // If running in prod, auto-redirect to https.
+// // Thanks to http://jaketrent.com/post/https-redirect-node-heroku/
+// if (app.get('env') == 'production') {
+//     app.set('trust proxy');
+//     app.use(function(req, res, next) {
+//         if (req.protocol != 'https') {
+//             res.redirect("https://" + req.hostname + req.originalUrl);
+//         } else {
+//             next();
+//         }
+//     });
+// }
+
 // serve our static stuff like index.css
 app.use(express.static(path.join(__dirname, 'public')))
-
-// If running in prod, auto-redirect to https.
-// Thanks to http://jaketrent.com/post/https-redirect-node-heroku/
-if (app.get('env') == 'production') {
-    app.set('trust proxy');
-    app.use(function(req, res, next) {
-        if (req.protocol != 'https') {
-            res.redirect("https://" + req.hostname + req.originalUrl);
-        } else {
-            next();
-        }
-    });
-}
 
 // send all requests to index.html so browserHistory in React Router works
 app.get('*', function (req, res) {
