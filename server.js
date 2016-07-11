@@ -12,6 +12,7 @@ if (app.get('env') == 'production') {
     app.set('trust proxy');
     app.use(function(req, res, next) {
         if (req.protocol != 'https') {
+        	console.log("Redirecting to " + "https://" + req.hostname + req.originalUrl);
             res.redirect("https://" + req.hostname + req.originalUrl);
         } else {
             next();
