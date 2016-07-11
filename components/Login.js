@@ -16,10 +16,11 @@ export default class Login extends React.Component {
 
 	handleSubmit(e) {
 		e.preventDefault();
+		var savedThis = this;
 		Parse.User.logIn(this.state.username, this.state.password).then(function() {
 			browserHistory.push('/');
 		}, function(error) {
-			this.setState({username: '', password: '', error: error.message});
+			savedThis.setState({username: '', password: '', error: error.message});
 		});
 	}
 
