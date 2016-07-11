@@ -8,7 +8,7 @@ app.use(compression())
 
 // If running in prod, auto-redirect to https.
 // Thanks to http://jaketrent.com/post/https-redirect-node-heroku/
-if (app.get('env') == 'production') {
+if (app.get('env') == 'heroku') {
     app.enable('trust proxy');
     app.use(function(req, res, next) {
         if (req.protocol != 'https') {
