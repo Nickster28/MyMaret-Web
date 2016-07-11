@@ -25327,10 +25327,6 @@
 	_parse2.default.initialize("mymaret-api-prod");
 	_parse2.default.serverURL = "http://www.mymaret-api-prod.herokuapp.com/parse";
 
-	_parse2.default.User.current = function () {
-	  return false;
-	};
-
 	exports.default = _parse2.default;
 
 /***/ },
