@@ -5,6 +5,7 @@ var compression = require('compression')
 var app = express()
 
 app.use(compression())
+app.set('view engine', 'ejs');
 
 // If running in prod, auto-redirect to https.
 // Thanks to http://jaketrent.com/post/https-redirect-node-heroku/
@@ -24,7 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 // send all requests to index.html so browserHistory in React Router works
 app.get('*', function (req, res) {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.render('index', {apiAppId: process.env.API_APP_ID, apiUrl: process.env.API_URL });
 });
 
 var PORT = process.env.PORT || 8080

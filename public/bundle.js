@@ -25312,7 +25312,7 @@
 /* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -25325,12 +25325,10 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// TODO: change/remove these before prod
-
-	_parse2.default.initialize(process.env.API_APP_ID);
-	_parse2.default.serverURL = process.env.API_URL;
+	_parse2.default.initialize(window.API_APP_ID);
+	_parse2.default.serverURL = window.API_URL;
 
 	exports.default = _parse2.default;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
 /* 222 */

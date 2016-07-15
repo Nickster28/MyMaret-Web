@@ -1,8 +1,7 @@
 import Parse from 'parse'
 
 // TODO: change/remove these before prod
-
-Parse.initialize(process.env.API_APP_ID);
-Parse.serverURL = process.env.API_URL;
+Parse.initialize(window.API_APP_ID);
+Parse.serverURL = window.API_URL;
 
 export default Parse;
