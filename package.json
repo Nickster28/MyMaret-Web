@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "description": "A Parse+React+Flux web dashboard for MyMaret newspaper configuration and analytics.",
   "scripts": {
-    "start": "webpack && if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
-    "start:dev": "nodemon server.js",
+    "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
+    "start:dev": "webpack && nodemon server.js",
     "start:prod": "node server.js"
   },
   "main": "server.js",
