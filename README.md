@@ -32,7 +32,7 @@ runLocal.js takes care of all of the required environment variables for you usin
 ## `runLocal.js` Details
 If you're interested in the JS code that underlies the above npm scripts, the `runLocal.js` script takes 1 or two arguments:
 
-`runLocal.js APP_ID_NAME URL_NAME`
+`node runLocal.js APP_ID_NAME URL_NAME`
 
 - **(REQUIRED) APP_ID_NAME** - must match a key in the "appId" object within
 apiServerInfo.json.  Specifies the App ID to use when running the webapp server.
