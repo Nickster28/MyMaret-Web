@@ -6,8 +6,8 @@
     "start": "node server.js",
     "start:dev": "node runLocal.js staging",
     "start:prod": "node runLocal.js prod",
-    "start:dev-local": "node runLocal.js staging-local",
-    "start:prod-local": "node runLocal.js prod-local"
+    "start:dev-local": "node runLocal.js staging local",
+    "start:prod-local": "node runLocal.js prod local"
   },
   "main": "server.js",
   "author": "Nick Troccoli",
