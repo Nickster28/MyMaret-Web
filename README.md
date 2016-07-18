@@ -12,7 +12,7 @@ A Parse+React+Flux web dashboard for MyMaret newspaper configuration and analyti
 ## Testing and Debugging
 Optionally, you can run additional webapp server configurations with different debugging options.  These configurations are all run using the runLocal.js script, which requires a `apiServerInfo.json` file to be in the same directory, with the following structure:
 
-```json
+```javascript
 {
 	"appId": {
 		// KEY-VALUE PAIRS OF POSSIBLE MYMARET API APP IDS
