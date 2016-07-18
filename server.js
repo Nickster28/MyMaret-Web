@@ -7,9 +7,9 @@ var app = express()
 app.use(compression())
 app.set('view engine', 'ejs');
 
-// If running in prod, auto-redirect to https.
+// If running in prod or staging, auto-redirect to https.
 // Thanks to http://jaketrent.com/post/https-redirect-node-heroku/
-if (app.get('env') == 'production') {
+if (app.get('env') == 'production' || app.get('env') == 'staging') {
     app.enable('trust proxy');
     app.use(function(req, res, next) {
         if (req.protocol != 'https') {
@@ -30,5 +30,5 @@ app.get('*', function (req, res) {
 
 var PORT = process.env.PORT || 8080
 app.listen(PORT, function() {
-    console.log('Production Express server running at localhost:' + PORT)
+    console.log('Express server running at localhost:' + PORT)
 })
