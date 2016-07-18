@@ -1,3 +1,5 @@
+/* Login screen */
+
 #loginScreen {
 	position: absolute;
     height: 100%;
@@ -45,5 +47,35 @@
     #loginBox {
         left: 0%;
         width: 100%;
+    }
+}
+
+/* Nav Bar */
+
+#home-body { 
+    padding-top: 75px;
+}
+
+.navBarItem {
+    margin-top: 3px;
+}
+
+.navBarItem:hover {
+    text-decoration: underline;
+}
+
+#logOutButton {
+    margin-top: 11px;
+    margin-right: 15px;
+}
+
+@media (max-width: 767px) {
+    #brand {
+        margin-left: 15px;
+    }
+    
+    #toggle-button.navbar-toggle {
+        background-color: white;
+        margin-top: 11px;
     }
 }
