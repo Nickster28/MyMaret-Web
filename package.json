@@ -4,10 +4,10 @@
   "description": "A Parse+React+Flux web dashboard for MyMaret newspaper configuration and analytics.",
   "scripts": {
     "start": "node server.js",
-    "start:dev": "node runLocal.js staging",
     "start:prod": "node runLocal.js prod",
-    "start:dev-local": "node runLocal.js staging local",
-    "start:prod-local": "node runLocal.js prod local"
+    "start:staging": "node runLocal.js staging",
+    "start:prod-local": "node runLocal.js prod local",
+    "start:staging-local": "node runLocal.js staging local"
   },
   "main": "server.js",
   "author": "Nick Troccoli",

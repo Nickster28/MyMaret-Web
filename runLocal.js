@@ -6,8 +6,8 @@ line arguments:
 node runLocal.js APP_ID_NAME URL_NAME
 
 - (REQUIRED) APP_ID_NAME - must match a key in the "appId" object within
-apiServerInfo.json.  Specifies the App ID, and optionally the server URL, to
-use when running the webapp server.
+apiServerInfo.json.  Specifies the App ID to use when running the webapp
+server.
 - (OPTIONAL) URL_NAME - must match a key in the "serverURL" object within
 apiServerInfo.json.  Specifies the server URL to use when running the webapp
 server.  If not given, defaults to the same value as APP_ID_NAME.
