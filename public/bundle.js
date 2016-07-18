@@ -25324,7 +25324,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// TODO: change/remove these before prod
 	_parse2.default.initialize(window.API_APP_ID);
 	_parse2.default.serverURL = window.API_URL;
 
