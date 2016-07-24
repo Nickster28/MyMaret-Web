@@ -1,11 +1,11 @@
 import React from 'react';
-import NavBar from './NavBar';
+import NavigationBar from './NavigationBar';
 import '../stylesheets/Home.css';
 
 export default function Home(props) {
     return (
         <div>
-            <NavBar />
+            <NavigationBar />
             <div id="home" className="container-fluid">
                 {props.children}
             </div>
