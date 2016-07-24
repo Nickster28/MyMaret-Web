@@ -1,5 +1,5 @@
 #!/bin/bash
-webpack
+npm run build
 git stash
 git checkout staging
 git stash apply

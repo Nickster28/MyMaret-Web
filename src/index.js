@@ -1,13 +1,15 @@
-import React from 'react'
-import { render } from 'react-dom'
-import { Router, Route, browserHistory, IndexRedirect, Redirect } from 'react-router'
-import Parse from './ParseWrapper'
-import App from './components/App'
-import Analytics from './components/Analytics'
-import Login from './components/Login'
-import Editions from './components/Editions'
-import Home from './components/Home'
-import NotFound from './components/NotFound'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Router, Route, browserHistory, IndexRedirect, Redirect } from 'react-router';
+import Parse from './ParseWrapper';
+import App from './components/App';
+import Analytics from './components/Analytics';
+import Login from './components/Login';
+import Editions from './components/Editions';
+import Home from './components/Home';
+import NotFound from './components/NotFound';
+import './stylesheets/bootstrap.min.css';
+import './bootstrap.min.js';
 
 
 // Check if user has not logged in yet, and redirect to login page
@@ -28,7 +30,7 @@ function checkLoginBypass(nextState, replace) {
 	}
 }
 
-render((
+ReactDOM.render((
 	<Router history={browserHistory}>
 	  	<Route path="/" component={App}>
 	   		<IndexRedirect to="/analytics" />
@@ -41,4 +43,4 @@ render((
 		<Route path='404' component={NotFound} />
 	  	<Redirect from='*' to='/404' />
 	</Router>
-), document.getElementById('app'))
+), document.getElementById('app'));

@@ -1,7 +1,6 @@
-/* Login screen */
-
+/* Full screen green background */
 #loginScreen {
-	position: absolute;
+    position: absolute;
     height: 100%;
     width: 100%;
 
@@ -14,68 +13,37 @@
     background: linear-gradient(to bottom, rgba(34, 141, 22, 1), rgba(20, 84, 32, 1));
     /* Standard syntax */
 }
-#loginBox,
-#mymaretLoginLogo,
-#loginForm {
-    position: absolute;
-}
+
+/* Center and size the box containing all the login elements */
 #loginBox {
-    text-align: center;
+    position: absolute;
     top: 25%;
     left: 25%;
     width: 50%;
     height: 50%;
 }
-#mymaretLoginLogo {
-    margin-left: auto;
-    margin-right: auto;
-    top: 0;
-    right: 0;
-    left: 0;
-    width: auto;
+
+/* Horizontally center and limit the size of the logo */
+#loginBox img {
+    margin: auto;
     height: 50%;
+    margin-bottom: 15px;
 }
-#loginForm {
-    left: 10%;
-    top: 60%;
-    width: 80%;
+
+/* Center all form elements, including the log in button */
+#loginBox form {
+    text-align: center;
 }
-#loginForm input {
+
+/* Add some padding in between each log in form element */
+#loginBox form input {
     margin-bottom: 6px;
 }
+
+/* On smaller screens, the log in fields should fill the screen horizontally */
 @media (max-width: 768px) {
     #loginBox {
         left: 0%;
         width: 100%;
-    }
-}
-
-/* Nav Bar */
-
-#home-body { 
-    padding-top: 75px;
-}
-
-.navBarItem {
-    margin-top: 3px;
-}
-
-.navBarItem:hover {
-    text-decoration: underline;
-}
-
-#logOutButton {
-    margin-top: 11px;
-    margin-right: 15px;
-}
-
-@media (max-width: 767px) {
-    #brand {
-        margin-left: 15px;
-    }
-    
-    #toggle-button.navbar-toggle {
-        background-color: white;
-        margin-top: 11px;
     }
 }

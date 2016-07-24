@@ -1,6 +1,0 @@
-{
-	"events": {
-		"restart": "webpack"
-	},
-	"ignore": ["bundle.js"]
-}

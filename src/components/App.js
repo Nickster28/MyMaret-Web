@@ -1,7 +1,7 @@
-import React from 'react'
-import DocumentTitle from 'react-document-title'
+import React, { Component } from 'react';
+import DocumentTitle from 'react-document-title';
 
-export default React.createClass({
+export default class App extends Component {
   	render() {
     	return (
     		<DocumentTitle title="MyMaret">
@@ -9,4 +9,4 @@ export default React.createClass({
     		</DocumentTitle>
     	)
   	}
-});
+}

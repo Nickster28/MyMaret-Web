@@ -1,9 +1,11 @@
-import React from 'react'
-import DocumentTitle from 'react-document-title'
-import Parse from '../ParseWrapper'
-import { browserHistory } from 'react-router'
+import React, { Component } from 'react';
+import DocumentTitle from 'react-document-title';
+import Parse from '../ParseWrapper';
+import { browserHistory } from 'react-router';
+import LoginLogo from '../images/logo.png';
+import '../stylesheets/Login.css';
 
-export default class Login extends React.Component {
+export default class Login extends Component {
 
 	constructor(props) {
 		super(props);
@@ -50,12 +52,12 @@ export default class Login extends React.Component {
     		<DocumentTitle title="MyMaret | Log In">
     			<div id="loginScreen">
     				<div id="loginBox">
-    					<img src="/logo.png" id="mymaretLoginLogo" className="img-responsive" />
-    					<form id="loginForm" className="form-horizontal" onSubmit={this.handleSubmit}>
+    					<img src={LoginLogo} className="img-responsive" />
+    					<form onSubmit={this.handleSubmit}>
     						{this.errorMessage()}
     						<input type="text" className="form-control" placeholder="Username" value={this.state.username} onChange={this.handleUsernameChange} />
     						<input type="password" className="form-control" placeholder="Password" value={this.state.password} onChange={this.handlePasswordChange} />
-    						<input type="submit" value="Log In" className="btn btn-default" />
+    						<button type="submit" className="btn btn-default"> Log In </button>
     					</form>
     				</div>
     			</div>
