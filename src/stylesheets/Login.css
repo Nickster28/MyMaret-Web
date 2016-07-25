@@ -30,7 +30,7 @@
     margin-bottom: 15px;
 }
 
-/* Center all form elements, including the log in button */
+/* Center all form elements, including the login button */
 #loginBox form {
     text-align: center;
 }
@@ -40,7 +40,7 @@
     margin-bottom: 6px;
 }
 
-/* On smaller screens, the log in fields should fill the screen horizontally */
+/* On smaller screens, the log in fields should go edge-to-edge horizontally */
 @media (max-width: 768px) {
     #loginBox {
         left: 0%;

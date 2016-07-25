@@ -1,12 +1,22 @@
-import React, { Component } from 'react';
-import DocumentTitle from 'react-document-title';
+/* FUNCTION: App
+ * ----------------------------
+ * The root React component for this app.  Sets the main document title
+ * and displays whatever child components also need to be displayed.
+ *
+ * Note that this is just a function because App has no
+ * internal state - it is merely a function of props, so we can declare
+ * it as a function instead of a class.
+ * ----------------------------
+ */
 
-export default class App extends Component {
-  	render() {
-    	return (
-    		<DocumentTitle title="MyMaret">
-    			<div>{this.props.children}</div>
-    		</DocumentTitle>
-    	)
-  	}
+import React from "react";
+import DocumentTitle from "react-document-title";
+import Config from "../config";
+
+export default function App(props) {
+	return (
+		<DocumentTitle title={Config.APP_NAME}>
+			<div>{props.children}</div>
+		</DocumentTitle>
+	) 
 }
