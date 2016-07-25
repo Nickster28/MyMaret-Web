@@ -8,6 +8,26 @@
 /* Override the color and font style for the active navbar link */
 .navbar-default .navbar-nav>li>a.active:focus, .navbar-default .navbar-nav>li>a.active:hover,
 .navbar-default .navbar-nav li a.active {
-    color: #3E934A;
+    color: white;
     font-weight: bolder;   
+    background-color: #086644;
+}
+
+nav.navbar-default.navbar-fixed-top {
+	background-color: #009444;
+	border-color: #086644;
+}
+
+nav.navbar-default .navbar-brand, 
+nav.navbar-default .navbar-nav>li>a, 
+nav.navbar-default .navbar-nav>li>a:hover {
+	color: white;
+}
+
+#nav-toggle.collapsed {
+	background-color: #fff;
+}
+
+#nav-toggle {
+	background-color: #dbdbdb;
 }

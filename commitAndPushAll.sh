@@ -1,6 +1,7 @@
 #!/bin/bash
 npm run build
 git add build/*
+git add src/*
 git stash
 git checkout staging
 git stash apply

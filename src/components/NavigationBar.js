@@ -37,7 +37,7 @@ export default class NavigationBar extends Component {
 			<nav className="navbar navbar-default navbar-fixed-top">
 			    <div className="container-fluid">
 			        <div className="navbar-header">
-			        	<button type="button" id="nav-toggle" className="navbar-toggle" data-toggle="collapse" data-target="#navbar-items">
+			        	<button type="button" id="nav-toggle" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-items">
 			        		<span className="sr-only">Toggle navigation</span>
 			        		<span className="icon-bar"></span>
 			        		<span className="icon-bar"></span>
