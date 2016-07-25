@@ -40,10 +40,10 @@
     margin-bottom: 6px;
 }
 
-/* On smaller screens, the log in fields should go edge-to-edge horizontally */
+/* On smaller screens, the log in fields should be wider horizontally */
 @media (max-width: 768px) {
     #loginBox {
-        left: 0%;
-        width: 100%;
+        left: 10%;
+        width: 80%;
     }
 }
