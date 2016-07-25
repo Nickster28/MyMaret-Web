@@ -1,0 +1,11 @@
+li a span {
+	margin-right: 5px; 
+}
+
+#newEditionRow {
+	text-align: center;
+}
+
+#editionsDropdown .caret {
+	margin-left: 10px;
+}
