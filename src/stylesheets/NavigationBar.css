@@ -1,0 +1,13 @@
+/* Bug where .navbar-right element has -15px right margin - need to compensate */
+@media (min-width: 768px) {
+    #logoutButton {
+        margin-right: 0px;
+    }
+}
+
+/* Override the color and font style for the active navbar link */
+.navbar-default .navbar-nav>li>a.active:focus, .navbar-default .navbar-nav>li>a.active:hover,
+.navbar-default .navbar-nav li a.active {
+    color: #3E934A;
+    font-weight: bolder;   
+}
