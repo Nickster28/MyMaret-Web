@@ -12,7 +12,7 @@ import React from "react";
 import DocumentTitle from "react-document-title";
 import Config from "../config";
 
-export default function NotFound() {
+export default () => {
   	return (
     	<DocumentTitle title={Config.APP_NAME + " | Not Found"}>
     		<div>
