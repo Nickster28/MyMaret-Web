@@ -1,12 +1,12 @@
 # MyMaret-Web
 
-A Parse+React+Flux web dashboard for MyMaret newspaper configuration and analytics.  Created with [Create React App](https://github.com/facebookincubator/create-react-app), a tool to get quickly set up with a React project.  Create React App handles all of the compilation, linting, bundling, and more, but requires that certain files exist in the project - you can read about that, and view the complete Create React App guide, [here](https://github.com/facebookincubator/create-react-app/blob/master/template/README.md).  
+A Parse+React+React-Router+Flux web dashboard for MyMaret newspaper configuration and analytics.  Created with [Create React App](https://github.com/facebookincubator/create-react-app), a tool to get quickly set up with a React project.  Create React App handles all of the compilation, linting, bundling, and more, but requires that certain files exist in the project - you can read about that, and view the complete Create React App guide, [here](https://github.com/facebookincubator/create-react-app/blob/master/template/README.md).  
 
 To start, run `npm install` to install all necessary packages, and then run
 
 `npm start`
 
-This will start serving the static HTML, CSS and JS and auto-reload on changes.
+This will start serving the static HTML, CSS and JS and auto-reload on changes.  The project supports the [Redux DevTools Chrome Extension](https://github.com/zalmoxisus/redux-devtools-extension) for easy debugging of app state.
 
 To bundle all files into production-ready HTML, CSS and JS, run
 
