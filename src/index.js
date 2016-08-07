@@ -16,10 +16,11 @@ import { Router, Route, browserHistory, IndexRedirect, Redirect } from "react-ro
 
 // Import Redux components
 import { Provider } from "react-redux";
-import { createStore, applyMiddleware, compose } from "redux";
+import { createStore, applyMiddleware, compose, combineReducers } from "redux";
 import thunkMiddleware from "redux-thunk";
 import createLogger from "redux-logger";
-import rootReducer from "./reducers";
+import * as reducers from "./reducers";
+import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 
 // Import the top-level components used
 import App from "./components/App";
@@ -41,7 +42,10 @@ import "./bootstrap.min.js";
  * support for the Redux Chrom Devtool.
  */
 let store = createStore(
-	rootReducer,
+	combineReducers({
+		...reducers,
+		routing: routerReducer
+	}),
 	compose(
 		applyMiddleware(
 			thunkMiddleware,
@@ -71,10 +75,13 @@ function checkLoginBypass(nextState, replace) {
 	}
 }
 
+// Create an enhanced history that syncs navigation events with the store
+const history = syncHistoryWithStore(browserHistory, store);
+
 // Define the app router configuration
 ReactDOM.render((
 	<Provider store={store}>
-		<Router history={browserHistory}>
+		<Router history={history}>
 		  	<Route path="/" component={App}>
 		   		<IndexRedirect to="/analytics" />
 		   		<Route path="login" component={LoginContainer} onEnter={checkLoginBypass} />
