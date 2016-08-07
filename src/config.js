@@ -1,4 +1,5 @@
-/* FILE: config.js
+/* 
+ * FILE: config.js
  * ------------------
  * Exports an object containing app-wide constants such as the school
  * name and API server information.

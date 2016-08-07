@@ -1,35 +1,25 @@
-/* CLASS: NavigationBar
+/* 
+ * CLASS: NavigationBar
  * ---------------------
  * A top navigation bar component that displays the site name as well as links
  * to the Analytics and Editions pages.  Uses NavigationBarLink to properly route
  * between pages, as well as to mark the active link with a special classname.  The
- * NavigationBar also displays a logout button on the right to log the user out from
- * Parse, and at smaller widths, collapses into a dropdown menu.
+ * NavigationBar also displays a logout button on the right to log the user out,
+ * and at smaller widths, collapses into a dropdown menu.
  * ---------------------
  */
 
 import React, { Component } from "react";
-import Parse from "../ParseWrapper";
-import { browserHistory } from "react-router";
 import Config from "../config";
 
 // Import other necessary components
 import NavigationBarLink from "./NavigationBarLink";
+import LogoutButtonContainer from "../containers/LogoutButtonContainer";
 
 // Import necessary CSS for this component
 import "../stylesheets/NavigationBar.css";
 
 export default class NavigationBar extends Component {
-	
-	// Logs the user out from Parse, and redirects back to /login on success
-	logOut(e) {
-		e.preventDefault();
-		Parse.User.logOut().then(() => {
-			browserHistory.push("/login");
-		}, (error) => {
-			alert("Could not log out - an error occured.");
-		});
-	}
 
 	// Renders a responsive, Bootstrap, fixed-top navigation bar
 	render() {
@@ -50,9 +40,7 @@ export default class NavigationBar extends Component {
 			        	    <li><NavigationBarLink to="/analytics">Analytics</NavigationBarLink></li>
 			        	    <li><NavigationBarLink to="/editions">Editions</NavigationBarLink></li>
 			        	</ul>
-			        	<button type="button" id="logoutButton" className="btn btn-default navbar-btn navbar-right" onClick={this.logOut.bind(this)}>
-			        		<span className="glyphicon glyphicon-log-out" aria-hidden="true"></span> Log Out
-			        	</button>
+			        	<LogoutButtonContainer />
 			        </div>
 			    </div>
 			</nav>

@@ -1,0 +1,6 @@
+/* Bug where .navbar-right element has -15px right margin - need to compensate */
+@media (min-width: 768px) {
+    #logoutButton {
+        margin-right: 0px;
+    }
+}

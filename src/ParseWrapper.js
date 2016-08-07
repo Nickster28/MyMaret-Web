@@ -1,4 +1,5 @@
-/* FILE: ParseWrapper.js
+/* 
+ * FILE: ParseWrapper.js
  * ----------------------
  * Create our own Parse module since importing the module directly seems
  * to create a new Parse instance each time.  Also configure it with the

@@ -1,4 +1,5 @@
-/* FUNCTION: NotFound
+/* 
+ * FUNCTION: NotFound
  * ----------------------------
  * A simple "404 - Not Found" component to display for invalid pages.
  *

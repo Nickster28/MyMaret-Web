@@ -1,4 +1,5 @@
-/* CLASS: NavigationBarLink
+/* 
+ * CLASS: NavigationBarLink
  * ----------------------------
  * A simple wrapper around React Router's Link component to ensure
  * that the activeClassName for every Link is always set to "active".
@@ -13,7 +14,8 @@ import { Link } from "react-router";
 
 export default class NavigationBarLink extends Component {
 	
-	/* Collapses the navigation drawer on smaller width screens.
+	/* 
+	 * Collapses the navigation drawer on smaller width screens.
 	 * This is needed because the drawer doesn't collapse, since it
 	 * is normally used in non-single-page-apps where the page will
 	 * refresh and the drawer state won't matter anymore.

@@ -14,7 +14,8 @@
     "react-router": "^2.6.0",
     "redux": "^3.5.2",
     "redux-actions": "^0.10.1",
-    "redux-promise": "^0.5.3"
+    "redux-logger": "^2.6.1",
+    "redux-thunk": "^2.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
