@@ -38,8 +38,8 @@ import "./stylesheets/bootstrap.min.css";
 import "./bootstrap.min.js";
 
 /*
- * Create the Redux store with our reducer, logging+thunk middleware, and
- * support for the Redux Chrom Devtool.
+ * Create the Redux store with our reducer, react router reducer, 
+ * logging+thunk middlewares, and support for the Redux Chrome Devtool.
  */
 let store = createStore(
 	combineReducers({
