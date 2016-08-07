@@ -24,7 +24,7 @@ import rootReducer from "./reducers";
 // Import the top-level components used
 import App from "./components/App";
 import Analytics from "./components/Analytics";
-import Login from "./components/Login";
+import LoginContainer from "./containers/LoginContainer";
 import Editions from "./components/Editions";
 import Home from "./components/Home";
 import NotFound from "./components/NotFound";
@@ -77,7 +77,7 @@ ReactDOM.render((
 		<Router history={browserHistory}>
 		  	<Route path="/" component={App}>
 		   		<IndexRedirect to="/analytics" />
-		   		<Route path="login" component={Login} onEnter={checkLoginBypass} />
+		   		<Route path="login" component={LoginContainer} onEnter={checkLoginBypass} />
 		   		<Route component={Home}>
 		   			<Route path="editions" component={Editions} onEnter={requireLogin} />
 		   			<Route path="analytics" component={Analytics} onEnter={requireLogin} />
