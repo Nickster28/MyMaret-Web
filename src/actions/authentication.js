@@ -22,15 +22,24 @@ import {
  *		password - the password to attempt a login with
  *
  * Returns: a thunk that attempts a Parse login with the given username and
- * 			password, dispatches the appropriate action on success/failure, and
- *			redirects to the main page on success.
+ * 			password, verifies that the user is a newspaper admin, dispatches
+ *			the appropriate action on success/failure, and redirects to the
+ *			main page on success.
  * ------------------
  */
 export function logIn(username, password) {
 	return dispatch => {
+		var loggedInUser = null;
 		Parse.User.logIn(username, password).then(user => {
-			dispatch(loggedInSuccess(user));
-			browserHistory.push("/");
+			loggedInUser = user;
+			return Parse.Cloud.run("IsNewspaperAdmin");
+		}).then(isNewspaperAdmin => {
+			if (!isNewspaperAdmin) {
+				dispatch(loggedInError({message: "Unauthorized."}));
+			} else {
+				dispatch(loggedInSuccess(loggedInUser));
+				browserHistory.push("/");
+			}
 		}, error => {
 			dispatch(loggedInError(error));
 		});
