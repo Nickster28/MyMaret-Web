@@ -12,7 +12,7 @@
 // Import React and React Router components
 import React from "react";
 import ReactDOM from "react-dom";
-import { Router, Route, browserHistory, IndexRedirect, Redirect } from "react-router";
+import { Router, Route, browserHistory, IndexRedirect, Redirect, IndexRoute } from "react-router";
 
 // Import Redux components
 import { Provider } from "react-redux";
@@ -27,8 +27,11 @@ import App from "./components/App";
 import Analytics from "./components/Analytics";
 import LoginContainer from "./containers/LoginContainer";
 import Editions from "./components/Editions";
+import Edition from "./components/Edition";
 import Home from "./components/Home";
 import NotFound from "./components/NotFound";
+
+import Parse from "./ParseWrapper.js";
 
 /* 
  * Import the necessary bootstrap CSS and JS (JQuery, also required, is
@@ -58,21 +61,29 @@ let store = createStore(
 // Check if user has not logged in yet, and redirect to login page
 function requireLogin(nextState, replace) {
 	if (!store.getState().authentication.user) {
-		console.log("Redirecting to login");
-		replace({
-			pathname: "/login"
-		});
+		replace("/login");
 	}
 }
 
 // Check if user is already logged in, and redirect to main page
 function checkLoginBypass(nextState, replace) {
 	if (store.getState().authentication.user) {
-		console.log("Redirecting to main page");
-		replace({
-			pathname: "/"
-		});
+		replace("/");
 	}
+}
+
+// When entering /editions, fetch the newest edition id and redirect to it
+function onEnterEditions(nextState, replace, callback) {
+	var editionsQuery = new Parse.Query("Edition");
+	editionsQuery.ascending("createdAt");
+	editionsQuery.first().then(newestEdition => {
+		if (newestEdition) {
+			replace("/editions/edition/" + newestEdition.id);
+		}
+		callback();
+	}, error => {
+		callback();
+	});
 }
 
 // Create an enhanced history that syncs navigation events with the store
@@ -86,8 +97,11 @@ ReactDOM.render((
 		   		<IndexRedirect to="/analytics" />
 		   		<Route path="login" component={LoginContainer} onEnter={checkLoginBypass} />
 		   		<Route component={Home}>
-		   			<Route path="editions" component={Editions} onEnter={requireLogin} />
 		   			<Route path="analytics" component={Analytics} onEnter={requireLogin} />
+		   			<Route path="editions" component={Editions}>
+		   				<IndexRoute onEnter={onEnterEditions} />
+		   				<Route path="edition/:id" component={Edition} />
+		   			</Route>
 		   		</Route>
 		  	</Route>
 			<Route path="404" component={NotFound} />

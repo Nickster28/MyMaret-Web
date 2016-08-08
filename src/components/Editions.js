@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import DocumentTitle from "react-document-title";
 import EditionsDropdown from "./EditionsDropdown";
-import EditionDetailView from "./EditionDetailView";
 import Config from "../config";
 import "../stylesheets/Editions.css";
 
@@ -11,6 +10,7 @@ export default class Editions extends Component {
 		alert("New edition!");
 	}
 
+    // TODO: separate pulldown into own component, based on router state?
   	render() {
     	return (
     		<DocumentTitle title={Config.APP_NAME + " | Editions"}>
@@ -26,7 +26,7 @@ export default class Editions extends Component {
 
     				<div className="row">
     					<div className="col-xs-12">
-    						<EditionDetailView />
+    						{this.props.children}
     					</div>
     				</div>
     			</div>
