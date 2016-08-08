@@ -26,15 +26,15 @@ import {
 export default function authentication(state = {user: Parse.User.current(), error: null}, action) {
 	switch (action.type) {
 		case LOGGED_IN_SUCCESS:
-			return {
+			return Object.assign({}, state, {
 				user: action.payload.user,
 				error: null
-			};
+			});
 		case LOGGED_OUT_SUCCESS:
-			return {
+			return Object.assign({}, state, {
 				user: null,
 				error: null
-			};
+			});
 		case LOGGED_IN_ERROR:
 		case LOGGED_OUT_ERROR:
 			return Object.assign({}, state, {
