@@ -112,13 +112,19 @@ function onEnterEditionsIndex(nextState, replace, callback) {
  *		callback - a function to execute when we're done
  *
  * Called when we're entering /editions/edition/:id.  If we are entering
- * it *directly* (i.e. not coming from a /editions redirect) then also fetch all
- * editions.  Otherwise, do nothing, since we don't need to fetch twice.
+ * it *directly* (i.e. not coming from a /editions redirect) then also fetch
+ * all editions.  Otherwise dont, since we don't need to fetch twice.  Also
+ * check if the :id is a valid edition id.
  * --------------------------
  */
 function onEnterEdition(nextState, replace, callback) {
 	if (!store.getState().editionsInfo.redirectedFromIndex) {
 		store.dispatch(fetchEditions()).then(() => {
+
+			// If this is an invalid ID, redirect to 404
+			if (!store.getState().editionsInfo.editions[nextState.params.id]) {
+				replace("/404");
+			}
 			callback();
 		});
 	} else {
@@ -147,8 +153,8 @@ ReactDOM.render((
 		   					onEnter={onEnterEdition} />
 		   			</Route>
 		   		</Route>
+		   		<Route path="404" component={NotFound} />
 		  	</Route>
-			<Route path="404" component={NotFound} />
 		  	<Redirect from="*" to="/404" />
 		</Router>
 	</Provider>

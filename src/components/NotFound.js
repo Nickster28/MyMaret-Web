@@ -16,7 +16,7 @@ import Config from "../config";
 export default () => {
   	return (
     	<DocumentTitle title={Config.APP_NAME + " | Not Found"}>
-    		<div>
+    		<div className="container-fluid">
     	  		<h1>404 Not Found</h1>
     		</div>
     	</DocumentTitle>
