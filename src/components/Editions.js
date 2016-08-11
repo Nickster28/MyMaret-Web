@@ -24,7 +24,8 @@ class Editions extends Component {
     // Show a modal screen to configure a new edition
     handleCreateEdition() {
         // TODO
-        this.props.onCreateEdition();
+        alert("Create edition!");
+        //this.props.onCreateEdition();
     }
 
     /*
@@ -37,7 +38,9 @@ class Editions extends Component {
         if (this.props.editionInfoNewestToOldest.length > 0) {
             return (
                 <EditionsDropdown editionInfoNewestToOldest={this.props.editionInfoNewestToOldest}
-                    onSelectEdition={this.props.onSelectEdition} onCreateEdition={this.handleCreateEdition}/>
+                    selectedEditionIndex={this.props.selectedEditionIndex}
+                    onSelectEdition={this.props.onSelectEdition}
+                    onCreateEdition={this.handleCreateEdition}/>
             )
         } else {
             return (
@@ -80,6 +83,8 @@ class Editions extends Component {
  * editionInfoNewestToOldest - an array of edition info objects, sorted from
  *                          newest to oldest.  Each object should contain that
  *                          edition's title and id.
+ * selectedEditionIndex - index of selected edition's info in
+ *                          editionInfoNewestToOldest
  * ------------
  */
 Editions.propTypes = {
@@ -88,7 +93,8 @@ Editions.propTypes = {
     editionInfoNewestToOldest: PropTypes.arrayOf(React.PropTypes.shape({
         title: PropTypes.string.isRequired,
         id: PropTypes.string.isRequired
-    }).isRequired).isRequired
+    }).isRequired).isRequired,
+    selectedEditionIndex: PropTypes.number.isRequired
 }
 
 export default Editions;

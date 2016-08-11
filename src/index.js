@@ -22,8 +22,8 @@ import thunkMiddleware from "redux-thunk";
 import createLogger from "redux-logger";
 import * as reducers from "./reducers";
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
-import { fetchEditions, selectEditionWithId, 
-	editionsIndexRedirectTrue, 
+import { fetchEditions, selectEditionWithId,
+	editionsIndexRedirectTrue,
 	editionsIndexRedirectFalse } from "./actions/editions";
 
 // Import the top-level components used
@@ -95,7 +95,6 @@ function onEnterEditionsIndex(nextState, replace, callback) {
 		var newestEditionId = editionIdsArr.length > 0 ?
 			editionIdsArr[0] : null;
 		if (newestEditionId) {
-			store.dispatch(selectEditionWithId(newestEditionId));
 			store.dispatch(editionsIndexRedirectTrue());
 			replace("/editions/edition/" + newestEditionId);
 		}
@@ -124,10 +123,15 @@ function onEnterEdition(nextState, replace, callback) {
 			// If this is an invalid ID, redirect to 404
 			if (!store.getState().editionsInfo.editions[nextState.params.id]) {
 				replace("/404");
+			} else if (store.getState().editionsInfo.selectedEditionId !==
+				nextState.params.id) {
+				// Otherwise, select this edition if we haven't already
+				store.dispatch(selectEditionWithId(nextState.params.id));
 			}
 			callback();
 		});
 	} else {
+		store.dispatch(selectEditionWithId(nextState.params.id));
 		store.dispatch(editionsIndexRedirectFalse());
 		callback();
 	}

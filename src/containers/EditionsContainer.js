@@ -8,26 +8,35 @@
  */
 
 import { connect } from "react-redux";
-import { createEdition, selectEditionWithId } from "../actions/editions";
+import { createEdition,
+		selectEditionWithIdAndRedirect } from "../actions/editions";
 import Editions from "../components/Editions";
 
 /* 
  * REDUX: mapStateToProps
  * -----------------------
  * A function that takes the current Redux state and returns an object
- * that is set as the dropdown container's props.  The container only
- * needs the list of edition info (title + id) sorted from newest to oldest.
+ * that is set as the dropdown container's props.  The container needs the list
+ * of edition info (title + id) sorted from newest to oldest, and the index in
+ * that list of the currently selected edition.
  * -----------------------
  */
 const mapStateToProps = state => {
-	return {
+	var props = {
 		editionInfoNewestToOldest: state.editionsInfo.editionIdsNewestToOldest.map(id => {
 			return {
 				title: state.editionsInfo.editions[id].get("editionTitle"),
 				id
 			}
 		})
-	}
+	};
+
+	// Search the above array we just created for the selected edition's id
+	props.selectedEditionIndex = props.editionInfoNewestToOldest.findIndex((elem, index) => {
+		return elem.id === state.editionsInfo.selectedEditionId;
+	});
+
+	return props;
 }
 
 /* 
@@ -46,7 +55,7 @@ const mapDispatchToProps = dispatch => {
 			dispatch(createEdition());
 		},
 		onSelectEdition: (editionId) => {
-			dispatch(selectEditionWithId(editionId));
+			dispatch(selectEditionWithIdAndRedirect(editionId));
 		}
 	}
 }

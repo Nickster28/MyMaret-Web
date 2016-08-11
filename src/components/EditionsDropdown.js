@@ -19,10 +19,14 @@ class EditionsDropdown extends Component {
 
 	// Creates an array of <li> items for each edition for the dropdown.
 	editionNamesList() {
-		return this.props.editionInfoNewestToOldest.map(editionInfo => {
+		var selectedEditionIndex = this.props.selectedEditionIndex;
+		var onSelectEdition = this.props.onSelectEdition;
+		return this.props.editionInfoNewestToOldest.map((editionInfo, index) => {
+			var elemId = index === selectedEditionIndex ? "selectedEdition" : "";
 			return (
 				<li key={editionInfo.id}>
-					<a href="#" onClick={this.props.onSelectEdition.bind(editionInfo.id)}>
+					<a id={elemId} className="editionsDropdownOption"
+						onClick={onSelectEdition.bind(null, editionInfo.id)}>
 						{editionInfo.title}
 					</a>
 				</li>
@@ -33,11 +37,11 @@ class EditionsDropdown extends Component {
 	render() {
 		return (
 			<div className="dropdown">
-				<button className="btn btn-default dropdown-toggle" type="button" id="editionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-					{this.props.editionInfoNewestToOldest[0].title}
+				<button className="btn btn-default dropdown-toggle" type="button" id="editionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					{this.props.editionInfoNewestToOldest[this.props.selectedEditionIndex].title}
 					<span className="caret"></span>
 				</button>
-				<ul className="dropdown-menu" aria-labelledby="editionsDropdown">
+				<ul className="dropdown-menu dropdown-menu-right" aria-labelledby="editionsDropdown">
 					{this.editionNamesList()}
 					<li role="separator" className="divider"></li>
 					<li id="createEditionRow">
@@ -57,11 +61,12 @@ class EditionsDropdown extends Component {
  * ------------
  * onSelectEdition - a function handler for when an edition is selected to
  *                  view.  Should take the objectId of the edition to select.
- * onCreateEdition - a function handler for creating a new edition.  Doesn't
- *					take any parameters.
+ * onCreateEdition - a function handler for creating a new edition.  TODO
  * editionInfoNewestToOldest - an array of edition info objects, sorted from
  *                          newest to oldest.  Each object should contain that
  *                          edition's title and id.
+ * selectedEditionIndex - index of selected edition's info in
+ *                          editionInfoNewestToOldest
  * ------------
  */
 EditionsDropdown.propTypes = {
@@ -70,7 +75,8 @@ EditionsDropdown.propTypes = {
     editionInfoNewestToOldest: PropTypes.arrayOf(React.PropTypes.shape({
         title: PropTypes.string.isRequired,
         id: PropTypes.string.isRequired
-    })).isRequired
+    }).isRequired).isRequired,
+    selectedEditionIndex: PropTypes.number.isRequired
 }
 
 export default EditionsDropdown;

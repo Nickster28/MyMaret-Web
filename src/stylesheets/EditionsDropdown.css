@@ -9,3 +9,11 @@ li a span {
 #editionsDropdown .caret {
 	margin-left: 10px;
 }
+
+.dropdown-menu>li>a#selectedEdition {
+	font-weight: bold;
+}
+
+.dropdown-menu>li>a.editionsDropdownOption:hover {
+	cursor: pointer;
+}
