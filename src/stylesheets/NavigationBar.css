@@ -1,5 +1,6 @@
 /* Override the color and font style for the active navbar link */
-.navbar-default .navbar-nav>li>a.active:focus, .navbar-default .navbar-nav>li>a.active:hover,
+.navbar-default .navbar-nav>li>a.active:focus,
+.navbar-default .navbar-nav>li>a.active:hover,
 .navbar-default .navbar-nav li a.active {
     color: white;
     font-weight: bolder;   
