@@ -12,7 +12,8 @@
 // Import React and React Router components
 import React from "react";
 import ReactDOM from "react-dom";
-import { Router, Route, browserHistory, IndexRedirect, Redirect, IndexRoute } from "react-router";
+import { Router, Route, browserHistory, IndexRedirect, 
+	IndexRoute, Redirect } from "react-router";
 
 // Import Redux components
 import { Provider } from "react-redux";
@@ -21,17 +22,18 @@ import thunkMiddleware from "redux-thunk";
 import createLogger from "redux-logger";
 import * as reducers from "./reducers";
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
+import { fetchEditions, selectEditionWithId, 
+	editionsIndexRedirectTrue, 
+	editionsIndexRedirectFalse } from "./actions/editions";
 
 // Import the top-level components used
 import App from "./components/App";
 import Analytics from "./components/Analytics";
 import LoginContainer from "./containers/LoginContainer";
-import Editions from "./components/Editions";
+import EditionsContainer from "./containers/EditionsContainer";
 import Edition from "./components/Edition";
 import Home from "./components/Home";
 import NotFound from "./components/NotFound";
-
-import Parse from "./ParseWrapper.js";
 
 /* 
  * Import the necessary bootstrap CSS and JS (JQuery, also required, is
@@ -72,18 +74,57 @@ function checkLoginBypass(nextState, replace) {
 	}
 }
 
-// When entering /editions, fetch the newest edition id and redirect to it
-function onEnterEditions(nextState, replace, callback) {
-	var editionsQuery = new Parse.Query("Edition");
-	editionsQuery.ascending("createdAt");
-	editionsQuery.first().then(newestEdition => {
-		if (newestEdition) {
-			replace("/editions/edition/" + newestEdition.id);
+/*
+ * FUNCTION: onEnterEditionsIndex
+ * --------------------------
+ * Parameters:
+ *		nextState - the state the router will have after this onEnter
+ *		replace - a function to use to overwrite the router location
+ *		callback - a function to execute when we're done
+ *
+ * Called when we're entering /editions.  Fetch all editions and, if there are
+ * editions, redirect to /editions/edition/:id to show the newest one.
+ * Also dispatch an editions index redirect action so when onEnterEdition is
+ * called it knows it doesn't need to fetch again.
+ * --------------------------
+ */
+function onEnterEditionsIndex(nextState, replace, callback) {
+	store.dispatch(fetchEditions()).then(() => {
+		var editionIdsArr =
+			store.getState().editionsInfo.editionIdsNewestToOldest;
+		var newestEditionId = editionIdsArr.length > 0 ?
+			editionIdsArr[0] : null;
+		if (newestEditionId) {
+			store.dispatch(selectEditionWithId(newestEditionId));
+			replace("/editions/edition/" + newestEditionId);
 		}
-		callback();
-	}, error => {
+		store.dispatch(editionsIndexRedirectTrue());
 		callback();
 	});
+}
+
+/*
+ * FUNCTION: onEnterEdition
+ * --------------------------
+ * Parameters:
+ *		nextState - the state the router will have after this onEnter
+ *		replace - a function to use to overwrite the router location
+ *		callback - a function to execute when we're done
+ *
+ * Called when we're entering /editions/edition/:id.  If we are entering
+ * it *directly* (i.e. not coming from a /editions redirect) then also fetch all
+ * editions.  Otherwise, do nothing, since we don't need to fetch twice.
+ * --------------------------
+ */
+function onEnterEdition(nextState, replace, callback) {
+	if (!store.getState().editionsInfo.redirectedFromIndex) {
+		store.dispatch(fetchEditions()).then(() => {
+			callback();
+		});
+	} else {
+		store.dispatch(editionsIndexRedirectFalse());
+		callback();
+	}
 }
 
 // Create an enhanced history that syncs navigation events with the store
@@ -95,12 +136,15 @@ ReactDOM.render((
 		<Router history={history}>
 		  	<Route path="/" component={App}>
 		   		<IndexRedirect to="/analytics" />
-		   		<Route path="login" component={LoginContainer} onEnter={checkLoginBypass} />
+		   		<Route path="login" component={LoginContainer}
+		   			onEnter={checkLoginBypass} />
 		   		<Route component={Home}>
-		   			<Route path="analytics" component={Analytics} onEnter={requireLogin} />
-		   			<Route path="editions" component={Editions}>
-		   				<IndexRoute onEnter={onEnterEditions} />
-		   				<Route path="edition/:id" component={Edition} />
+		   			<Route path="analytics" component={Analytics}
+		   				onEnter={requireLogin} />
+		   			<Route path="editions" component={EditionsContainer}>
+		   				<IndexRoute onEnter={onEnterEditionsIndex} />
+		   				<Route path="edition/:id" component={Edition}
+		   					onEnter={onEnterEdition} />
 		   			</Route>
 		   		</Route>
 		  	</Route>

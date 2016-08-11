@@ -1,9 +1,17 @@
-import React, { Component } from "react";
+import React, { Component, PropTypes } from "react";
 
-export default class Edition extends Component {
+class Edition extends Component {
   	render() {
     	return (
-            <div>{this.props.params.id}</div>
+            <div>ID = {this.props.params.id}</div>
     	)
   	}
 }
+
+Edition.propTypes = {
+	params: PropTypes.shape({
+		id: PropTypes.string
+	}).isRequired
+};
+
+export default Edition;

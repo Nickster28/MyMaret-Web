@@ -1,4 +1,5 @@
-/* FUNCTION: App
+/* 
+ * FUNCTION: App
  * ----------------------------
  * The root React component for this app.  Sets the main document title
  * and displays whatever child components also need to be displayed.

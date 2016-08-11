@@ -2,8 +2,8 @@
  * FILE: AUTHENTICATION ACTIONS
  * ------------------------------
  * Action creators for login (success/failure) and logout (success/failure).
- * Login and logout actions are thunks, and log in/out via Parse, dispatching
- * actions and re-routing on success or failure.
+ * Login and logout actions are thunks, and log in/out via the server,
+ * dispatching actions and re-routing on success or failure.
  * ------------------------------
  */
 
@@ -30,7 +30,7 @@ import {
 export function logIn(username, password) {
 	return dispatch => {
 		var loggedInUser = null;
-		Parse.User.logIn(username, password).then(user => {
+		return Parse.User.logIn(username, password).then(user => {
 			loggedInUser = user;
 			return Parse.Cloud.run("IsNewspaperAdmin");
 		}).then(isNewspaperAdmin => {
@@ -57,7 +57,7 @@ export function logIn(username, password) {
  */
 export function logOut() {
 	return dispatch => {
-		Parse.User.logOut().then(() => {
+		return Parse.User.logOut().then(() => {
 			dispatch(loggedOutSuccess());
 			browserHistory.push("/login");
 		}, error => {

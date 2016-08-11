@@ -1,2 +1,3 @@
 import authentication from "./authentication";
-export { authentication };
+import editionsInfo from "./editions";
+export { authentication, editionsInfo };

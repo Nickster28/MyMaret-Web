@@ -1,4 +1,5 @@
-/* FUNCTION: Home
+/* 
+ * FUNCTION: Home
  * ----------------------------
  * A component for the main Home screen, which displays the top navigation
  * bar and below it whatever page the user is viewing.
@@ -8,6 +9,7 @@
  * it as a function instead of a class.
  * ----------------------------
  */
+ 
 import React from "react";
 import NavigationBar from "./NavigationBar";
 import "../stylesheets/Home.css";
