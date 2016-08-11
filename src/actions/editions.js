@@ -10,7 +10,8 @@
  import { browserHistory } from "react-router";
  import {
  	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
- 	SELECT_EDITION, EDITIONS_INDEX_REDIRECT_TRUE, EDITIONS_INDEX_REDIRECT_FALSE
+ 	SELECT_EDITION, EDITIONS_INDEX_REDIRECT_TRUE,
+ 	EDITIONS_INDEX_REDIRECT_FALSE, CREATE_EDITION
  } from "../constants";
 
 /*
@@ -58,8 +59,11 @@ function fetchedEditionsError(error) {
 	}
 }
 
+// TODO:
 export function createEdition() {
-	// TODO:
+	return {
+		type: CREATE_EDITION
+	}
 }
 
 // ACTION: selecting an edition to view

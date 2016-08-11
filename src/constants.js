@@ -8,6 +8,7 @@ export const LOGGED_OUT_ERROR = "LOGGED_OUT_ERROR";
 export const FETCH_EDITIONS = "FETCH_EDITIONS";
 export const FETCHED_EDITIONS_SUCCESS = "FETCHED_EDITIONS_SUCCESS"
 export const FETCHED_EDITIONS_ERROR = "FETCHED_EDITIONS_ERROR";
+export const CREATE_EDITION = "CREATE_EDITION";
 
 // Actions for handling redirect from /editions to /editions/edition/:id
 export const EDITIONS_INDEX_REDIRECT_TRUE = "EDITIONS_INDEX_REDIRECT_TRUE";
