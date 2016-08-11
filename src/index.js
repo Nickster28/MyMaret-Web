@@ -96,9 +96,9 @@ function onEnterEditionsIndex(nextState, replace, callback) {
 			editionIdsArr[0] : null;
 		if (newestEditionId) {
 			store.dispatch(selectEditionWithId(newestEditionId));
+			store.dispatch(editionsIndexRedirectTrue());
 			replace("/editions/edition/" + newestEditionId);
 		}
-		store.dispatch(editionsIndexRedirectTrue());
 		callback();
 	});
 }
