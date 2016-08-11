@@ -6,11 +6,13 @@
     background-color: #086644;
 }
 
+/* Override navbar colors */
 nav.navbar-default.navbar-fixed-top {
 	background-color: #009444;
 	border-color: #086644;
 }
 
+/* The app brand text should always be white */
 nav.navbar-default .navbar-brand, 
 nav.navbar-default .navbar-nav>li>a, 
 nav.navbar-default .navbar-nav>li>a:hover,
@@ -19,10 +21,12 @@ nav.navbar-default .navbar-brand:hover {
 	color: white;
 }
 
+/* The toggle button should be white when collapsed */
 #nav-toggle.collapsed {
 	background-color: #fff;
 }
 
+/* Gray the toggle button a bit when selected */
 #nav-toggle {
 	background-color: #dbdbdb;
 }

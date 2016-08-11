@@ -2,11 +2,11 @@
  * CLASS: EditionsDropdown
  * ------------------------------
  * Component to display a dropdown to select an edition.  Displays the
- * newest edition name on the dropdown button, and all edition names in the
- * dropdown along with a "create edition" button.  Also displays a divider
- * followed by a "create edition" option.  Must be passed a sorted
- * array of edition info from newest to oldest, and a handler function for
- * creating a new edition.
+ * current edition name on the dropdown button, and all edition names in the
+ * dropdown along with a "create edition" button.  The current edition name is
+ * bolded.  Also displays a divider followed by a "create edition" option.
+ * Must be passed a sorted array of edition info from newest to oldest,
+ * and a handler function for creating a new edition.
  * ------------------------------
  */
 
@@ -15,14 +15,19 @@ import "../stylesheets/EditionsDropdown.css";
 
 class EditionsDropdown extends Component {
 
-
-
-	// Creates an array of <li> items for each edition for the dropdown.
+	/*
+	 * Creates an array of <li> items for each edition for the dropdown.
+	 * The currently-selected edition is bolded.
+	 */
 	editionNamesList() {
 		var selectedEditionIndex = this.props.selectedEditionIndex;
 		var onSelectEdition = this.props.onSelectEdition;
-		return this.props.editionInfoNewestToOldest.map((editionInfo, index) => {
-			var elemId = index === selectedEditionIndex ? "selectedEdition" : "";
+		return this.props.editionInfoNewestToOldest.map(
+			(editionInfo, index) => {
+
+			// See if we should bold this one or not
+			var elemId = index === selectedEditionIndex ?
+				"selectedEdition" :"";
 			return (
 				<li key={editionInfo.id}>
 					<a id={elemId} className="editionsDropdownOption"
@@ -35,18 +40,24 @@ class EditionsDropdown extends Component {
 	}
 
 	render() {
+		var selectedEditionName = this.props
+			.editionInfoNewestToOldest[this.props.selectedEditionIndex].title;
 		return (
 			<div className="dropdown">
-				<button className="btn btn-default dropdown-toggle" type="button" id="editionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					{this.props.editionInfoNewestToOldest[this.props.selectedEditionIndex].title}
+				<button className="btn btn-default dropdown-toggle"
+					type="button" id="editionsDropdown" data-toggle="dropdown"
+					aria-haspopup="true" aria-expanded="false">
+					{selectedEditionName}
 					<span className="caret"></span>
 				</button>
-				<ul className="dropdown-menu dropdown-menu-right" aria-labelledby="editionsDropdown">
+				<ul className="dropdown-menu dropdown-menu-right"
+					aria-labelledby="editionsDropdown">
 					{this.editionNamesList()}
 					<li role="separator" className="divider"></li>
 					<li id="createEditionRow">
 						<a onClick={this.props.onCreateEdition} href="#">
-							<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
+							<span className="glyphicon glyphicon-plus"
+								aria-hidden="true"></span>
 							Create Edition
 						</a>
 					</li>

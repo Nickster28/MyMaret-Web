@@ -1,19 +1,24 @@
+/* Add space between "plus" and the button text */
 li a span {
 	margin-right: 5px; 
 }
 
+/* Center the "create edition" row */
 #createEditionRow {
 	text-align: center;
 }
 
+/* Add spacing between the dropdown text and caret icon */
 #editionsDropdown .caret {
 	margin-left: 10px;
 }
 
+/* Bold the currently-selected edition name */
 .dropdown-menu>li>a#selectedEdition {
 	font-weight: bold;
 }
 
+/* Add pointer cursor even without an href on the links */
 .dropdown-menu>li>a.editionsDropdownOption:hover {
 	cursor: pointer;
 }
