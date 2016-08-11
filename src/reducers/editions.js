@@ -1,89 +1,90 @@
+import { combineReducers } from "redux";
 import {
 	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
 	SELECT_EDITION, EDITIONS_INDEX_REDIRECT_TRUE, EDITIONS_INDEX_REDIRECT_FALSE
 } from "../constants";
 
-/*
- * FUNCTION: editionsInfo
- * ---------------------------
- * Parameters:
- * 		state - the current state to use when generating the next state
- *		action - the action to use to modify the state.
- *
- * Returns: updated editions state based on the action
- *
- * Decomposed reducer for editions state - an object containing each edition
- * object and their info, along with information about whether or not we're
- * currently fetching editions, the error that most recently occurred
- * (if any), the edition being viewed, and whether we just redirected from
- * the index page (/editions).
- *
- * Initial State = {
- *		editions: {},    // map of objectId to Edition
- *		editionIdsNewestToOldest: [],
- *		isFetching: false,
- *		fetchError: null,
- *		redirectedFromIndex: false	// whether we just came from /editions
- *										(to avoid fetching 2x in src/index.js)
- *		selectedEditionId: null	// ID of currently viewable edition in Editions
- * }
- * ---------------------------
- */
-
-const initialState = {editions: {}, editionIdsNewestToOldest: [],
-					isFetching: false, fetchError: null, 
-					redirectedFromIndex: false, selectedEditionId: null};
-export default function editionsInfo(state = initialState, action) {
+// Map of Edition object IDs to the Edition object
+function editions(state = {}, action) {
 	switch (action.type) {
-		case FETCH_EDITIONS:
-			return Object.assign({}, state, {
-				isFetching: true,
-				fetchError: null
-			});
 		case FETCHED_EDITIONS_SUCCESS:
-			// On success, the payload has editions sorted newest to oldest
-			var editions = action.payload.editions;
-			return Object.assign({}, state, {
-				editions: editionsMapWithEditions(editions),
-				editionIdsNewestToOldest: editions.map(edition => edition.id),
-				isFetching: false,
-				fetchError: null
+			var editionsMap = {};
+			action.payload.editions.forEach(edition => {
+				editionsMap[edition.id] = edition;
 			});
-		case FETCHED_EDITIONS_ERROR:
-			return Object.assign({}, state, {
-				isFetching: false,
-				fetchError: action.payload
-			});
-		case SELECT_EDITION:
-			return Object.assign({}, state, {
-				selectedEditionId: action.payload.id
-			});
-		case EDITIONS_INDEX_REDIRECT_FALSE:
-			return Object.assign({}, state, {
-				redirectedFromIndex: false
-			});
-		case EDITIONS_INDEX_REDIRECT_TRUE:
-			return Object.assign({}, state, {
-				redirectedFromIndex: true
-			});
+			return editionsMap;
 		default:
 			return state;
 	}
 }
 
-/*
- * FUNCTION: editionsMapWithEditions
- * ----------------------------------
- * Parameters:
- * 		editions - an array of Edition objects from the server to make a map of
- *
- * Returns: a map from objectIds to Edition objects for all given Editions.
- * ----------------------------------
- */
-function editionsMapWithEditions(editions) {
-	var editionsMap = {};
-	editions.forEach(edition => {
-		editionsMap[edition.id] = edition;
-	});
-	return editionsMap;
+// Array of Edition object IDs, sorted from newest to oldest
+function editionIdsNewestToOldest(state = [], action) {
+	switch (action.type) {
+		case FETCHED_EDITIONS_SUCCESS:
+			return action.payload.editions.map(edition => edition.id);
+		default:
+			return state;
+	}
 }
+
+// Whether or not we are in the middle of fetching Editions from the server
+function isFetching(state = false, action) {
+	switch (action.type) {
+		case FETCH_EDITIONS:
+			return true;
+		case FETCHED_EDITIONS_SUCCESS:
+		case FETCHED_EDITIONS_ERROR:
+			return false;
+		default:
+			return state;
+	}
+}
+
+// The error from the most recent editions fetch (if any)
+function fetchError(state = null, action) {
+	switch (action.type) {
+		case FETCHED_EDITIONS_ERROR:
+			return action.payload;
+		case FETCHED_EDITIONS_SUCCESS:
+			return null;
+		default:
+			return state;
+	} 
+}
+
+/*
+ * Whether or not we were just redirected from /editions (used to avoid
+ * fetching 2x in a row: once from the /editions load and once from the
+ * /editions/edition/:id load).
+ */
+function redirectedFromIndex(state = false, action) {
+	switch (action.type) {
+		case EDITIONS_INDEX_REDIRECT_FALSE:
+			return false;
+		case EDITIONS_INDEX_REDIRECT_TRUE:
+			return true;
+		default:
+			return state;
+	}
+}
+
+// The Edition object ID of the edition we are currently viewing
+function selectedEditionId(state = null, action) {
+	switch (action.type) {
+		case SELECT_EDITION:
+			return action.payload.id
+		default:
+			return state;
+	}
+}
+
+// Combine all of the above reducers into one reducer
+export default combineReducers({
+	editions,
+	editionIdsNewestToOldest,
+	isFetching,
+	fetchError,
+	redirectedFromIndex,
+	selectedEditionId
+});
