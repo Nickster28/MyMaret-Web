@@ -38,8 +38,11 @@ class LogoutButton extends Component {
 	// Renders a Bootstrap button for logout with a logout glyphicon on the left
 	render() {
 		return (
-			<button type="button" id="logoutButton" className="btn btn-default navbar-btn navbar-right" onClick={this.handleLogout}>
-				<span className="glyphicon glyphicon-log-out" aria-hidden="true"></span> {this.logoutButtonTitle()}
+			<button type="button" id="logoutButton"
+				className="btn btn-default navbar-btn navbar-right"
+				onClick={this.handleLogout}>
+				<span className="glyphicon glyphicon-log-out"
+					aria-hidden="true"></span> {this.logoutButtonTitle()}
 			</button>
 		)
 	}

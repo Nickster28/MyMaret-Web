@@ -40,8 +40,20 @@ class EditionsDropdown extends Component {
 	}
 
 	render() {
-		var selectedEditionName = this.props
+		/*
+		 * If the selected index is invalid, display "Error" (should never
+		 * be visible, since routing checks ensure that an invalid
+		 * /editions/edition/:id is replaced by /404.  We just need this
+		 * so there are no rendering errors preventing that replcacement)
+		 */
+		var selectedEditionName = "Error";
+		if (this.props.selectedEditionIndex >= 0 &&
+			this.props.selectedEditionIndex < this.props
+			.editionInfoNewestToOldest.length) {
+			
+			selectedEditionName = this.props
 			.editionInfoNewestToOldest[this.props.selectedEditionIndex].title;
+		}
 		return (
 			<div className="dropdown">
 				<button className="btn btn-default dropdown-toggle"

@@ -2,10 +2,10 @@
  * CLASS: NavigationBar
  * ---------------------
  * A top navigation bar component that displays the site name as well as links
- * to the Analytics and Editions pages.  Uses NavigationBarLink to properly route
- * between pages, as well as to mark the active link with a special classname.  The
- * NavigationBar also displays a logout button on the right to log the user out,
- * and at smaller widths, collapses into a dropdown menu.
+ * to the Analytics and Editions pages.  Uses NavigationBarLink to properly
+ * route between pages, as well as to mark the active link with a special
+ * classname.  The NavigationBar also displays a logout button on the right to
+ * log the user out, and at smaller widths, collapses into a dropdown menu.
  * ---------------------
  */
 
@@ -27,7 +27,9 @@ export default class NavigationBar extends Component {
 			<nav className="navbar navbar-default navbar-fixed-top">
 			    <div className="container-fluid">
 			        <div className="navbar-header">
-			        	<button type="button" id="nav-toggle" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-items">
+			        	<button type="button" id="nav-toggle"
+			        		className="navbar-toggle collapsed"
+			        		data-toggle="collapse" data-target="#navbar-items">
 			        		<span className="sr-only">Toggle navigation</span>
 			        		<span className="icon-bar"></span>
 			        		<span className="icon-bar"></span>
@@ -37,8 +39,12 @@ export default class NavigationBar extends Component {
 			        </div>
 			        <div className="collapse navbar-collapse" id="navbar-items">
 			        	<ul className="nav navbar-nav">
-			        	    <li><NavigationBarLink to="/analytics">Analytics</NavigationBarLink></li>
-			        	    <li><NavigationBarLink to="/editions">Editions</NavigationBarLink></li>
+			        	    <li><NavigationBarLink to="/analytics">
+			        	    	Analytics
+			        	    </NavigationBarLink></li>
+			        	    <li><NavigationBarLink to="/editions">
+			        	    	Editions
+			        	    </NavigationBarLink></li>
 			        	</ul>
 			        	<LogoutButtonContainer />
 			        </div>

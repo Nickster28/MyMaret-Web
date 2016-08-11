@@ -37,14 +37,16 @@ class Editions extends Component {
     editionsToolbarItem() {
         if (this.props.editionInfoNewestToOldest.length > 0) {
             return (
-                <EditionsDropdown editionInfoNewestToOldest={this.props.editionInfoNewestToOldest}
+                <EditionsDropdown editionInfoNewestToOldest={this.props
+                    .editionInfoNewestToOldest}
                     selectedEditionIndex={this.props.selectedEditionIndex}
                     onSelectEdition={this.props.onSelectEdition}
                     onCreateEdition={this.handleCreateEdition}/>
             )
         } else {
             return (
-                <button id="createEditionButton" type="button" className="btn btn-primary"
+                <button id="createEditionButton" type="button"
+                    className="btn btn-primary"
                     onClick={this.handleCreateEdition}>Create Edition</button>
             )
         }

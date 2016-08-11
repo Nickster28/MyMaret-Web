@@ -24,7 +24,8 @@ import Editions from "../components/Editions";
  */
 const mapStateToProps = state => {
 	var props = {
-		editionInfoNewestToOldest: state.editionsInfo.editionIdsNewestToOldest.map(id => {
+		editionInfoNewestToOldest: state.editionsInfo
+			.editionIdsNewestToOldest.map(id => {
 			return {
 				title: state.editionsInfo.editions[id].get("editionTitle"),
 				id
@@ -33,7 +34,8 @@ const mapStateToProps = state => {
 	};
 
 	// Search the above array we just created for the selected edition's id
-	props.selectedEditionIndex = props.editionInfoNewestToOldest.findIndex((elem, index) => {
+	props.selectedEditionIndex = props
+		.editionInfoNewestToOldest.findIndex((elem, index) => {
 		return elem.id === state.editionsInfo.selectedEditionId;
 	});
 

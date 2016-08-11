@@ -79,9 +79,17 @@ class Login extends Component {
     					<img src={LoginLogo} className="img-responsive" />
     					<form onSubmit={this.handleSubmit}>
     						{this.errorMessage()}
-    						<input type="text" className="form-control" placeholder="Username" value={this.state.username} onChange={this.handleUsernameChange} />
-    						<input type="password" className="form-control" placeholder="Password" value={this.state.password} onChange={this.handlePasswordChange} />
-    						<button type="submit" className="btn btn-default"> Log In </button>
+    						<input type="text" className="form-control"
+    							placeholder="Username"
+    							value={this.state.username}
+    							onChange={this.handleUsernameChange} />
+    						<input type="password" className="form-control"
+    							placeholder="Password"
+    							value={this.state.password}
+    							onChange={this.handlePasswordChange} />
+    						<button type="submit" className="btn btn-default">
+    							Log In
+    						</button>
     					</form>
     				</div>
     			</div>

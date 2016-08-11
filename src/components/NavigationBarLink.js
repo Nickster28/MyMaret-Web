@@ -27,6 +27,8 @@ export default class NavigationBarLink extends Component {
 	}
 
 	render() {
-		return <Link {...this.props} onClick={this.collapseNavigation.bind(this)} activeClassName="active"/>;
+		return <Link {...this.props}
+			onClick={this.collapseNavigation.bind(this)}
+			activeClassName="active"/>;
 	}
 }
