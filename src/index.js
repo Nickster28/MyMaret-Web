@@ -31,7 +31,7 @@ import App from "./components/App";
 import Analytics from "./components/Analytics";
 import LoginContainer from "./containers/LoginContainer";
 import EditionsContainer from "./containers/EditionsContainer";
-import Edition from "./components/Edition";
+import EditionContainer from "./containers/EditionContainer";
 import Home from "./components/Home";
 import NotFound from "./components/NotFound";
 
@@ -153,7 +153,7 @@ ReactDOM.render((
 		   				onEnter={requireLogin} />
 		   			<Route path="editions" component={EditionsContainer}>
 		   				<IndexRoute onEnter={onEnterEditionsIndex} />
-		   				<Route path="edition/:id" component={Edition}
+		   				<Route path="edition/:id" component={EditionContainer}
 		   					onEnter={onEnterEdition} />
 		   			</Route>
 		   		</Route>

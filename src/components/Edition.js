@@ -3,15 +3,13 @@ import React, { Component, PropTypes } from "react";
 class Edition extends Component {
   	render() {
     	return (
-            <div>ID = {this.props.params.id}</div>
+            <div>Name = {this.props.edition.get("editionTitle")}</div>
     	)
   	}
 }
 
 Edition.propTypes = {
-	params: PropTypes.shape({
-		id: PropTypes.string
-	}).isRequired
+	edition: PropTypes.object.isRequired
 };
 
 export default Edition;
