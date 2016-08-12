@@ -67,7 +67,8 @@ class EditionsDropdown extends Component {
 					{this.editionNamesList()}
 					<li role="separator" className="divider"></li>
 					<li id="createEditionRow">
-						<a onClick={this.props.onCreateEdition} href="#">
+						<a className="editionsDropdownOption"
+							onClick={this.props.onCreateEdition}>
 							<span className="glyphicon glyphicon-plus"
 								aria-hidden="true"></span>
 							Create Edition

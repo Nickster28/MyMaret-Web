@@ -11,6 +11,7 @@
 import React, { Component, PropTypes } from "react";
 import DocumentTitle from "react-document-title";
 import EditionsDropdown from "./EditionsDropdown";
+import CreateEditionModal from "./CreateEditionModal";
 import Config from "../config";
 import "../stylesheets/Editions.css";
 
@@ -23,9 +24,7 @@ class Editions extends Component {
 
     // Show a modal screen to configure a new edition
     handleCreateEdition() {
-        // TODO
-        alert("Create edition!");
-        //this.props.onCreateEdition();
+        window.$("#createEditionModal").modal();
     }
 
     /*
@@ -64,6 +63,9 @@ class Editions extends Component {
     					</div>
     					<h2>Editions</h2>
     				</div>
+
+                    <CreateEditionModal id="createEditionModal"
+                        onCreate={this.props.onCreateEdition}/>
 
     				<div className="row">
     					<div className="col-xs-12">
