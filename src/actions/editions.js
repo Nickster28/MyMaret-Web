@@ -6,7 +6,7 @@
  * ------------------------
  */
 
- import Parse from "../ParseWrapper";
+ import { fetchAllEditions } from "../serverAPI";
  import { browserHistory } from "react-router";
  import {
 	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
@@ -29,9 +29,7 @@ export function fetchEditions() {
  		});
 
  		// Query for Editions from the database
- 		var editionQuery = new Parse.Query("Edition");
- 		editionQuery.descending("createdAt");
- 		return editionQuery.find().then(editions => {
+ 		return fetchAllEditions().then(editions => {
  			dispatch(fetchedEditionsSuccess(editions));
  		}, error => {
  			dispatch(fetchedEditionsError(error));

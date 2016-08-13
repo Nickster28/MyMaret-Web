@@ -7,11 +7,11 @@
  * ------------------------------
  */
 
-import Parse from "../ParseWrapper";
+import { serverLogIn, serverLogOut } from "../serverAPI";
 import { browserHistory } from "react-router";
 import {
-	LOGGED_IN_SUCCESS, LOGGED_IN_ERROR,
-	LOGGED_OUT_SUCCESS, LOGGED_OUT_ERROR
+	LOGGED_IN_SUCCESS, LOG_IN_ERROR,
+	LOGGED_OUT_SUCCESS, LOG_OUT_ERROR
 } from "../constants";
 
 /* 
@@ -21,27 +21,18 @@ import {
  * 		username - the username to attempt a login with
  *		password - the password to attempt a login with
  *
- * Returns: a thunk that attempts a Parse login with the given username and
- * 			password, verifies that the user is a newspaper admin, dispatches
- *			the appropriate action on success/failure, and redirects to the
- *			main page on success.
+ * Returns: a thunk that attempts a server login with the given username and
+ * 			password, dispatches the appropriate action on success/failure,
+ * 			and redirects to the main page on success.
  * ------------------
  */
 export function logIn(username, password) {
 	return dispatch => {
-		var loggedInUser = null;
-		return Parse.User.logIn(username, password).then(user => {
-			loggedInUser = user;
-			return Parse.Cloud.run("IsNewspaperAdmin");
-		}).then(isNewspaperAdmin => {
-			if (!isNewspaperAdmin) {
-				dispatch(loggedInError({message: "Unauthorized."}));
-			} else {
-				dispatch(loggedInSuccess(loggedInUser));
-				browserHistory.push("/");
-			}
+		return serverLogIn(username, password).then(user => {
+			dispatch(loggedInSuccess(user));
+			browserHistory.push("/");
 		}, error => {
-			dispatch(loggedInError(error));
+			dispatch(logInError(error));
 		});
 	}
 }
@@ -50,23 +41,23 @@ export function logIn(username, password) {
  * FUNCTION: logOut
  * ------------------
  * Parameters: NA
- * Returns: a thunk that attempts a Parse logout, dispatches the appropriate
+ * Returns: a thunk that attempts a server logout, dispatches the appropriate
  * 			action on success/failure, and redirects to the login page on
  * 			success.
  * ------------------
  */
 export function logOut() {
 	return dispatch => {
-		return Parse.User.logOut().then(() => {
+		return serverLogOut().then(() => {
 			dispatch(loggedOutSuccess());
 			browserHistory.push("/login");
 		}, error => {
-			dispatch(loggedOutError(error));
+			dispatch(logOutError(error));
 		});
 	}
 }
 
-// ACTION: representing a successful login, containing the logged in Parse user
+// ACTION: representing a successful login, containing the logged in user
 function loggedInSuccess(user) {
 	return {
 		type: LOGGED_IN_SUCCESS,
@@ -76,10 +67,10 @@ function loggedInSuccess(user) {
 	}
 }
 
-// ACTION: representing a failed login, containing the Parse error.
-function loggedInError(error) {
+// ACTION: representing a failed login, containing the server error.
+function logInError(error) {
 	return {
-		type: LOGGED_IN_ERROR,
+		type: LOG_IN_ERROR,
 		payload: error,
 		error: true
 	}
@@ -92,10 +83,10 @@ function loggedOutSuccess() {
 	}
 }
 
-// ACTION: representing a failed logout, containing the Parse error.
-function loggedOutError(error) {
+// ACTION: representing a failed logout, containing the server error.
+function logOutError(error) {
 	return {
-		type: LOGGED_OUT_ERROR,
+		type: LOG_OUT_ERROR,
 		payload: error,
 		error: true
 	}

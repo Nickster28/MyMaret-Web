@@ -9,7 +9,7 @@
  */
 
 import React, { Component, PropTypes } from "react";
-import Parse from "../ParseWrapper";
+import { isValidEditionName } from "../serverAPI";
 import DocumentTitle from "react-document-title";
 import EditionsDropdown from "./EditionsDropdown";
 import CreateEditionModal from "./CreateEditionModal";
@@ -40,7 +40,7 @@ class Editions extends Component {
 
     // Returns a promise to the modal whether the given edition name is valid
     handleVerifyEditionName(name) {
-        return Parse.Cloud.run("IsValidEditionName", {name});
+        return isValidEditionName(name);
     }
 
     /*
