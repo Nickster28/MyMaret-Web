@@ -10,9 +10,5 @@ export const FETCHED_EDITIONS_SUCCESS = "FETCHED_EDITIONS_SUCCESS"
 export const FETCHED_EDITIONS_ERROR = "FETCHED_EDITIONS_ERROR";
 export const CREATE_EDITION = "CREATE_EDITION";
 
-// Actions for handling redirect from /editions to /editions/edition/:id
-export const EDITIONS_INDEX_REDIRECT_TRUE = "EDITIONS_INDEX_REDIRECT_TRUE";
-export const EDITIONS_INDEX_REDIRECT_FALSE = "EDITIONS_INDEX_REDIRECT_FALSE"
-
 // Actions for viewing/switching between editions
 export const SELECT_EDITION = "SELECT_EDITION";

@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import {
 	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
-	SELECT_EDITION, EDITIONS_INDEX_REDIRECT_TRUE, EDITIONS_INDEX_REDIRECT_FALSE
+	SELECT_EDITION,
 } from "../constants";
 
 // Map of Edition object IDs to the Edition object
@@ -53,22 +53,6 @@ function fetchError(state = null, action) {
 	} 
 }
 
-/*
- * Whether or not we were just redirected from /editions (used to avoid
- * fetching 2x in a row: once from the /editions load and once from the
- * /editions/edition/:id load).
- */
-function redirectedFromIndex(state = false, action) {
-	switch (action.type) {
-		case EDITIONS_INDEX_REDIRECT_FALSE:
-			return false;
-		case EDITIONS_INDEX_REDIRECT_TRUE:
-			return true;
-		default:
-			return state;
-	}
-}
-
 // The Edition object ID of the edition we are currently viewing
 function selectedEditionId(state = null, action) {
 	switch (action.type) {
@@ -85,6 +69,5 @@ export default combineReducers({
 	editionIdsNewestToOldest,
 	isFetching,
 	fetchError,
-	redirectedFromIndex,
 	selectedEditionId
 });

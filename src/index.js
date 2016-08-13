@@ -22,9 +22,7 @@ import thunkMiddleware from "redux-thunk";
 import createLogger from "redux-logger";
 import * as reducers from "./reducers";
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
-import { fetchEditions, selectEditionWithId,
-	editionsIndexRedirectTrue,
-	editionsIndexRedirectFalse } from "./actions/editions";
+import { fetchEditions, selectEditionWithId } from "./actions/editions";
 
 // Import the top-level components used
 import App from "./components/App";
@@ -74,6 +72,9 @@ function checkLoginBypass(nextState, replace) {
 	}
 }
 
+// Tracks whether we just came from /editions
+var didJustRedirectFromIndex = false;
+
 /*
  * FUNCTION: onEnterEditionsIndex
  * --------------------------
@@ -84,7 +85,7 @@ function checkLoginBypass(nextState, replace) {
  *
  * Called when we're entering /editions.  Fetch all editions and, if there are
  * editions, redirect to /editions/edition/:id to show the newest one.
- * Also dispatch an editions index redirect action so when onEnterEdition is
+ * Keep track of the index redirect action so when onEnterEdition is
  * called it knows it doesn't need to fetch again.
  * --------------------------
  */
@@ -95,7 +96,7 @@ function onEnterEditionsIndex(nextState, replace, callback) {
 		var newestEditionId = editionIdsArr.length > 0 ?
 			editionIdsArr[0] : null;
 		if (newestEditionId) {
-			store.dispatch(editionsIndexRedirectTrue());
+			didJustRedirectFromIndex = true;
 			replace("/editions/edition/" + newestEditionId);
 		}
 		callback();
@@ -112,12 +113,12 @@ function onEnterEditionsIndex(nextState, replace, callback) {
  *
  * Called when we're entering /editions/edition/:id.  If we are entering
  * it *directly* (i.e. not coming from a /editions redirect) then also fetch
- * all editions.  Otherwise dont, since we don't need to fetch twice.  Also
+ * all editions.  Otherwise don't, since we don't need to fetch twice.  Also
  * check if the :id is a valid edition id.
  * --------------------------
  */
 function onEnterEdition(nextState, replace, callback) {
-	if (!store.getState().editionsInfo.redirectedFromIndex) {
+	if (!didJustRedirectFromIndex) {
 		store.dispatch(fetchEditions()).then(() => {
 
 			// If this is an invalid ID, redirect to 404
@@ -132,7 +133,7 @@ function onEnterEdition(nextState, replace, callback) {
 		});
 	} else {
 		store.dispatch(selectEditionWithId(nextState.params.id));
-		store.dispatch(editionsIndexRedirectFalse());
+		didJustRedirectFromIndex = false;
 		callback();
 	}
 }

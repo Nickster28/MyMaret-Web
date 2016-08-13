@@ -1,7 +1,7 @@
 /*
  * FILE: EDITIONS ACTIONS
  * ------------------------
- * Action creators for fetching editions and creating new editions.
+ * Action creators for fetching, selecting, and creating editions.
  * Uses thunks to asynchronously interact with the server.
  * ------------------------
  */
@@ -10,8 +10,7 @@
  import { browserHistory } from "react-router";
  import {
 	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
-	SELECT_EDITION, EDITIONS_INDEX_REDIRECT_TRUE, CREATE_EDITION,
-	EDITIONS_INDEX_REDIRECT_FALSE
+	SELECT_EDITION, CREATE_EDITION
  } from "../constants";
 
 /*
@@ -84,19 +83,5 @@ export function selectEditionWithIdAndRedirect(id) {
 	return dispatch => {
 		dispatch(selectEditionWithId(id));
 		browserHistory.push("/editions/edition/" + id);
-	}
-}
-
-// ACTION: we just redirected from /editions
-export function editionsIndexRedirectTrue() {
-	return {
-		type: EDITIONS_INDEX_REDIRECT_TRUE
-	}
-}
-
-// ACTION: we no longer just redirected from /editions
-export function editionsIndexRedirectFalse() {
-	return {
-		type: EDITIONS_INDEX_REDIRECT_FALSE
 	}
 }
