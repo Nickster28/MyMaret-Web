@@ -146,7 +146,7 @@ ReactDOM.render((
 	<Provider store={store}>
 		<Router history={history}>
 		  	<Route path="/" component={App}>
-		   		<IndexRedirect to="/analytics" />
+		   		<IndexRedirect to="/editions" />
 		   		<Route path="login" component={LoginContainer}
 		   			onEnter={checkLoginBypass} />
 		   		<Route component={Home}>
