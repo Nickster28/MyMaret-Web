@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from "react";
 class Edition extends Component {
   	render() {
     	return (
-            <div>Name = {this.props.edition.get("editionTitle")}</div>
+            <div>Name = {this.props.edition.get("editionName")}</div>
     	)
   	}
 }

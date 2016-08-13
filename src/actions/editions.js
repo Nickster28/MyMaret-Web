@@ -9,9 +9,9 @@
  import Parse from "../ParseWrapper";
  import { browserHistory } from "react-router";
  import {
- 	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
- 	SELECT_EDITION, EDITIONS_INDEX_REDIRECT_TRUE,
- 	EDITIONS_INDEX_REDIRECT_FALSE, CREATE_EDITION
+	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
+	SELECT_EDITION, EDITIONS_INDEX_REDIRECT_TRUE, CREATE_EDITION,
+	EDITIONS_INDEX_REDIRECT_FALSE
  } from "../constants";
 
 /*
@@ -59,11 +59,14 @@ function fetchedEditionsError(error) {
 	}
 }
 
-// TODO:
-export function createEdition() {
+// ACTION: create a new edition with the given name
+export function createEdition(name) {
 	return {
-		type: CREATE_EDITION
-	}
+		type: CREATE_EDITION,
+		payload: {
+			name
+		}
+	};
 }
 
 // ACTION: selecting an edition to view

@@ -32,7 +32,7 @@ class EditionsDropdown extends Component {
 				<li key={editionInfo.id}>
 					<a id={elemId} className="editionsDropdownOption"
 						onClick={onSelectEdition.bind(null, editionInfo.id)}>
-						{editionInfo.title}
+						{editionInfo.name}
 					</a>
 				</li>
 			)
@@ -52,7 +52,7 @@ class EditionsDropdown extends Component {
 			.editionInfoNewestToOldest.length) {
 			
 			selectedEditionName = this.props
-			.editionInfoNewestToOldest[this.props.selectedEditionIndex].title;
+			.editionInfoNewestToOldest[this.props.selectedEditionIndex].name;
 		}
 		return (
 			<div className="dropdown">
@@ -85,10 +85,11 @@ class EditionsDropdown extends Component {
  * ------------
  * onSelectEdition - a function handler for when an edition is selected to
  *                  view.  Should take the objectId of the edition to select.
- * onCreateEdition - a function handler for creating a new edition.  TODO
+ * onCreateEdition - a function handler for creating a new edition.  Takes no
+ *					parameters.
  * editionInfoNewestToOldest - an array of edition info objects, sorted from
  *                          newest to oldest.  Each object should contain that
- *                          edition's title and id.
+ *                          edition's name and id.
  * selectedEditionIndex - index of selected edition's info in
  *                          editionInfoNewestToOldest
  * ------------
@@ -97,7 +98,7 @@ EditionsDropdown.propTypes = {
     onSelectEdition: PropTypes.func.isRequired,
     onCreateEdition: PropTypes.func.isRequired,
     editionInfoNewestToOldest: PropTypes.arrayOf(React.PropTypes.shape({
-        title: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
         id: PropTypes.string.isRequired
     }).isRequired).isRequired,
     selectedEditionIndex: PropTypes.number.isRequired

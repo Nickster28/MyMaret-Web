@@ -18,7 +18,7 @@ import Editions from "../components/Editions";
  * -----------------------
  * A function that takes the current Redux state and returns an object
  * that is set as the editions container's props.  The container needs the list
- * of edition info (title + id) sorted from newest to oldest, and the index in
+ * of edition info (name + id) sorted from newest to oldest, and the index in
  * that list of the currently selected edition.
  * -----------------------
  */
@@ -27,7 +27,7 @@ const mapStateToProps = state => {
 		editionInfoNewestToOldest: state.editionsInfo
 			.editionIdsNewestToOldest.map(id => {
 			return {
-				title: state.editionsInfo.editions[id].get("editionTitle"),
+				name: state.editionsInfo.editions[id].get("editionName"),
 				id
 			}
 		})
@@ -47,17 +47,16 @@ const mapStateToProps = state => {
  * --------------------------
  * A function that takes the dispatch function and returns an object
  * containing Redux actions that are injected into the editions container's
- * props.  We need a function to dispatch a "create edition" action and
- * a "switch to this edition" action.
+ * props.  We need a function to dispatch a "create edition" action with a name,
+ * and a "switch to this edition" action.
  * --------------------------
  */
 const mapDispatchToProps = dispatch => {
 	return {
-		onCreateEdition: () => {
-			// TODO
-			dispatch(createEdition());
+		onCreateEdition: name => {
+			dispatch(createEdition(name));
 		},
-		onSelectEdition: (editionId) => {
+		onSelectEdition: editionId => {
 			dispatch(selectEditionWithIdAndRedirect(editionId));
 		}
 	}
