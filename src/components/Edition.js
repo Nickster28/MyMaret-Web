@@ -9,7 +9,7 @@ class Edition extends Component {
 }
 
 Edition.propTypes = {
-	edition: PropTypes.object.isRequired
+	edition: PropTypes.object
 };
 
 export default Edition;

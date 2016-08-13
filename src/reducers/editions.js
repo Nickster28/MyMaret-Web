@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import {
 	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
-	SELECT_EDITION,
+	SELECT_EDITION, CREATE_EDITION_SUCCESS, CREATE_EDITION_ERROR
 } from "../constants";
 
 // Map of Edition object IDs to the Edition object
@@ -13,6 +13,10 @@ function editions(state = {}, action) {
 				editionsMap[edition.id] = edition;
 			});
 			return editionsMap;
+		case CREATE_EDITION_SUCCESS:
+			return Object.assign({}, state, {
+				[action.payload.edition.id]: action.payload.edition
+			});
 		default:
 			return state;
 	}
@@ -23,6 +27,8 @@ function editionIdsNewestToOldest(state = [], action) {
 	switch (action.type) {
 		case FETCHED_EDITIONS_SUCCESS:
 			return action.payload.editions.map(edition => edition.id);
+		case CREATE_EDITION_SUCCESS:
+			return [action.payload.edition.id, ...state];
 		default:
 			return state;
 	}
@@ -41,12 +47,14 @@ function isFetching(state = false, action) {
 	}
 }
 
-// The error from the most recent editions fetch (if any)
-function fetchError(state = null, action) {
+// The error from the most recent server call (if any)
+function latestServerError(state = null, action) {
 	switch (action.type) {
 		case FETCHED_EDITIONS_ERROR:
+		case CREATE_EDITION_ERROR:
 			return action.payload;
 		case FETCHED_EDITIONS_SUCCESS:
+		case CREATE_EDITION_SUCCESS:
 			return null;
 		default:
 			return state;
@@ -68,6 +76,6 @@ export default combineReducers({
 	editions,
 	editionIdsNewestToOldest,
 	isFetching,
-	fetchError,
+	latestServerError,
 	selectedEditionId
 });

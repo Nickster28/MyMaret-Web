@@ -6,11 +6,11 @@
  * ------------------------
  */
 
- import { fetchAllEditions } from "../serverAPI";
+ import { fetchAllEditions, createEditionWithName } from "../serverAPI";
  import { browserHistory } from "react-router";
  import {
 	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
-	SELECT_EDITION, CREATE_EDITION
+	SELECT_EDITION, CREATE_EDITION_SUCCESS, CREATE_EDITION_ERROR
  } from "../constants";
 
 /*
@@ -58,12 +58,34 @@ function fetchedEditionsError(error) {
 
 // ACTION: create a new edition with the given name
 export function createEdition(name) {
+	return dispatch => {
+		return createEditionWithName(name).then(newEdition => {
+			dispatch(createEditionSuccess(newEdition));
+			dispatch(selectEditionWithIdAndRedirect(newEdition.id));
+		}, (error) => {
+			dispatch(createEditionError(error));
+			alert("The edition could not be created.  Please try again.");
+		});
+	}
+}
+
+// ACTION: the given new Edition was successfully uploaded to the server
+export function createEditionSuccess(edition) {
 	return {
-		type: CREATE_EDITION,
+		type: CREATE_EDITION_SUCCESS,
 		payload: {
-			name
+			edition
 		}
-	};
+	}
+}
+
+// ACTION: an error occurred while trying to create a new Edition object.
+export function createEditionError(error) {
+	return {
+		type: CREATE_EDITION_ERROR,
+		payload: error,
+		error: true
+	}
 }
 
 // ACTION: selecting an edition to view

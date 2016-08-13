@@ -13,6 +13,9 @@ import Config from "./config";
 Parse.initialize(Config.API_APP_ID);
 Parse.serverURL = Config.API_URL;
 
+const Edition = Parse.Object.extend("Edition");
+
+
 // Returns the current user, according to Parse's client SDK
 export function getCurrentUserFromCookie() {
 	return Parse.User.current();
@@ -56,7 +59,13 @@ export function isValidEditionName(name) {
  * newest to oldest.
  */
 export function fetchAllEditions() {
-	var editionQuery = new Parse.Query("Edition");
+	var editionQuery = new Parse.Query(Edition);
 	editionQuery.descending("createdAt");
 	return editionQuery.find();
+}
+
+// Creates a new edition object with the given name as its editionName
+export function createEditionWithName(editionName) {
+	var edition = new Edition();
+	return edition.save({editionName});
 }
