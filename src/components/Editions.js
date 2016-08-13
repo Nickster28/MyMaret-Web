@@ -106,7 +106,7 @@ class Editions extends Component {
  *                  name of the edition to create as a parameter.
  * editionInfoNewestToOldest - an array of edition info objects, sorted from
  *                          newest to oldest.  Each object should contain that
- *                          edition's name and id.
+ *                          edition's name, id, and whether it's published.
  * selectedEditionIndex - index of selected edition's info in
  *                          editionInfoNewestToOldest
  * ------------
@@ -116,7 +116,8 @@ Editions.propTypes = {
     onCreateEdition: PropTypes.func.isRequired,
     editionInfoNewestToOldest: PropTypes.arrayOf(React.PropTypes.shape({
         name: PropTypes.string.isRequired,
-        id: PropTypes.string.isRequired
+        id: PropTypes.string.isRequired,
+        isPublished: PropTypes.bool.isRequired
     }).isRequired).isRequired,
     selectedEditionIndex: PropTypes.number.isRequired,
 }

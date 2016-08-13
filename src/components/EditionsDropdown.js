@@ -4,7 +4,8 @@
  * Component to display a dropdown to select an edition.  Displays the
  * current edition name on the dropdown button, and all edition names in the
  * dropdown along with a "create edition" button.  The current edition name is
- * bolded.  Also displays a divider followed by a "create edition" option.
+ * bolded.  Published editions have a star next to them.
+ * Also displays a divider followed by a "create edition" option.
  * Must be passed a sorted array of edition info from newest to oldest,
  * and a handler function for creating a new edition.
  * ------------------------------
@@ -17,7 +18,8 @@ class EditionsDropdown extends Component {
 
 	/*
 	 * Creates an array of <li> items for each edition for the dropdown.
-	 * The currently-selected edition is bolded.
+	 * The currently-selected edition is bolded, and published editions have
+	 * stars next to them.
 	 */
 	editionNamesList() {
 		var selectedEditionIndex = this.props.selectedEditionIndex;
@@ -28,11 +30,15 @@ class EditionsDropdown extends Component {
 			// See if we should bold this one or not
 			var elemId = index === selectedEditionIndex ?
 				"selectedEdition" :"";
+			var publishedStar = !editionInfo.isPublished ? "" :
+				<span className="glyphicon glyphicon-star dropdownPublishedIcon"
+					aria-hidden="true"></span>
 			return (
 				<li key={editionInfo.id}>
 					<a id={elemId} className="editionsDropdownOption"
 						onClick={onSelectEdition.bind(null, editionInfo.id)}>
 						{editionInfo.name}
+						{publishedStar}
 					</a>
 				</li>
 			)
@@ -69,7 +75,8 @@ class EditionsDropdown extends Component {
 					<li id="createEditionRow">
 						<a className="editionsDropdownOption"
 							onClick={this.props.onCreateEdition}>
-							<span className="glyphicon glyphicon-plus"
+							<span id="createEditionPlus"
+								className="glyphicon glyphicon-plus"
 								aria-hidden="true"></span>
 							Create Edition
 						</a>
@@ -89,7 +96,7 @@ class EditionsDropdown extends Component {
  *					parameters.
  * editionInfoNewestToOldest - an array of edition info objects, sorted from
  *                          newest to oldest.  Each object should contain that
- *                          edition's name and id.
+ *                          edition's name, id, and whether it's published.
  * selectedEditionIndex - index of selected edition's info in
  *                          editionInfoNewestToOldest
  * ------------
@@ -99,7 +106,8 @@ EditionsDropdown.propTypes = {
     onCreateEdition: PropTypes.func.isRequired,
     editionInfoNewestToOldest: PropTypes.arrayOf(React.PropTypes.shape({
         name: PropTypes.string.isRequired,
-        id: PropTypes.string.isRequired
+        id: PropTypes.string.isRequired,
+        isPublished: PropTypes.bool.isRequired
     }).isRequired).isRequired,
     selectedEditionIndex: PropTypes.number.isRequired
 }

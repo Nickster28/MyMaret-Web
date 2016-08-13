@@ -18,8 +18,8 @@ import Editions from "../components/Editions";
  * -----------------------
  * A function that takes the current Redux state and returns an object
  * that is set as the editions container's props.  The container needs the list
- * of edition info (name + id) sorted from newest to oldest, and the index in
- * that list of the currently selected edition.
+ * of edition info (name + id + is published?) sorted from newest to oldest, and
+ * the index in that list of the currently selected edition.
  * -----------------------
  */
 const mapStateToProps = state => {
@@ -28,7 +28,8 @@ const mapStateToProps = state => {
 			.editionIdsNewestToOldest.map(id => {
 			return {
 				name: state.editionsInfo.editions[id].get("editionName"),
-				id
+				id,
+				isPublished: state.editionsInfo.editions[id].get("isPublished")
 			}
 		})
 	};

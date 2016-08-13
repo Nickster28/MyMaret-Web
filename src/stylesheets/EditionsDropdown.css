@@ -1,5 +1,10 @@
+/* Add space between any published "star" and the edition name */
+.dropdownPublishedIcon {
+	margin-left: 12px;
+}
+
 /* Add space between "plus" and the button text */
-li a span {
+#createEditionPlus {
 	margin-right: 5px; 
 }
 
