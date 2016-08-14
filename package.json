@@ -6,7 +6,7 @@
     "react-scripts": "0.2.1"
   },
   "dependencies": {
-    "bootstrap": "^3.3.7",
+    "jquery": "^3.1.0",
     "parse": "^1.9.0",
     "react": "^15.2.1",
     "react-document-title": "^2.0.2",
