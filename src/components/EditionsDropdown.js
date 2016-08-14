@@ -19,7 +19,9 @@ class EditionsDropdown extends Component {
 	/*
 	 * Creates an array of <li> items for each edition for the dropdown.
 	 * The currently-selected edition is bolded, and published editions have
-	 * stars next to them.
+	 * visible stars next to them.  Note that the span for the star glyphicon
+	 * is always added, but is marked hidden for non-published editions.  This
+	 * is to keep the edition names aligned.
 	 */
 	editionNamesList() {
 		var selectedEditionIndex = this.props.selectedEditionIndex;
@@ -30,15 +32,19 @@ class EditionsDropdown extends Component {
 			// See if we should bold this one or not
 			var elemId = index === selectedEditionIndex ?
 				"selectedEdition" :"";
-			var publishedStar = !editionInfo.isPublished ? "" :
-				<span className="glyphicon glyphicon-star dropdownPublishedIcon"
-					aria-hidden="true"></span>
+
+			// All elements have a glyphicon - but for non-published it's hidden
+			var publishedIconClassNames =
+				"glyphicon glyphicon-send dropdownPublishedIcon" +
+				(editionInfo.isPublished ? "" : " dropdownPublishedIconHidden");
+
 			return (
 				<li key={editionInfo.id}>
 					<a id={elemId} className="editionsDropdownOption"
 						onClick={onSelectEdition.bind(null, editionInfo.id)}>
+						<span className={publishedIconClassNames}
+							aria-hidden="true"></span>
 						{editionInfo.name}
-						{publishedStar}
 					</a>
 				</li>
 			)

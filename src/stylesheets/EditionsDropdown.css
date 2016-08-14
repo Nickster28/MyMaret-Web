@@ -1,6 +1,12 @@
 /* Add space between any published "star" and the edition name */
 .dropdownPublishedIcon {
-	margin-left: 12px;
+	margin-right: 12px;
+}
+
+/* To keep all edition names aligned, the published icon is always there but
+	toggled between visible and invisible. */
+.dropdownPublishedIconHidden {
+	visibility: hidden;
 }
 
 /* Add space between "plus" and the button text */
