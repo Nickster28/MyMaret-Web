@@ -10,7 +10,8 @@ export default class Analytics extends Component {
     		<DocumentTitle title={Config.APP_NAME + " | Analytics"}>
     			<div>
     				<h1>Under Construction</h1>
-    				<img src={UnderConstruction} className="img-responsive" />
+    				<img src={UnderConstruction} className="img-responsive"
+                    alt="This page under construction."/>
     			</div>
     		</DocumentTitle>
     	)

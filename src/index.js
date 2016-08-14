@@ -37,8 +37,8 @@ import NotFound from "./components/NotFound";
  * Import the necessary bootstrap CSS and JS (JQuery, also required, is
  * included in a script tag in index.html)
  */
-import "./stylesheets/bootstrap.min.css";
-import "./bootstrap.min.js";
+import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import "../node_modules/bootstrap/dist/js/bootstrap.min.js";
 
 /*
  * Create the Redux store with our reducer, react router reducer, 

@@ -76,7 +76,8 @@ class Login extends Component {
     			<div id="loginScreen">
     				{/* loginBox contains the actual login form elements */}
     				<div id="loginBox">
-    					<img src={LoginLogo} className="img-responsive" />
+    					<img src={LoginLogo} alt={Config.APP_NAME + " logo."}
+    					className="img-responsive" />
     					<form onSubmit={this.handleSubmit}>
     						{this.errorMessage()}
     						<input type="text" className="form-control"

@@ -3,9 +3,11 @@
   "version": "0.0.1",
   "description": "A Parse+React+Flux web dashboard for MyMaret newspaper configuration and analytics.",
   "devDependencies": {
-    "react-scripts": "0.1.0"
+    "react-scripts": "0.2.1"
   },
   "dependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.1.0",
     "parse": "^1.9.0",
     "react": "^15.2.1",
     "react-document-title": "^2.0.2",
