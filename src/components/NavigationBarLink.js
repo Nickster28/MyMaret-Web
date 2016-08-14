@@ -11,6 +11,7 @@
 
 import React, { Component } from "react";
 import { Link } from "react-router";
+import $ from "jquery";
 
 export default class NavigationBarLink extends Component {
 	
@@ -21,8 +22,8 @@ export default class NavigationBarLink extends Component {
 	 * refresh and the drawer state won't matter anymore.
 	 */
 	collapseNavigation() {
-		if (window.$(document).width() < 768) {
-			window.$("#nav-toggle").click();
+		if ($(document).width() < 768) {
+			$("#nav-toggle").click();
 		}
 	}
 

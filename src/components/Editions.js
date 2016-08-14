@@ -14,6 +14,7 @@ import DocumentTitle from "react-document-title";
 import EditionsDropdown from "./EditionsDropdown";
 import CreateEditionModal from "./CreateEditionModal";
 import Config from "../config";
+import $ from "jquery";
 import "../stylesheets/Editions.css";
 
 let CreateEditionModalId = "createEditionModal"; // Default id for modal elem
@@ -29,12 +30,12 @@ class Editions extends Component {
 
     // Show a modal screen to configure a new edition
     handleShowCreateEditionModal() {
-        window.$("#" + CreateEditionModalId).modal();
+        $("#" + CreateEditionModalId).modal();
     }
 
     // Hide the modal and pass the new edition name on to our props handler
     handleCreateEdition(name) {
-        window.$("#" + CreateEditionModalId).modal("hide");
+        $("#" + CreateEditionModalId).modal("hide");
         this.props.onCreateEdition(name);
     }
 

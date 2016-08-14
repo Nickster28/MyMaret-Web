@@ -12,6 +12,7 @@
  * --------------------------
  */
 import React, { Component, PropTypes } from "react";
+import $ from "jquery";
 import "../stylesheets/CreateEditionModal.css";
 
 const defaultState = {
@@ -34,7 +35,7 @@ class CreateEditionModal extends Component {
     // Once we load, make sure to add a listener to clear our state on dismiss
     componentDidMount() {
         var savedThis = this;
-        window.$("#" + this.props.id).on("hidden.bs.modal", function (e) {
+        $("#" + this.props.id).on("hidden.bs.modal", function (e) {
             savedThis.setState(defaultState);
         });
     }

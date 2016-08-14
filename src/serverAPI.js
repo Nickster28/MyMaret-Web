@@ -67,5 +67,5 @@ export function fetchAllEditions() {
 // Creates a new edition object with the given name as its editionName
 export function createEditionWithName(editionName) {
 	var edition = new Edition();
-	return edition.save({editionName});
+	return edition.save({editionName, isPublished: false});
 }
