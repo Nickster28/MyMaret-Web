@@ -20,8 +20,8 @@ const defaultState = {
     editionName: "",                // Currently entered edition name
     nameIsValid: false,             // whether or not the name is valid
     isValidating: false,            // whether we're in the middle of validating
-    hasEnteredName: false,          // whether the user has typed yet
-    validityCheckTimerId: null      // Last timer for validation check
+    validityCheckTimerId: null,     // Last timer for validation check,
+    validationError: null           // Error from validation, if any
 }
 
 class CreateEditionModalView extends Component {
@@ -55,17 +55,23 @@ class CreateEditionModalView extends Component {
         var timerId = setTimeout(() => {
             savedThis.setState({validityCheckTimerId: null});
             savedThis.props.onVerify(enteredName).then(nameIsValid => {
-                savedThis.setState({nameIsValid, isValidating: false});
+                savedThis.setState({
+                    nameIsValid,
+                    isValidating: false,
+                    validationError: null
+                });
             }, error => {
-                console.error("Can't validate name: " + error.message);
-                savedThis.setState({nameIsValid: false, isValidating: false});
+                savedThis.setState({
+                    nameIsValid: false,
+                    isValidating: false,
+                    validationError: error
+                });
             });
         }, 500);
 
         this.setState({
             editionName: enteredName,
             isValidating: true,
-            hasEnteredName: true,
             validityCheckTimerId: timerId
         });
     }
@@ -79,6 +85,16 @@ class CreateEditionModalView extends Component {
         this.props.onCreate(this.state.editionName);
     }
 
+    // Returns the text to display below the input field (error or general info)
+    helpText() {
+        if (this.state.validationError) {
+            return "An error occurred. (" +
+                this.state.validationError.message + ")";
+        } else {
+            return "Displayed in-app.  Must be unique.";
+        }
+    }
+
     /*
      * Return the modal body, which is a form with one input field.  Also,
      * depending on the validity check result, render a glyphicon with feedback
@@ -88,7 +104,7 @@ class CreateEditionModalView extends Component {
         var classNames = "form-group";
         var ariaDescribedBy = "";
         var feedbackElem = "";
-        if (!this.state.isValidating && this.state.hasEnteredName) {
+        if (!this.state.isValidating && this.state.editionName.length > 0) {
             var isValid = this.state.nameIsValid;
 
             classNames += " has-feedback " +
@@ -119,7 +135,7 @@ class CreateEditionModalView extends Component {
                     </input>
                     {feedbackElem}
                     <span id="helpBlock" className="help-block">
-                        Displayed in-app.  Must be unique.
+                        {this.helpText()}
                     </span>
                 </div>
             </form>
