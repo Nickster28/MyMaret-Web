@@ -25,13 +25,15 @@ import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 import { fetchEditions, selectEditionWithId } from "./actions/editions";
 
 // Import the top-level components used
-import App from "./components/App";
-import Analytics from "./components/Analytics";
-import LoginContainer from "./containers/LoginContainer";
-import EditionsContainer from "./containers/EditionsContainer";
-import EditionContainer from "./containers/EditionContainer";
-import Home from "./components/Home";
-import NotFound from "./components/NotFound";
+import AppView from "./components/AppView";
+import AnalyticsView from "./components/AnalyticsView";
+import LoginContainerView from "./containers/LoginContainerView";
+import NewspaperEditionsContainerView from
+	"./containers/NewspaperEditionsContainerView";
+import NewspaperEditionContainerView from
+	"./containers/NewspaperEditionContainerView";
+import HomeView from "./components/HomeView";
+import NotFoundView from "./components/NotFoundView";
 
 /* 
  * Import the necessary bootstrap CSS and JS (JQuery, also required, is
@@ -145,20 +147,21 @@ const history = syncHistoryWithStore(browserHistory, store);
 ReactDOM.render((
 	<Provider store={store}>
 		<Router history={history}>
-		  	<Route path="/" component={App}>
+		  	<Route path="/" component={AppView}>
 		   		<IndexRedirect to="/editions" />
-		   		<Route path="login" component={LoginContainer}
+		   		<Route path="login" component={LoginContainerView}
 		   			onEnter={checkLoginBypass} />
-		   		<Route component={Home}>
-		   			<Route path="analytics" component={Analytics}
+		   		<Route component={HomeView}>
+		   			<Route path="analytics" component={AnalyticsView}
 		   				onEnter={requireLogin} />
-		   			<Route path="editions" component={EditionsContainer}>
+		   			<Route path="editions"
+		   				component={NewspaperEditionsContainerView}>
 		   				<IndexRoute onEnter={onEnterEditionsIndex} />
-		   				<Route path="edition/:id" component={EditionContainer}
-		   					onEnter={onEnterEdition} />
+		   				<Route path="edition/:id" onEnter={onEnterEdition}
+		   					component={NewspaperEditionContainerView} />
 		   			</Route>
 		   		</Route>
-		   		<Route path="404" component={NotFound} />
+		   		<Route path="404" component={NotFoundView} />
 		  	</Route>
 		  	<Redirect from="*" to="/404" />
 		</Router>

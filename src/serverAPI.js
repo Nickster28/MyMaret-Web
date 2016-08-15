@@ -13,7 +13,7 @@ import Config from "./config";
 Parse.initialize(Config.API_APP_ID);
 Parse.serverURL = Config.API_URL;
 
-const Edition = Parse.Object.extend("Edition");
+const NewspaperEdition = Parse.Object.extend("NewspaperEdition");
 
 
 // Returns the current user, according to Parse's client SDK
@@ -50,22 +50,25 @@ export function serverLogIn(username, password) {
  * Returns a promise that validates the given edition name for uniqueness and
  * non-emptiness.
  */
-export function isValidEditionName(name) {
+export function isValidNewspaperEditionName(name) {
 	return Parse.Cloud.run("IsValidEditionName", {name});
 }
 
 /*
- * Returns a promise that fetches all Editions and returns them in order from
- * newest to oldest.
+ * Returns a promise that fetches all NewspaperEditions and returns them in
+ * order from newest to oldest.
  */
-export function fetchAllEditions() {
-	var editionQuery = new Parse.Query(Edition);
+export function fetchAllNewspaperEditions() {
+	var editionQuery = new Parse.Query(NewspaperEdition);
 	editionQuery.descending("createdAt");
 	return editionQuery.find();
 }
 
-// Creates a new edition object with the given name as its editionName
-export function createEditionWithName(editionName) {
-	var edition = new Edition();
+/*
+ * Creates a new NewspaperEdition with the given name as its editionName,
+ * and all other properties initialized to their defaults.
+ */
+export function createNewspaperEditionWithName(editionName) {
+	var edition = new NewspaperEdition();
 	return edition.save({editionName, isPublished: false});
 }

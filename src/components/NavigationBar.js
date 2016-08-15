@@ -14,7 +14,7 @@ import Config from "../config";
 
 // Import other necessary components
 import NavigationBarLink from "./NavigationBarLink";
-import LogoutButtonContainer from "../containers/LogoutButtonContainer";
+import LogoutButtonContainerView from "../containers/LogoutButtonContainerView";
 
 // Import necessary CSS for this component
 import "../stylesheets/NavigationBar.css";
@@ -46,7 +46,7 @@ export default class NavigationBar extends Component {
 			        	    	Editions
 			        	    </NavigationBarLink></li>
 			        	</ul>
-			        	<LogoutButtonContainer />
+			        	<LogoutButtonContainerView />
 			        </div>
 			    </div>
 			</nav>

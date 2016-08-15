@@ -6,7 +6,8 @@
  * ------------------------
  */
 
- import { fetchAllEditions, createEditionWithName } from "../serverAPI";
+ import { fetchAllNewspaperEditions, 
+ 		createNewspaperEditionWithName } from "../serverAPI";
  import { browserHistory } from "react-router";
  import {
 	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
@@ -29,7 +30,7 @@ export function fetchEditions() {
  		});
 
  		// Query for Editions from the database
- 		return fetchAllEditions().then(editions => {
+ 		return fetchAllNewspaperEditions().then(editions => {
  			dispatch(fetchedEditionsSuccess(editions));
  		}, error => {
  			dispatch(fetchedEditionsError(error));
@@ -59,7 +60,7 @@ function fetchedEditionsError(error) {
 // ACTION: create a new edition with the given name
 export function createEdition(name) {
 	return dispatch => {
-		return createEditionWithName(name).then(newEdition => {
+		return createNewspaperEditionWithName(name).then(newEdition => {
 			dispatch(createEditionSuccess(newEdition));
 			dispatch(selectEditionWithIdAndRedirect(newEdition.id));
 		}, (error) => {
