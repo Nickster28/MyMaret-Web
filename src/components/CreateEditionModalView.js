@@ -57,7 +57,7 @@ class CreateEditionModalView extends Component {
             savedThis.props.onVerify(enteredName).then(nameIsValid => {
                 savedThis.setState({nameIsValid, isValidating: false});
             }, error => {
-                console.error("Can't validate name: " + JSON.stringify(error));
+                console.error("Can't validate name: " + error.message);
                 savedThis.setState({nameIsValid: false, isValidating: false});
             });
         }, 500);

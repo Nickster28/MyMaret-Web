@@ -51,7 +51,7 @@ export function serverLogIn(username, password) {
  * non-emptiness.
  */
 export function isValidNewspaperEditionName(name) {
-	return Parse.Cloud.run("IsValidEditionName", {name});
+	return Parse.Cloud.run("IsValidNewspaperEditionName", {name});
 }
 
 /*
