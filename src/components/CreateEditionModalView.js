@@ -109,16 +109,18 @@ class CreateEditionModalView extends Component {
         return (
             <form>
                 <div className={classNames}>
-                    <label htmlFor="newEditionName"
-                        className="control-label">
-                        Edition Name (must be unique):
+                    <label htmlFor="newEditionName" className="control-label">
+                        Edition Name:
                     </label>
-                    <input type="text" className="form-control"
-                        value={this.state.editionName}
+                    <input type="text" id="newEditionName"
+                        className="form-control" value={this.state.editionName}
                         onChange={this.handleEditionNameChange}
-                        aria-describedby={ariaDescribedBy}>
+                        aria-describedby={"helpBlock " + ariaDescribedBy}>
                     </input>
                     {feedbackElem}
+                    <span id="helpBlock" className="help-block">
+                        Displayed in-app.  Must be unique.
+                    </span>
                 </div>
             </form>
         )
