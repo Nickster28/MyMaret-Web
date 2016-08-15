@@ -40,7 +40,7 @@ import NotFoundView from "./components/NotFoundView";
  * imported within the bootstrap js file)
  */
 import "./stylesheets/bootstrap.min.css";
-import "./bootstrap.js";
+import "./bootstrap-modified.js";
 
 /*
  * Create the Redux store with our reducer, react router reducer, 

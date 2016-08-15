@@ -12,15 +12,12 @@
 import React, { Component } from "react";
 import Config from "../config";
 import $ from "jquery";
-
-// Import other necessary components
 import NavigationBarLink from "./NavigationBarLink";
 import LogoutButtonContainerView from "../containers/LogoutButtonContainerView";
-
-// Import necessary CSS for this component
 import "../stylesheets/NavigationBar.css";
 
 const navToggleButtonId = "nav-toggle";
+const navCollapseWidth = 768;
 export default class NavigationBar extends Component {
 
 	constructor(props) {
@@ -35,7 +32,7 @@ export default class NavigationBar extends Component {
 	 * refresh and the drawer state won't matter anymore.
 	 */
 	collapseNavigation() {
-		if ($(document).width() < 768) {
+		if ($(document).width() < navCollapseWidth) {
 			$("#" + navToggleButtonId).click();
 		}
 	}

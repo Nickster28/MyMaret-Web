@@ -8,8 +8,6 @@
  */
 
 import React, { Component, PropTypes } from "react";
-
-// Import necessary CSS for this component
 import "../stylesheets/LogoutButton.css";
 
 class LogoutButton extends Component {

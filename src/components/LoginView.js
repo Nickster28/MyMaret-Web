@@ -15,8 +15,6 @@
 import React, { Component, PropTypes } from "react";
 import DocumentTitle from "react-document-title";
 import Config from "../config";
-
-// Import the necessary CSS and image resources
 import LoginLogo from "../images/logo.png";
 import "../stylesheets/LoginView.css";
 
