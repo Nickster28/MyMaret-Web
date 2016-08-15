@@ -1,0 +1,53 @@
+/* Full screen green background */
+#loginScreen {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+
+    background: -webkit-linear-gradient(bottom, rgba(0, 148, 68, 1),
+        rgba(8, 102, 68, 1));
+    /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom, rgba(0, 148, 68, 1),
+        rgba(8, 102, 68, 1));
+    /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom, rgba(0, 148, 68, 1),
+        rgba(8, 102, 68, 1));
+    /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom, rgba(0, 148, 68, 1),
+        rgba(8, 102, 68, 1));
+    /* Standard syntax */
+}
+
+/* Center and size the box containing all the login elements */
+#loginBox {
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+}
+
+/* Horizontally center and limit the size of the logo */
+#loginBox img {
+    margin: auto;
+    height: 50%;
+    margin-bottom: 15px;
+}
+
+/* Center all form elements, including the login button */
+#loginBox form {
+    text-align: center;
+}
+
+/* Add some padding in between each log in form element */
+#loginBox form input {
+    margin-bottom: 6px;
+}
+
+/* On smaller screens, the log in fields should be wider horizontally */
+@media (max-width: 768px) {
+    #loginBox {
+        left: 10%;
+        width: 80%;
+    }
+}

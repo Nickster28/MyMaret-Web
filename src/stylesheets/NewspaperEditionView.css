@@ -1,0 +1,23 @@
+a:hover {
+	cursor:pointer;
+}
+
+a span.removeSectionButton {
+	color: red;
+}
+
+a span.addArticleButton, a span.editSectionNameButton {
+	color: #009444;
+}
+
+a span.editSectionNameButton {
+	margin-left: 10px;
+}
+
+.addArticleButton {
+	float:right;
+}
+
+.removeSectionButton {
+	float: right;
+}

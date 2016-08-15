@@ -2,34 +2,19 @@
  * CLASS: NavigationBarLink
  * ----------------------------
  * A simple wrapper around React Router's Link component to ensure
- * that the activeClassName for every Link is always set to "active".
+ * that the activeClassName for every Link is always set to "active".  Note
+ * that this component can just be a function since it is merely a function of
+ * its props, and has no internal state.
  *
- * Also attaches an onClick handler to collapse the navigation drawer
- * on smaller screens, since that doesn't happen automatically.
+ * All other props we receive are just passed through to Link.
  * ----------------------------
  */
 
-import React, { Component } from "react";
+import React from "react";
 import { Link } from "react-router";
-import $ from "jquery";
 
-export default class NavigationBarLink extends Component {
-	
-	/* 
-	 * Collapses the navigation drawer on smaller width screens.
-	 * This is needed because the drawer doesn't collapse, since it
-	 * is normally used in non-single-page-apps where the page will
-	 * refresh and the drawer state won't matter anymore.
-	 */
-	collapseNavigation() {
-		if ($(document).width() < 768) {
-			$("#nav-toggle").click();
-		}
-	}
+const activeClassName = "active";
 
-	render() {
-		return <Link {...this.props}
-			onClick={this.collapseNavigation.bind(this)}
-			activeClassName="active"/>;
-	}
+export default props => {
+	return <Link {...props} activeClassName={activeClassName}/>
 }
