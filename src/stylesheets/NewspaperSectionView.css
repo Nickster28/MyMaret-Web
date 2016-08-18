@@ -1,0 +1,16 @@
+a span.removeSectionButton {
+	color: red;
+	float: right;
+}
+
+a span.addArticleButton, a span.editSectionNameButton {
+	color: #009444;
+}
+
+a span.editSectionNameButton {
+	margin-left: 10px;
+}
+
+.addArticleButton {
+	float:right;
+}

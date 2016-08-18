@@ -72,3 +72,7 @@ export function createNewspaperEditionWithName(editionName) {
 	var edition = new NewspaperEdition();
 	return edition.save({editionName, isPublished: false});
 }
+
+export function deleteNewspaperEdition(edition) {
+	return edition.destroy();
+}

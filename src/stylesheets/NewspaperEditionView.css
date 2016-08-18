@@ -1,23 +1,34 @@
-a:hover {
-	cursor:pointer;
+/* Put space between each glyphicon and its button text */
+.editionModifyToolbarButton span {
+	padding-right: 10px;
 }
 
-a span.removeSectionButton {
-	color: red;
+/* All toolbar buttons should be the same width by default */
+.editionModifyToolbarButton {
+	width: 105pt;
 }
 
-a span.addArticleButton, a span.editSectionNameButton {
-	color: #009444;
+/* Fit the size to the delete button */
+#deleteEditionButton {
+	width: 70pt;
 }
 
-a span.editSectionNameButton {
-	margin-left: 10px;
+/* Put space on the left in between the button group and the edition name */
+.editionModifyButtonGroup {
+	padding-left: 15px;
 }
 
-.addArticleButton {
-	float:right;
-}
+/* Make some of the toolbar buttons smaller for smaller width devices */
+@media (max-width: 569px) {
+    .editionModifyButtonText {
+    	display: none;
+    }
 
-.removeSectionButton {
-	float: right;
+    .editionModifyToolbarButton, #deleteEditionButton {
+    	width: 40pt;
+    }
+
+    .editionModifyToolbarButton span {
+    	padding-right: 0px;
+    }
 }

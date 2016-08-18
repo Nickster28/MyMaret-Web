@@ -1,11 +1,12 @@
 import React, { Component, PropTypes } from "react";
+import "../stylesheets/NewspaperSectionView.css";
 
 class NewspaperSectionView extends Component {
 	render() {
 		<div key={i} className="col-xs-12 col-sm-6 col-lg-4">
     		<div className="panel panel-default">
     		    <div className="panel-heading">
-    		    	<h3 className="panel-title edition-section-title">
+                    <h3 className="panel-title">
     		    		Really really really long long Section Name
     		    		<a>
     		    			<span className="glyphicon glyphicon-edit editSectionNameButton"></span>

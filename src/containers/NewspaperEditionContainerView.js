@@ -7,6 +7,7 @@
  */
 
 import { connect } from "react-redux";
+import { deleteEdition } from "../actions/editions";
 import NewspaperEditionView from "../components/NewspaperEditionView";
 
 /* 
@@ -32,7 +33,15 @@ const mapStateToProps = (state, ownProps) => {
  * --------------------------
  */
 const mapDispatchToProps = dispatch => {
-	return {}
+	// TODO
+	return {
+		onChangeEditionPublished: function(edition, isPublished) {
+
+		},
+		onDeleteEdition: function(edition) {
+			dispatch(deleteEdition(edition));
+		}
+	}
 }
 
 /*

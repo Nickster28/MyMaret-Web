@@ -1,7 +1,8 @@
 import { combineReducers } from "redux";
 import {
 	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
-	SELECT_EDITION, CREATE_EDITION_SUCCESS, CREATE_EDITION_ERROR
+	SELECT_EDITION, CREATED_EDITION_SUCCESS, CREATED_EDITION_ERROR,
+	DELETED_EDITION_SUCCESS, DELETED_EDITION_ERROR
 } from "../constants";
 
 // Map of Edition object IDs to the Edition object
@@ -13,10 +14,14 @@ function editions(state = {}, action) {
 				editionsMap[edition.id] = edition;
 			});
 			return editionsMap;
-		case CREATE_EDITION_SUCCESS:
+		case CREATED_EDITION_SUCCESS:
 			return Object.assign({}, state, {
 				[action.payload.edition.id]: action.payload.edition
 			});
+		case DELETED_EDITION_SUCCESS:
+			var newEditionsMap = Object.assign({}, state);
+			delete newEditionsMap[action.payload.editionId];
+			return newEditionsMap;
 		default:
 			return state;
 	}
@@ -27,8 +32,12 @@ function editionIdsNewestToOldest(state = [], action) {
 	switch (action.type) {
 		case FETCHED_EDITIONS_SUCCESS:
 			return action.payload.editions.map(edition => edition.id);
-		case CREATE_EDITION_SUCCESS:
+		case CREATED_EDITION_SUCCESS:
 			return [action.payload.edition.id, ...state];
+		case DELETED_EDITION_SUCCESS:
+			return state.filter(elem => {
+				return elem !== action.payload.editionId
+			});
 		default:
 			return state;
 	}
@@ -51,10 +60,12 @@ function isFetching(state = false, action) {
 function latestServerError(state = null, action) {
 	switch (action.type) {
 		case FETCHED_EDITIONS_ERROR:
-		case CREATE_EDITION_ERROR:
+		case CREATED_EDITION_ERROR:
+		case DELETED_EDITION_ERROR:
 			return action.payload;
 		case FETCHED_EDITIONS_SUCCESS:
-		case CREATE_EDITION_SUCCESS:
+		case CREATED_EDITION_SUCCESS:
+		case DELETED_EDITION_SUCCESS:
 			return null;
 		default:
 			return state;

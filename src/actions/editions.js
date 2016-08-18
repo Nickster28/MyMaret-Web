@@ -7,11 +7,13 @@
  */
 
  import { fetchAllNewspaperEditions, 
- 		createNewspaperEditionWithName } from "../serverAPI";
+ 		createNewspaperEditionWithName,
+ 		deleteNewspaperEdition } from "../serverAPI";
  import { browserHistory } from "react-router";
  import {
 	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
-	SELECT_EDITION, CREATE_EDITION_SUCCESS, CREATE_EDITION_ERROR
+	SELECT_EDITION, CREATED_EDITION_SUCCESS, CREATED_EDITION_ERROR,
+	DELETED_EDITION_SUCCESS, DELETED_EDITION_ERROR
  } from "../constants";
 
 /*
@@ -61,19 +63,19 @@ function fetchedEditionsError(error) {
 export function createEdition(name) {
 	return dispatch => {
 		return createNewspaperEditionWithName(name).then(newEdition => {
-			dispatch(createEditionSuccess(newEdition));
+			dispatch(createdEditionSuccess(newEdition));
 			dispatch(selectEditionWithIdAndRedirect(newEdition.id));
 		}, (error) => {
-			dispatch(createEditionError(error));
+			dispatch(createdEditionError(error));
 			alert("The edition could not be created.  Please try again.");
 		});
 	}
 }
 
 // ACTION: the given new Edition was successfully uploaded to the server
-export function createEditionSuccess(edition) {
+export function createdEditionSuccess(edition) {
 	return {
-		type: CREATE_EDITION_SUCCESS,
+		type: CREATED_EDITION_SUCCESS,
 		payload: {
 			edition
 		}
@@ -81,9 +83,41 @@ export function createEditionSuccess(edition) {
 }
 
 // ACTION: an error occurred while trying to create a new Edition object.
-export function createEditionError(error) {
+export function createdEditionError(error) {
 	return {
-		type: CREATE_EDITION_ERROR,
+		type: CREATED_EDITION_ERROR,
+		payload: error,
+		error: true
+	}
+}
+
+// ACTION: delete the given edition from the server
+export function deleteEdition(edition) {
+	return dispatch => {
+		return deleteNewspaperEdition(edition).then(() => {
+			dispatch(deletedEditionSuccess(edition.id));
+			browserHistory.push("/editions");
+		}, (error) => {
+			dispatch(deletedEditionError(error));
+			alert("The edition could not be deleted.  Please try again.");
+		});
+	}
+}
+
+// ACTION: the edition with the given ID was deleted successfully
+export function deletedEditionSuccess(editionId) {
+	return {
+		type: DELETED_EDITION_SUCCESS,
+		payload: {
+			editionId
+		}
+	}
+}
+
+// ACTION: the given error occurred while trying to delete an edition
+export function deletedEditionError(error) {
+	return {
+		type: DELETED_EDITION_ERROR,
 		payload: error,
 		error: true
 	}

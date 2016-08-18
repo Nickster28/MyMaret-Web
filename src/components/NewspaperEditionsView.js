@@ -8,6 +8,8 @@
  * -----------------
  */
 
+ // TODO: put fetching call in here instead of router to show loading to user
+
 import React, { Component, PropTypes } from "react";
 import { isValidNewspaperEditionName } from "../serverAPI";
 import DocumentTitle from "react-document-title";
@@ -17,7 +19,7 @@ import Config from "../config";
 import $ from "jquery";
 import "../stylesheets/NewspaperEditionsView.css";
 
-let CreateEditionModalViewId = "createEditionModal"; // Default id for modal elem
+let CreateEditionModalViewId = "createEditionModal"; // Default id for modal
 class NewspaperEditionsView extends Component {
 
     constructor(props) {
