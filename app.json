@@ -1,0 +1,10 @@
+{
+	"name": "MyMaret Web",
+	"description": "A Parse+React+Flux web dashboard for MyMaret newspaper configuration and analytics.",
+	"repository": "https://github.com/Nickster28/MyMaret-Web",
+	"buildpacks": [
+		{
+			"url": "https://github.com/mars/create-react-app-buildpack.git"
+		}
+	]
+}
