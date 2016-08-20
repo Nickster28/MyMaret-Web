@@ -75,7 +75,7 @@ export function createEdition(name) {
 	return dispatch => {
 		return createNewspaperEditionWithName(name).then(newEdition => {
 			dispatch(createdEditionSuccess(newEdition));
-			dispatch(selectEditionWithIdAndRedirect(newEdition.id));
+			dispatch(selectEditionWithId(true, newEdition.id));
 		}, (error) => {
 			dispatch(createdEditionError(error));
 			alert("The edition could not be created.  Please try again.");
@@ -135,7 +135,7 @@ export function deletedEditionError(error) {
 }
 
 // ACTION: selecting an edition to view if it's not already selected
-export function selectEditionWithId(id) {
+export function selectEditionWithId(shouldRedirect, id) {
 	return (dispatch, getState) => {
 		if (id !== getState().editionsInfo.selectedEditionId) {
 			dispatch({
@@ -145,13 +145,18 @@ export function selectEditionWithId(id) {
 				}
 			});
 		}
+
+		if (shouldRedirect) {
+			browserHistory.push("/editions/edition/" + id);
+		}
 	}
 }
 
-// ACTION: user selecting an edition to view, and redirecting the URL to it
-export function selectEditionWithIdAndRedirect(id) {
-	return dispatch => {
-		dispatch(selectEditionWithId(id));
-		browserHistory.push("/editions/edition/" + id);
+// ACTION: select the most recent edition to view
+export function selectNewestEdition() {
+	return (dispatch, getState) => {
+		var newestEditionId =
+			getState().editionsInfo.editionIdsNewestToOldest[0];
+		dispatch(selectEditionWithId(true, newestEditionId));
 	}
 }

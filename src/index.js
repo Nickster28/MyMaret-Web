@@ -21,7 +21,8 @@ import { createStore, applyMiddleware, compose, combineReducers } from "redux";
 import thunkMiddleware from "redux-thunk";
 import createLogger from "redux-logger";
 import * as reducers from "./reducers";
-import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
+import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
+import { selectEditionWithId } from "./actions/editions";
 
 // Import the top-level components used
 import AppView from "./components/AppView";
@@ -73,6 +74,11 @@ function checkLoginBypass(nextState, replace) {
 	}
 }
 
+// Trigger a "SELECT_EDITION" action when we go to /editions/edition/:id
+function selectEdition(nextState, replace) {
+	store.dispatch(selectEditionWithId(false, nextState.params.id));
+}
+
 // Create an enhanced history that syncs navigation events with the store
 const history = syncHistoryWithStore(browserHistory, store);
 
@@ -89,7 +95,7 @@ ReactDOM.render((
 		   				onEnter={requireLogin} />
 		   			<Route path="editions"
 		   				component={NewspaperEditionsContainerView}>
-		   				<Route path="edition/:id"
+		   				<Route path="edition/:id" onEnter={selectEdition}
 		   					component={NewspaperEditionContainerView} />
 		   			</Route>
 		   		</Route>

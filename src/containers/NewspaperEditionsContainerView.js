@@ -9,8 +9,8 @@
  */
 
 import { connect } from "react-redux";
-import { createEdition, fetchEditions, selectEditionWithId,
-		selectEditionWithIdAndRedirect } from "../actions/editions";
+import { createEdition, fetchEditions,
+		selectEditionWithId, selectNewestEdition } from "../actions/editions";
 import NewspaperEditionsView from "../components/NewspaperEditionsView";
 
 /* 
@@ -50,7 +50,8 @@ const mapStateToProps = state => {
  * A function that takes the dispatch function and returns an object
  * containing Redux actions that are injected into the editions container's
  * props.  We need a function to dispatch a "create edition" action with a name,
- * a "switch to this edition" action, and an action to fetch all editions.
+ * a "switch to this edition" action (and a wrapper that selects the newest
+ * edition), and an action to fetch all editions.
  * --------------------------
  */
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -59,11 +60,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 			dispatch(createEdition(name));
 		},
 		selectEditionWithId: (shouldRedirect, editionId) => {
-			if (shouldRedirect) {
-				dispatch(selectEditionWithIdAndRedirect(editionId));
-			} else {
-				dispatch(selectEditionWithId(editionId));
-			}
+			dispatch(selectEditionWithId(shouldRedirect, editionId));
+		},
+		selectNewestEdition: () => {
+			dispatch(selectNewestEdition());
 		},
 		fetchEditions: () => {
 			return dispatch(fetchEditions());

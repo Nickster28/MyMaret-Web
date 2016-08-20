@@ -2,8 +2,7 @@ import React, { Component, PropTypes } from "react";
 import $ from "jquery";
 import "../stylesheets/NewspaperEditionView.css";
 
-const DeleteNewspaperEditionModalId = "confirmEditionDeleteModal";
-
+let DeleteNewspaperEditionModalId = "confirmEditionDeleteModal";
 class NewspaperEditionView extends Component {
 
     constructor(props) {
@@ -74,7 +73,7 @@ class NewspaperEditionView extends Component {
 
   	render() {
         if (!this.props.edition) return null;
-    	return (
+        return (
             <div>
                 <div className="modal fade" id={DeleteNewspaperEditionModalId}
                     tabIndex="-1" role="dialog">
@@ -103,6 +102,7 @@ class NewspaperEditionView extends Component {
                         </div>
                     </div>
                 </div>
+
                 <div className="panel panel-default">
                     <div className="panel-heading">
                         {this.editionPanelTitle()}
@@ -114,7 +114,7 @@ class NewspaperEditionView extends Component {
                     </div>
                 </div>
             </div>
-    	)
+        )
   	}
 }
 

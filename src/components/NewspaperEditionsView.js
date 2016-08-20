@@ -4,11 +4,10 @@
  * Component for the editions screen.  Displays a header with either an edition
  * selection view (for either selecting the edition to view or creating a new
  * one) or a "create edition button", and child components (either nothing,
- * or a NewspaperEditionContainerView for the selected edition).
+ * or a NewspaperEditionContainerView for the selected edition).  Also in charge
+ * of displaying a modal when a selected edition is invalid.
  * -----------------
  */
-
- // TODO: put fetching call in here instead of router to show loading to user
 
 import React, { Component, PropTypes } from "react";
 import { isValidNewspaperEditionName } from "../serverAPI";
@@ -34,10 +33,16 @@ class NewspaperEditionsView extends Component {
             this.hideInvalidEditionModalView.bind(this);
     }
 
+    // Do a fetch on mount
     componentDidMount() {
         this.props.fetchEditions();
     }
 
+    /*
+     * Whenever our props update, check the URL and fetch status, and
+     * route to the newest edition if we're at /editions, or potentially
+     * show a modal if the selected edition is invalid.
+     */
     componentWillReceiveProps(nextProps) {
         var newPath = nextProps.location.pathname;
         /*
@@ -46,14 +51,11 @@ class NewspaperEditionsView extends Component {
          */
         if (newPath === "/editions" && !nextProps.isFetching &&
             nextProps.editionInfoNewestToOldest.length > 0) {
-
-            var redirectEditionId = nextProps.editionInfoNewestToOldest[0].id;
-            nextProps.selectEditionWithId(true, redirectEditionId);
+            nextProps.selectNewestEdition();
 
         /*
-         * Otherwise, if we're going to /editions/edition/:id and we're not
-         * fetching, trigger a "select edition" action to make sure our state
-         * is up to date with where we are.
+         * Otherwise, if we're going to /editions/edition/:id with an invalid
+         * id, show a modal alert.
          */
         } else if ((/\/editions\/edition\/.*/).exec(newPath) != null &&
             !nextProps.isFetching) {
@@ -62,23 +64,24 @@ class NewspaperEditionsView extends Component {
                 return nextProps.params.id === info.id;
             }) !== undefined;
 
-            if (isValidId) {
-                nextProps.selectEditionWithId(false, nextProps.params.id);
-            } else {
-                $("#" + InvalidEditionModalViewId).modal({keyboard: false});
+            if (!isValidId) {
+                $("#" + InvalidEditionModalViewId).modal({
+                    keyboard: false,
+                    backdrop: "static"
+                });
             }
         }
+    }
+
+    // When the modal "Ok" button is clicked, dismiss and reroute
+    hideInvalidEditionModalView() {
+        $("#" + InvalidEditionModalViewId).modal("hide");
+        this.props.selectNewestEdition();
     }
 
     // Show a modal screen to configure a new edition
     handleShowCreateEditionModalView() {
         $("#" + CreateEditionModalViewId).modal();
-    }
-
-    hideInvalidEditionModalView() {
-        $("#" + InvalidEditionModalViewId).modal("hide");
-        var redirectEditionId = this.props.editionInfoNewestToOldest[0].id;
-        this.props.selectEditionWithId(true, redirectEditionId);
     }
 
     // Hide the modal and pass the new edition name on to our props handler
@@ -140,7 +143,7 @@ class NewspaperEditionsView extends Component {
                         onCreate={this.handleCreateEdition}
                         onVerify={this.handleVerifyEditionName}/>
 
-                    {/* Modal displayed when we get an invalid edition id */}
+                    {/* Modal displayed when an edition is invalid */}
                     <div className="modal fade" id={InvalidEditionModalViewId}
                         tabIndex="-1" role="dialog"
                         aria-labelledby="invalid edition">
@@ -156,8 +159,9 @@ class NewspaperEditionsView extends Component {
                                 <div className="modal-footer">
                                     <button type="button"
                                     className="btn btn-default"
-                                    onClick={this.hideInvalidEditionModalView}
-                                    data-dismiss="modal">Ok</button>
+                                    onClick={this.hideInvalidEditionModalView}>
+                                        Ok
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -183,6 +187,8 @@ class NewspaperEditionsView extends Component {
  * selectEditionWithId - a function handler for when an edition is selected to
  *                  view.  Should take the objectId of the edition to select,
  *                  and whether or not we should also redirect to its url.
+ * selectNewestEdition - same as selectEditionWithId, but pre-populates with the
+ *                      id of the newest edition.
  * onCreateEdition - a function handler for creating a new edition.  Takes the
  *                  name of the edition to create as a parameter.
  * fetchEditions - a function that triggers a fetch of all NewspaperEditions.
@@ -195,6 +201,7 @@ class NewspaperEditionsView extends Component {
  */
 NewspaperEditionsView.propTypes = {
     selectEditionWithId: PropTypes.func.isRequired,
+    selectNewestEdition: PropTypes.func.isRequired,
     onCreateEdition: PropTypes.func.isRequired,
     fetchEditions: PropTypes.func.isRequired,
     editionInfoNewestToOldest: PropTypes.arrayOf(React.PropTypes.shape({
