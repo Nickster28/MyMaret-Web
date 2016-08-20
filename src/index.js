@@ -29,6 +29,8 @@ import AnalyticsView from "./components/AnalyticsView";
 import LoginContainerView from "./containers/LoginContainerView";
 import NewspaperEditionsContainerView from
 	"./containers/NewspaperEditionsContainerView";
+import NewspaperEditionContainerView from
+	"./containers/NewspaperEditionContainerView";
 import HomeView from "./components/HomeView";
 import NotFoundView from "./components/NotFoundView";
 
@@ -87,7 +89,8 @@ ReactDOM.render((
 		   				onEnter={requireLogin} />
 		   			<Route path="editions"
 		   				component={NewspaperEditionsContainerView}>
-		   				<Route path="edition/:id" />
+		   				<Route path="edition/:id"
+		   					component={NewspaperEditionContainerView} />
 		   			</Route>
 		   		</Route>
 		   		<Route path="404" component={NotFoundView} />

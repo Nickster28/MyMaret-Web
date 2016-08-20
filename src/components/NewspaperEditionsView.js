@@ -4,7 +4,7 @@
  * Component for the editions screen.  Displays a header with either an edition
  * selection view (for either selecting the edition to view or creating a new
  * one) or a "create edition button", and child components (either nothing,
- * or a NewspaperEditionContainer view for the selected edition).
+ * or a NewspaperEditionContainerView for the selected edition).
  * -----------------
  */
 
@@ -15,8 +15,6 @@ import { isValidNewspaperEditionName } from "../serverAPI";
 import DocumentTitle from "react-document-title";
 import EditionsDropdownView from "./EditionsDropdownView";
 import CreateEditionModalView from "./CreateEditionModalView";
-import NewspaperEditionContainerView
-    from "../containers/NewspaperEditionContainerView";
 import Loading from "react-loading-animation";
 import Config from "../config";
 import $ from "jquery";
@@ -40,7 +38,6 @@ class NewspaperEditionsView extends Component {
         this.props.fetchEditions();
     }
 
-    // TODO: handle invalid edition ID
     componentWillReceiveProps(nextProps) {
         var newPath = nextProps.location.pathname;
         /*
@@ -103,7 +100,7 @@ class NewspaperEditionsView extends Component {
      */
     editionsToolbarItem() {
         if (this.props.isFetching || this.props.selectedEditionIndex === -1) {
-            return "";
+            return null;
         } else if (this.props.editionInfoNewestToOldest.length > 0) {
             return (
                 <EditionsDropdownView editionInfoNewestToOldest={this.props
@@ -124,16 +121,6 @@ class NewspaperEditionsView extends Component {
                 </button>
             )
         }
-    }
-
-    bodyView() {
-        var editionToShow = this.props
-            .editionInfoNewestToOldest[this.props.selectedEditionIndex];
-        if (editionToShow) {
-            return (
-                <NewspaperEditionContainerView edition={editionToShow} />
-            )
-        } else return "";
     }
 
   	render() {
@@ -180,7 +167,7 @@ class NewspaperEditionsView extends Component {
     				<div className="row">
     					<div className="col-xs-12">
                             <Loading isLoading={this.props.isFetching}>
-                                {this.bodyView()}
+                                {this.props.children}
                             </Loading>
     					</div>
     				</div>
@@ -193,10 +180,12 @@ class NewspaperEditionsView extends Component {
 /* 
  * PROPTYPES
  * ------------
- * onSelectEdition - a function handler for when an edition is selected to
- *                  view.  Should take the objectId of the edition to select.
+ * selectEditionWithId - a function handler for when an edition is selected to
+ *                  view.  Should take the objectId of the edition to select,
+ *                  and whether or not we should also redirect to its url.
  * onCreateEdition - a function handler for creating a new edition.  Takes the
  *                  name of the edition to create as a parameter.
+ * fetchEditions - a function that triggers a fetch of all NewspaperEditions.
  * editionInfoNewestToOldest - an array of edition info objects, sorted from
  *                          newest to oldest.  Each object should contain that
  *                          edition's name, id, and whether it's published.
@@ -205,14 +194,15 @@ class NewspaperEditionsView extends Component {
  * ------------
  */
 NewspaperEditionsView.propTypes = {
-    onCreateEdition: PropTypes.func.isRequired,
     selectEditionWithId: PropTypes.func.isRequired,
+    onCreateEdition: PropTypes.func.isRequired,
+    fetchEditions: PropTypes.func.isRequired,
     editionInfoNewestToOldest: PropTypes.arrayOf(React.PropTypes.shape({
         name: PropTypes.string.isRequired,
         id: PropTypes.string.isRequired,
         isPublished: PropTypes.bool.isRequired
     }).isRequired).isRequired,
-    selectedEditionIndex: PropTypes.number.isRequired,
+    selectedEditionIndex: PropTypes.number.isRequired
 }
 
 export default NewspaperEditionsView;

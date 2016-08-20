@@ -1,5 +1,5 @@
 /*
- * CLASS: NewspaperEditionsContainerView
+ * CLASS: NewspaperEditionContainerView
  * ---------------------------------
  * A Redux container component aroung NewspaperEditionView that passes in the
  * NewspaperEdition object to display.
@@ -10,6 +10,19 @@ import { connect } from "react-redux";
 import { deleteEdition } from "../actions/editions";
 import NewspaperEditionView from "../components/NewspaperEditionView";
 
+/* 
+ * REDUX: mapStateToProps
+ * -----------------------
+ * A function that takes the current Redux state and returns an object
+ * that is set as the edition container's props.  The container needs the
+ * Edition object to display.
+ * -----------------------
+ */
+const mapStateToProps = (state, ownProps) => {
+	return {
+		edition: state.editionsInfo.editions[ownProps.params.id]
+	}
+}
 
 /* 
  * REDUX: mapDispatchToProps
@@ -39,6 +52,6 @@ const mapDispatchToProps = dispatch => {
  * ----------------
  */
 export default connect(
-	null,
+	mapStateToProps,
 	mapDispatchToProps
 )(NewspaperEditionView);

@@ -50,7 +50,7 @@ const mapStateToProps = state => {
  * A function that takes the dispatch function and returns an object
  * containing Redux actions that are injected into the editions container's
  * props.  We need a function to dispatch a "create edition" action with a name,
- * and a "switch to this edition" action.
+ * a "switch to this edition" action, and an action to fetch all editions.
  * --------------------------
  */
 const mapDispatchToProps = (dispatch, ownProps) => {

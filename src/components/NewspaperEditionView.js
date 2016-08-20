@@ -73,7 +73,7 @@ class NewspaperEditionView extends Component {
     }
 
   	render() {
-        if (!this.props.edition) return <div></div>;
+        if (!this.props.edition) return null;
     	return (
             <div>
                 <div className="modal fade" id={DeleteNewspaperEditionModalId}

@@ -63,7 +63,7 @@ class LoginView extends Component {
 				</div>
 			)
 		} else {
-			return "";
+			return null;
 		}
 	}
 
