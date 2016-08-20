@@ -30,6 +30,6 @@
 }
 
 /* Add pointer cursor even without an href on the links */
-.dropdown-menu>li>a.editionsDropdownOption:hover {
+.dropdown-menu>li>a:hover {
 	cursor: pointer;
 }
