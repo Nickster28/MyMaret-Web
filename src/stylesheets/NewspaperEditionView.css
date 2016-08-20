@@ -19,11 +19,7 @@
 }
 
 /* Make some of the toolbar buttons smaller for smaller width devices */
-@media (max-width: 569px) {
-    .editionModifyButtonText {
-    	display: none;
-    }
-
+@media (max-width: 767px) {
     .editionModifyToolbarButton, #deleteEditionButton {
     	width: 40pt;
     }

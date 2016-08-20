@@ -10,19 +10,6 @@ import { connect } from "react-redux";
 import { deleteEdition } from "../actions/editions";
 import NewspaperEditionView from "../components/NewspaperEditionView";
 
-/* 
- * REDUX: mapStateToProps
- * -----------------------
- * A function that takes the current Redux state and returns an object
- * that is set as the edition container's props.  The container needs the
- * Edition object to display.
- * -----------------------
- */
-const mapStateToProps = (state, ownProps) => {
-	return {
-		edition: state.editionsInfo.editions[ownProps.params.id]
-	}
-}
 
 /* 
  * REDUX: mapDispatchToProps
@@ -52,6 +39,6 @@ const mapDispatchToProps = dispatch => {
  * ----------------
  */
 export default connect(
-	mapStateToProps,
+	null,
 	mapDispatchToProps
 )(NewspaperEditionView);

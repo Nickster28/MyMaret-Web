@@ -43,7 +43,7 @@ class NewspaperEditionView extends Component {
                         className="btn btn-default editionModifyToolbarButton"
                         onClick={this.onAddSection}>
                         <span className="glyphicon glyphicon-plus"></span>
-                        <span className="editionModifyButtonText">
+                        <span className="hidden-xs">
                             Add Section
                         </span>
                     </button>
@@ -51,7 +51,7 @@ class NewspaperEditionView extends Component {
                         className="btn btn-default editionModifyToolbarButton"
                         onClick={this.onTogglePublish}>
                         <span className="glyphicon glyphicon-send"></span>
-                        <span className="editionModifyButtonText">
+                        <span className="hidden-xs">
                             {publishButtonText}
                         </span>
                     </button>
@@ -63,7 +63,7 @@ class NewspaperEditionView extends Component {
                         data-toggle="modal"
                         data-target={"#" + DeleteNewspaperEditionModalId}>
                         <span className="glyphicon glyphicon-trash"></span>
-                        <span className="editionModifyButtonText">
+                        <span className="hidden-xs">
                             Delete
                         </span>
                     </button>

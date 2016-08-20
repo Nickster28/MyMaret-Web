@@ -9,7 +9,7 @@
  */
 
 import { connect } from "react-redux";
-import { createEdition,
+import { createEdition, fetchEditions, selectEditionWithId,
 		selectEditionWithIdAndRedirect } from "../actions/editions";
 import NewspaperEditionsView from "../components/NewspaperEditionsView";
 
@@ -31,7 +31,8 @@ const mapStateToProps = state => {
 				id,
 				isPublished: state.editionsInfo.editions[id].get("isPublished")
 			}
-		})
+		}),
+		isFetching: state.editionsInfo.isFetching
 	};
 
 	// Search the above array we just created for the selected edition's id
@@ -52,13 +53,20 @@ const mapStateToProps = state => {
  * and a "switch to this edition" action.
  * --------------------------
  */
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		onCreateEdition: name => {
 			dispatch(createEdition(name));
 		},
-		onSelectEdition: editionId => {
-			dispatch(selectEditionWithIdAndRedirect(editionId));
+		selectEditionWithId: (shouldRedirect, editionId) => {
+			if (shouldRedirect) {
+				dispatch(selectEditionWithIdAndRedirect(editionId));
+			} else {
+				dispatch(selectEditionWithId(editionId));
+			}
+		},
+		fetchEditions: () => {
+			return dispatch(fetchEditions());
 		}
 	}
 }

@@ -32,8 +32,19 @@ export function fetchEditions() {
  		});
 
  		// Query for Editions from the database
+ 		var t0 = performance.now();
  		return fetchAllNewspaperEditions().then(editions => {
- 			dispatch(fetchedEditionsSuccess(editions));
+
+ 			// Delay long enough that we can have a loading indicator appear
+ 			var t1 = performance.now();
+ 			if ((t1 - t0) < 2000) {
+ 				setTimeout(() => {
+ 					dispatch(fetchedEditionsSuccess(editions));
+ 				}, 2000 - (t1 - t0));
+ 			} else {
+ 				dispatch(fetchedEditionsSuccess(editions));
+ 			}
+ 			
  		}, error => {
  			dispatch(fetchedEditionsError(error));
  		});
@@ -123,14 +134,18 @@ export function deletedEditionError(error) {
 	}
 }
 
-// ACTION: selecting an edition to view
+// ACTION: selecting an edition to view if it's not already selected
 export function selectEditionWithId(id) {
-	return {
-		type: SELECT_EDITION,
-		payload: {
-			id
+	return (dispatch, getState) => {
+		if (id !== getState().editionsInfo.selectedEditionId) {
+			dispatch({
+				type: SELECT_EDITION,
+				payload: {
+					id
+				}
+			});
 		}
-	};
+	}
 }
 
 // ACTION: user selecting an edition to view, and redirecting the URL to it
