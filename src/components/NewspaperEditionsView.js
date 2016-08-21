@@ -14,21 +14,22 @@ import { isValidNewspaperEditionName } from "../serverAPI";
 import DocumentTitle from "react-document-title";
 import EditionsDropdownView from "./EditionsDropdownView";
 import CreateEditionModalView from "./CreateEditionModalView";
-import AlertModalView from "./AlertModalView";
+import ModalView from "./ModalView";
 import Loading from "react-loading-animation";
 import Config from "../config";
-import $ from "jquery";
 import "../stylesheets/NewspaperEditionsView.css";
 
-let CreateEditionModalViewId = "createEditionModal"; // id for "create" modal
 class NewspaperEditionsView extends Component {
 
     constructor(props) {
         super(props);
-        this.handleShowCreateEditionModalView =
-            this.handleShowCreateEditionModalView.bind(this);
-        this.handleCreateEdition = this.handleCreateEdition.bind(this);
-        this.handleVerifyEditionName = this.handleVerifyEditionName.bind(this);
+        this.state = {isCreatingEdition: false};
+        this.handleStartCreatingEdition =
+            this.handleStartCreatingEdition.bind(this);
+        this.handleFinishCreatingEdition =
+            this.handleFinishCreatingEdition.bind(this);
+        this.handleCancelCreatingEdition =
+            this.handleCancelCreatingEdition.bind(this);
     }
 
     // Do a fetch on mount
@@ -56,19 +57,19 @@ class NewspaperEditionsView extends Component {
     }
 
     // Show a modal screen to configure a new edition
-    handleShowCreateEditionModalView() {
-        $("#" + CreateEditionModalViewId).modal();
+    handleStartCreatingEdition() {
+        this.setState({isCreatingEdition: true});
     }
 
-    // Hide the modal and pass the new edition name on to our props handler
-    handleCreateEdition(name) {
-        $("#" + CreateEditionModalViewId).modal("hide");
+    // Hide the modal screen and create the edition
+    handleFinishCreatingEdition(name) {
+        this.handleCancelCreatingEdition();
         this.props.onCreateEdition(name);
     }
 
-    // Returns a promise to the modal whether the given edition name is valid
-    handleVerifyEditionName(name) {
-        return isValidNewspaperEditionName(name);
+    // Hide the modal screen
+    handleCancelCreatingEdition() {
+        this.setState({isCreatingEdition: false});
     }
 
     /*
@@ -88,20 +89,24 @@ class NewspaperEditionsView extends Component {
                     onSelectEdition={
                         this.props.selectEditionWithId.bind(null, true)
                     }
-                    onCreateEdition={this.handleShowCreateEditionModalView}
+                    onCreateEdition={this.handleStartCreatingEdition}
                 />
             )
         } else {
             return (
                 <button id="createEditionButton" type="button"
                     className="btn btn-primary"
-                    onClick={this.handleShowCreateEditionModalView}>
+                    onClick={this.handleStartCreatingEdition}>
                         Create Edition
                 </button>
             )
         }
     }
 
+    /*
+     * Returns the modal to display if we should display it (if we're at
+     * /editions/edition/:id with an invalid id)
+     */
     invalidEditionModal() {
         // Whether we're done fetching and at a /editions/edition/:id URL
         var isViewingEdition = (/\/editions\/edition\/.*/)
@@ -119,11 +124,28 @@ class NewspaperEditionsView extends Component {
          * (note - this modal view appears after mounting)
          */
         if (isViewingEdition && !isValidId) {
-            return <AlertModalView title="Whoops!" primaryButtonText="OK"
+            return <ModalView title="Whoops!" primaryButtonText="OK"
                     onPrimaryClick={this.props.selectNewestEdition} small>
                         We couldn't find that edition.  We'll redirect you to
                         the newest edition instead.
-                   </AlertModalView>
+                   </ModalView>
+        } else {
+            return null;
+        }
+    }
+
+    /* 
+     * Returns the modal to display if we should display it (if we are currently
+     * creating an edition)
+     */
+    createEditionModal() {
+        if (this.state.isCreatingEdition) {
+            return (
+                <CreateEditionModalView
+                    onCreate={this.handleFinishCreatingEdition}
+                    onCancel={this.handleCancelCreatingEdition}
+                    onVerify={isValidNewspaperEditionName}/>
+            )
         } else {
             return null;
         }
@@ -142,9 +164,8 @@ class NewspaperEditionsView extends Component {
     					<h2>Editions</h2>
     				</div>
 
-                    <CreateEditionModalView id={CreateEditionModalViewId}
-                        onCreate={this.handleCreateEdition}
-                        onVerify={this.handleVerifyEditionName}/>
+                    {/* Modal displayed when the user is creating an edition */}
+                    {this.createEditionModal()}
 
                     {/* Modal displayed when an edition is invalid */}
                     {this.invalidEditionModal()}

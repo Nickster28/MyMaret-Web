@@ -13,8 +13,7 @@
  */
  // TODO: handle enter press?
 import React, { Component, PropTypes } from "react";
-import $ from "jquery";
-import "../stylesheets/CreateEditionModalView.css";
+import ModalView from "./ModalView";
 
 const defaultState = {
     editionName: "",                // Currently entered edition name
@@ -30,15 +29,9 @@ class CreateEditionModalView extends Component {
         super(props);
         this.handleCreateEdition = this.handleCreateEdition.bind(this);
         this.handleEditionNameChange = this.handleEditionNameChange.bind(this);
+        this.handleCancelCreateEdition =
+            this.handleCancelCreateEdition.bind(this);
         this.state = defaultState;
-    }
-
-    // Once we load, make sure to add a listener to clear our state on dismiss
-    componentDidMount() {
-        var savedThis = this;
-        $("#" + this.props.id).on("hidden.bs.modal", function (e) {
-            savedThis.setState(defaultState);
-        });
     }
 
     /*
@@ -82,7 +75,14 @@ class CreateEditionModalView extends Component {
      * entered since the "Create" button is disabled when a name is invalid.
      */
     handleCreateEdition() {
+        this.setState(defaultState);
         this.props.onCreate(this.state.editionName);
+    }
+
+    // When the user cancels, clear our state and call our cancel handler
+    handleCancelCreateEdition() {
+        this.setState(defaultState);
+        this.props.onCancel();
     }
 
     // Returns the text to display below the input field (error or general info)
@@ -148,34 +148,13 @@ class CreateEditionModalView extends Component {
             !this.state.isValidating;
 
         return (
-            <div id={this.props.id} className="modal fade" tabIndex="-1"
-                role="dialog">
-                <div className="modal-dialog" role="document">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="close"
-                            data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <h4 className="modal-title">Create Edition</h4>
-                        </div>
-                        <div className="modal-body">
-                            {this.bodyForm()}
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-default"
-                                data-dismiss="modal">Cancel
-                            </button>
-                            <button id="createEditionConfirmButton"
-                            onClick={this.handleCreateEdition} type="button"
-                            className="btn btn-primary"
-                            disabled={canCreateEdition ? "" : "disabled"}>
-                                Create
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <ModalView title="Create Edition" cancelable
+                primaryButtonText="Create"
+                primaryButtonDisabled={!canCreateEdition}
+                onPrimaryClick={this.handleCreateEdition}
+                onCancel={this.handleCancelCreateEdition}>
+                {this.bodyForm()}
+            </ModalView>
         )
     }
 }
@@ -185,14 +164,15 @@ class CreateEditionModalView extends Component {
  * -------------
  * onCreate - a required function that is called when a new edition is created.
  *          should take the name of the new edition as a parameter.
- * id - the id to put on our containing div.
+ * onCancel - a required function that is called when the user cancels creating
+ *          an edition.
  * onVerify - function that returns a promise passing back whether a given
  *             edition name is valid or invalid.
  * -------------
  */
 CreateEditionModalView.propTypes = {
     onCreate: PropTypes.func.isRequired,
-    id: PropTypes.string.isRequired,
+    onCancel: PropTypes.func.isRequired,
     onVerify: PropTypes.func.isRequired
 }
 
