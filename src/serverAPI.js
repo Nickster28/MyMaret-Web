@@ -73,6 +73,7 @@ export function createNewspaperEditionWithName(editionName) {
 	return edition.save({editionName, isPublished: false});
 }
 
+// Returns a promise that deletes the given edition from the server
 export function deleteNewspaperEdition(edition) {
 	return edition.destroy();
 }
