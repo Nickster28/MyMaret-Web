@@ -23,13 +23,17 @@
 }
 
 @media (max-width: 767px) {
+    
     /* Make some of the toolbar buttons smaller for smaller width devices */
     .editionModifyToolbarButton, #deleteEditionButton {
     	width: 40pt;
     }
     
-    /* Since there's no text for buttons on small screens, remove padding */
-    .editionModifyToolbarButton span {
+    /*
+     * Since there's no text for buttons on small screens, remove padding
+     * EXCEPT for the disabled delete button since that has text still.
+     */
+    .editionModifyToolbarButton:not(:disabled) span {
     	padding-right: 0px;
     }
 }

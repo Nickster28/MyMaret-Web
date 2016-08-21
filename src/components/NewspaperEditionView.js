@@ -78,9 +78,9 @@ class NewspaperEditionView extends Component {
                         onClick={this.showDeleteEditionPrompt}>
                         <span className="glyphicon glyphicon-trash">
                         </span>
-                        <span className="hidden-xs">
-                            {this.props.isDeleting ? "Deleting..." : "Delete"}
-                        </span>
+                        {this.props.isDeleting ? "Deleting..." :
+                            <span className="hidden-xs">Delete</span>
+                        }
                     </button>
                 </div>
             </h3>
