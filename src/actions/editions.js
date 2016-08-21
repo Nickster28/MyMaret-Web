@@ -15,7 +15,7 @@
 	SELECT_EDITION, CREATED_EDITION_SUCCESS, CREATED_EDITION_ERROR,
 	DELETED_EDITION_SUCCESS, DELETED_EDITION_ERROR,
 	CLEAR_FETCHED_EDITIONS_ERROR, CLEAR_CREATED_EDITION_ERROR,
-	CLEAR_DELETED_EDITION_ERROR
+	CLEAR_DELETED_EDITION_ERROR, DELETE_EDITION
  } from "../constants";
 
 /*
@@ -120,6 +120,10 @@ export function clearCreatedEditionError() {
 // ACTION: delete the given edition from the server
 export function deleteEdition(edition) {
 	return dispatch => {
+		dispatch({
+			type: DELETE_EDITION
+		});
+
 		return deleteNewspaperEdition(edition).then(() => {
 			dispatch(deletedEditionSuccess(edition.id));
 			dispatch(selectNewestEdition());

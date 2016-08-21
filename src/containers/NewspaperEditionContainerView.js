@@ -21,7 +21,8 @@ import NewspaperEditionView from "../components/NewspaperEditionView";
 const mapStateToProps = (state, ownProps) => {
 	return {
 		edition: state.editionsInfo.editions[ownProps.params.id],
-		latestDeleteError: state.editionsInfo.latestServerErrors.deleteError
+		latestDeleteError: state.editionsInfo.latestServerErrors.deleteError,
+		isDeleting: state.editionsInfo.isDeleting
 	}
 }
 

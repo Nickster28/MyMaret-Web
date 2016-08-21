@@ -3,12 +3,16 @@
 	padding-right: 10px;
 }
 
-/* All toolbar buttons should be the same width by default */
-.editionModifyToolbarButton {
+/*
+ * All toolbar buttons should be the same width by default, along with
+ * the disabled delete button (which has more text to display)
+ */
+.editionModifyToolbarButton,
+#deleteEditionButton:disabled {
 	width: 105pt;
 }
 
-/* Fit the size to the delete button */
+/* Fit the size to the regular delete button */
 #deleteEditionButton {
 	width: 70pt;
 }

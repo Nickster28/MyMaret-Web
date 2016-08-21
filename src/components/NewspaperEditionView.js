@@ -74,11 +74,12 @@ class NewspaperEditionView extends Component {
                     aria-label="deleteEditionButton">
                     <button type="button" id="deleteEditionButton"
                         className={buttonClassNames}
+                        disabled={this.props.isDeleting ? "disabled": ""}
                         onClick={this.showDeleteEditionPrompt}>
                         <span className="glyphicon glyphicon-trash">
                         </span>
                         <span className="hidden-xs">
-                            Delete
+                            {this.props.isDeleting ? "Deleting..." : "Delete"}
                         </span>
                     </button>
                 </div>
@@ -148,7 +149,8 @@ NewspaperEditionView.propTypes = {
 	edition: PropTypes.object,
     latestDeleteError: PropTypes.object,
     clearDeletedEditionError: PropTypes.func,
-    onDeleteEdition: PropTypes.func.isRequired
+    onDeleteEdition: PropTypes.func.isRequired,
+    isDeleting: PropTypes.bool.isRequired
 
 };
 
