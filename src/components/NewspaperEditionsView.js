@@ -103,6 +103,9 @@ class NewspaperEditionsView extends Component {
                         this.props.selectEditionWithId.bind(null, true)
                     }
                     onCreateEdition={this.handleStartCreatingEdition}
+                    dropdownTitle={this.props.isCreatingEdition ?
+                        "Creating..." : null}
+                    isDisabled={this.props.isCreatingEdition}
                 />
             )
 
@@ -111,8 +114,10 @@ class NewspaperEditionsView extends Component {
             return (
                 <button id="createEditionButton" type="button"
                     className="btn btn-primary"
+                    disabled={this.props.isCreatingEdition ? "disabled" : ""}
                     onClick={this.handleStartCreatingEdition}>
-                        Create Edition
+                        {this.props.isCreatingEdition ? "Creating..." :
+                            "Create Edition"}
                 </button>
             )
         }

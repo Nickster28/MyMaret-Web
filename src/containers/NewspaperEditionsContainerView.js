@@ -18,10 +18,7 @@ import NewspaperEditionsView from "../components/NewspaperEditionsView";
  * REDUX: mapStateToProps
  * -----------------------
  * A function that takes the current Redux state and returns an object
- * that is set as the editions container's props.  The container needs the list
- * of edition info (name + id + is published?) sorted from newest to oldest,
- * the index in that list of the currently selected edition, and info on
- * the fetching state, and recent create and fetch errors, if any.
+ * that is set as the editions container's props.
  * -----------------------
  */
 const mapStateToProps = (state, ownProps) => {
@@ -35,6 +32,7 @@ const mapStateToProps = (state, ownProps) => {
 			}
 		}),
 		isFetching: state.editionsInfo.isFetching,
+		isCreatingEdition: state.editionsInfo.isCreatingEdition,
 		selectedEditionId: state.editionsInfo.selectedEditionId,
 		hasFetched: state.editionsInfo.hasFetched,
 		deleted: state.editionsInfo.lastDeletedEditionId === ownProps.params.id,

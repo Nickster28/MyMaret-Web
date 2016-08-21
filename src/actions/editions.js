@@ -15,7 +15,7 @@
 	SELECT_EDITION, CREATED_EDITION_SUCCESS, CREATED_EDITION_ERROR,
 	DELETED_EDITION_SUCCESS, DELETED_EDITION_ERROR,
 	CLEAR_FETCHED_EDITIONS_ERROR, CLEAR_CREATED_EDITION_ERROR,
-	CLEAR_DELETED_EDITION_ERROR, DELETE_EDITION
+	CLEAR_DELETED_EDITION_ERROR, DELETE_EDITION, CREATE_EDITION
  } from "../constants";
 
 /*
@@ -82,6 +82,11 @@ export function clearFetchedEditionsError() {
 // ACTION: create a new edition with the given name
 export function createEdition(name) {
 	return dispatch => {
+
+		dispatch({
+			type: CREATE_EDITION
+		});
+
 		return createNewspaperEditionWithName(name).then(newEdition => {
 			dispatch(createdEditionSuccess(newEdition));
 			dispatch(selectEditionWithId(true, newEdition.id));
@@ -120,6 +125,7 @@ export function clearCreatedEditionError() {
 // ACTION: delete the given edition from the server
 export function deleteEdition(edition) {
 	return dispatch => {
+
 		dispatch({
 			type: DELETE_EDITION
 		});

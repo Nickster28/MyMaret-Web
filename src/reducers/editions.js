@@ -4,7 +4,7 @@ import {
 	SELECT_EDITION, CREATED_EDITION_SUCCESS, CREATED_EDITION_ERROR,
 	DELETED_EDITION_SUCCESS, DELETED_EDITION_ERROR,
 	CLEAR_FETCHED_EDITIONS_ERROR, CLEAR_CREATED_EDITION_ERROR,
-	CLEAR_DELETED_EDITION_ERROR, DELETE_EDITION
+	CLEAR_DELETED_EDITION_ERROR, DELETE_EDITION, CREATE_EDITION
 } from "../constants";
 
 // Map of Edition object IDs to the Edition object
@@ -65,6 +65,19 @@ function isDeleting(state = false, action) {
 			return true;
 		case DELETED_EDITION_SUCCESS:
 		case DELETED_EDITION_ERROR:
+			return false;
+		default:
+			return state;
+	}
+}
+
+// Whether or not we are in the middle of creating an edition
+function isCreatingEdition(state = false, action) {
+	switch (action.type) {
+		case CREATE_EDITION:
+			return true;
+		case CREATED_EDITION_SUCCESS:
+		case CREATED_EDITION_ERROR:
 			return false;
 		default:
 			return state;
@@ -154,6 +167,7 @@ export default combineReducers({
 	editionIdsNewestToOldest,
 	isFetching,
 	isDeleting,
+	isCreatingEdition,
 	hasFetched,
 	lastDeletedEditionId,
 	latestServerErrors,

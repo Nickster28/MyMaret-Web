@@ -70,9 +70,11 @@ class EditionsDropdownView extends Component {
 			<div className="dropdown">
 				<button className="btn btn-default dropdown-toggle"
 					type="button" id="editionsDropdown" data-toggle="dropdown"
-					aria-haspopup="true" aria-expanded="false">
-					{selectedEditionName}
-					<span className="caret"></span>
+					aria-haspopup="true" aria-expanded="false"
+					disabled={this.props.isDisabled ? "disabled" : ""}>
+					{this.props.dropdownTitle ? this.props.dropdownTitle :
+						<div>{selectedEditionName}<span className="caret">
+						</span></div>}
 				</button>
 				<ul className="dropdown-menu dropdown-menu-right"
 					aria-labelledby="editionsDropdown">
@@ -104,6 +106,9 @@ class EditionsDropdownView extends Component {
  *                          edition's name, id, and whether it's published.
  * selectedEditionIndex - index of selected edition's info in
  *                          editionInfoNewestToOldest
+ * dropdownTitle - optional string to display on the dropdown button, overriding
+ *					the default, which is the selected edition name.
+ * isDisabled - true/false whether the dropdown button is disabled
  * ------------
  */
 EditionsDropdownView.propTypes = {
@@ -114,7 +119,9 @@ EditionsDropdownView.propTypes = {
         id: PropTypes.string.isRequired,
         isPublished: PropTypes.bool.isRequired
     }).isRequired).isRequired,
-    selectedEditionIndex: PropTypes.number.isRequired
+    selectedEditionIndex: PropTypes.number.isRequired,
+    dropdownTitle: PropTypes.string,
+    isDisabled: PropTypes.bool
 }
 
 export default EditionsDropdownView;
