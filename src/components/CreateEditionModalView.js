@@ -75,8 +75,8 @@ class CreateEditionModalView extends Component {
      * entered since the "Create" button is disabled when a name is invalid.
      */
     handleCreateEdition() {
-        this.setState(defaultState);
         this.props.onCreate(this.state.editionName);
+        this.setState(defaultState);
     }
 
     // When the user cancels, clear our state and call our cancel handler
