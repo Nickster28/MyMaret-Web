@@ -1,7 +1,7 @@
 /*
  * CLASS: ModalView
  * -----------------------
- * A simple Bootstrap modal component that contains a small modal with a title,
+ * A simple Bootstrap modal component that contains a modal with a title,
  * body, and OK button.  Clients can specify the modal contents and actions.
  * The modal can also be specified as cancelable or not (cancelable means the
  * user can dismiss the modal by clicking "Cancel", hitting ESC, clicking
@@ -61,7 +61,7 @@ class ModalView extends Component {
 		});
 	}
 
-	// Dismiss ourselves, and then call the onPrimaryClick handler, if any
+	// Dismiss ourselves, and record that we exited via the primary button
 	onClick() {
 		this.setState({didClickPrimaryButton: true});
 		$("#" + ModalViewId).modal("hide");
@@ -78,7 +78,7 @@ class ModalView extends Component {
 			            <div className="modal-header">
 
 			            	{/* Add an "X" if this is cancel-able */}
-			            	{!this.props.cancelable ? "" :
+			            	{!this.props.cancelable ? null :
 			            		<button type="button" className="close"
 			            		data-dismiss="modal" aria-label="Close">
 			            			<span aria-hidden="true">&times;</span>
