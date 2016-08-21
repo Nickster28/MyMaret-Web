@@ -3,7 +3,8 @@ import {
 	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
 	SELECT_EDITION, CREATED_EDITION_SUCCESS, CREATED_EDITION_ERROR,
 	DELETED_EDITION_SUCCESS, DELETED_EDITION_ERROR,
-	CLEAR_FETCHED_EDITIONS_ERROR, CLEAR_CREATED_EDITION_ERROR
+	CLEAR_FETCHED_EDITIONS_ERROR, CLEAR_CREATED_EDITION_ERROR,
+	CLEAR_DELETED_EDITION_ERROR
 } from "../constants";
 
 // Map of Edition object IDs to the Edition object
@@ -21,7 +22,7 @@ function editions(state = {}, action) {
 			});
 		case DELETED_EDITION_SUCCESS:
 			var newEditionsMap = Object.assign({}, state);
-			delete newEditionsMap[action.payload.editionId];
+			delete newEditionsMap[action.payload.id];
 			return newEditionsMap;
 		default:
 			return state;
@@ -37,7 +38,7 @@ function editionIdsNewestToOldest(state = [], action) {
 			return [action.payload.edition.id, ...state];
 		case DELETED_EDITION_SUCCESS:
 			return state.filter(elem => {
-				return elem !== action.payload.editionId
+				return elem !== action.payload.id
 			});
 		default:
 			return state;
@@ -107,6 +108,7 @@ function deleteError(state = null, action) {
 		case DELETED_EDITION_ERROR:
 			return action.payload;
 		case DELETED_EDITION_SUCCESS:
+		case CLEAR_DELETED_EDITION_ERROR:
 			return null;
 		default:
 			return state;
@@ -117,7 +119,17 @@ function deleteError(state = null, action) {
 function selectedEditionId(state = null, action) {
 	switch (action.type) {
 		case SELECT_EDITION:
-			return action.payload.id
+			return action.payload.id;
+		default:
+			return state;
+	}
+}
+
+// The most recently-deleted edition id
+function lastDeletedEditionId(state = null, action) {
+	switch (action.type) {
+		case DELETED_EDITION_SUCCESS:
+			return action.payload.id;
 		default:
 			return state;
 	}
@@ -129,6 +141,7 @@ export default combineReducers({
 	editionIdsNewestToOldest,
 	isFetching,
 	hasFetched,
+	lastDeletedEditionId,
 	latestServerErrors,
 	selectedEditionId
 });

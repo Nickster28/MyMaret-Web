@@ -14,7 +14,8 @@
 	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
 	SELECT_EDITION, CREATED_EDITION_SUCCESS, CREATED_EDITION_ERROR,
 	DELETED_EDITION_SUCCESS, DELETED_EDITION_ERROR,
-	CLEAR_FETCHED_EDITIONS_ERROR, CLEAR_CREATED_EDITION_ERROR
+	CLEAR_FETCHED_EDITIONS_ERROR, CLEAR_CREATED_EDITION_ERROR,
+	CLEAR_DELETED_EDITION_ERROR
  } from "../constants";
 
 /*
@@ -71,7 +72,7 @@ function fetchedEditionsError(error) {
 	}
 }
 
-// Mark the error as "handled" aka remove it
+// ACTION: Mark the error as "handled" aka remove it
 export function clearFetchedEditionsError() {
 	return {
 		type: CLEAR_FETCHED_EDITIONS_ERROR
@@ -109,7 +110,7 @@ export function createdEditionError(error) {
 	}
 }
 
-// Mark the error as "handled" aka remove it
+// ACTION: Mark the error as "handled" aka remove it
 export function clearCreatedEditionError() {
 	return {
 		type: CLEAR_CREATED_EDITION_ERROR
@@ -129,11 +130,11 @@ export function deleteEdition(edition) {
 }
 
 // ACTION: the edition with the given ID was deleted successfully
-export function deletedEditionSuccess(editionId) {
+export function deletedEditionSuccess(id) {
 	return {
 		type: DELETED_EDITION_SUCCESS,
 		payload: {
-			editionId
+			id
 		}
 	}
 }
@@ -147,7 +148,17 @@ export function deletedEditionError(error) {
 	}
 }
 
-// ACTION: selecting an edition to view if it's not already selected
+// ACTION: Mark the error as "handled" aka remove it
+export function clearDeletedEditionError() {
+	return {
+		type: CLEAR_DELETED_EDITION_ERROR
+	}
+}
+
+/*
+ * ACTION: selecting an edition to view if it's not already selected.  If id
+ * is null, but redirect is true, pushes /editions as the next url.
+ */
 export function selectEditionWithId(shouldRedirect, id) {
 	return (dispatch, getState) => {
 		if (id !== getState().editionsInfo.selectedEditionId) {
@@ -159,8 +170,10 @@ export function selectEditionWithId(shouldRedirect, id) {
 			});
 		}
 
-		if (shouldRedirect) {
+		if (shouldRedirect && id) {
 			browserHistory.push("/editions/edition/" + id);
+		} else if (shouldRedirect) {
+			browserHistory.push("/editions")
 		}
 	}
 }
@@ -168,8 +181,7 @@ export function selectEditionWithId(shouldRedirect, id) {
 // ACTION: select the most recent edition to view
 export function selectNewestEdition() {
 	return (dispatch, getState) => {
-		var newestEditionId =
-			getState().editionsInfo.editionIdsNewestToOldest[0];
-		dispatch(selectEditionWithId(true, newestEditionId));
+		var editionId = getState().editionsInfo.editionIdsNewestToOldest[0];
+		dispatch(selectEditionWithId(true, editionId ? editionId : null));
 	}
 }

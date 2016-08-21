@@ -7,7 +7,7 @@
  */
 
 import { connect } from "react-redux";
-import { deleteEdition } from "../actions/editions";
+import { deleteEdition, clearDeletedEditionError } from "../actions/editions";
 import NewspaperEditionView from "../components/NewspaperEditionView";
 
 /* 
@@ -15,12 +15,13 @@ import NewspaperEditionView from "../components/NewspaperEditionView";
  * -----------------------
  * A function that takes the current Redux state and returns an object
  * that is set as the edition container's props.  The container needs the
- * Edition object to display.
+ * Edition object to display and the latest delete error, if any.
  * -----------------------
  */
 const mapStateToProps = (state, ownProps) => {
 	return {
-		edition: state.editionsInfo.editions[ownProps.params.id]
+		edition: state.editionsInfo.editions[ownProps.params.id],
+		latestDeleteError: state.editionsInfo.latestServerErrors.deleteError
 	}
 }
 
@@ -35,11 +36,14 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => {
 	// TODO
 	return {
-		onChangeEditionPublished: function(edition, isPublished) {
+		onToggleEditionPublished: function(edition, published) {
 
 		},
 		onDeleteEdition: function(edition) {
 			dispatch(deleteEdition(edition));
+		},
+		clearDeletedEditionError: () => {
+			dispatch(clearDeletedEditionError());
 		}
 	}
 }

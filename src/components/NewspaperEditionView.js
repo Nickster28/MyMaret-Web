@@ -1,28 +1,37 @@
 import React, { Component, PropTypes } from "react";
-import $ from "jquery";
+import ModalView from "./ModalView";
 import "../stylesheets/NewspaperEditionView.css";
 
-let DeleteNewspaperEditionModalId = "confirmEditionDeleteModal";
 class NewspaperEditionView extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {isShowingDeletePrompt: false};
+
         this.onAddSection = this.onAddSection.bind(this);
-        this.onTogglePublish = this.onTogglePublish.bind(this);
-        this.onDeleteEdition = this.onDeleteEdition.bind(this);
+        this.showDeleteEditionPrompt = this.showDeleteEditionPrompt.bind(this);
+        this.cancelDeleteEdition = this.cancelDeleteEdition.bind(this);
+        this.deleteEdition = this.deleteEdition.bind(this);
+    }
+
+    // If the user cancels the delete, update our state
+    cancelDeleteEdition() {
+        this.setState({isShowingDeletePrompt: false});
+    }
+
+    // If the user confirms the deletion, call our delete handler
+    deleteEdition() {
+        this.cancelDeleteEdition();
+        this.props.onDeleteEdition(this.props.edition);
+    }
+
+    // If the user clicks the delete button, show our confirmation modal
+    showDeleteEditionPrompt() {
+        this.setState({isShowingDeletePrompt: true});
     }
 
     onAddSection() {
 
-    }
-
-    onTogglePublish() {
-        this.props.onChangeEditionPublished(this.props.edition);
-    }
-
-    onDeleteEdition() {
-        $("#" + DeleteNewspaperEditionModalId).modal("hide");
-        this.props.onDeleteEdition(this.props.edition);
     }
 
     /*
@@ -30,8 +39,8 @@ class NewspaperEditionView extends Component {
      * and publish/unpublish buttons.
      */
     editionPanelTitle() {
-        var publishButtonText = this.props.edition.get("isPublished") ?
-            "Unpublish" : "Publish";
+        var isPublished = this.props.edition.get("isPublished");
+        var buttonClassNames = "btn btn-default editionModifyToolbarButton";
         return (
             <h3 className="panel-title">
                 {this.props.edition.get("editionName")}
@@ -39,29 +48,35 @@ class NewspaperEditionView extends Component {
                 <div className="btn-group editionModifyButtonGroup"
                     role="group" aria-label="changeEditionButtons">
                     <button type="button"
-                        className="btn btn-default editionModifyToolbarButton"
+                        className={buttonClassNames}
                         onClick={this.onAddSection}>
-                        <span className="glyphicon glyphicon-plus"></span>
+                        <span className="glyphicon glyphicon-plus">
+                        </span>
                         <span className="hidden-xs">
                             Add Section
                         </span>
                     </button>
                     <button type="button" id="publishEditionButton"
-                        className="btn btn-default editionModifyToolbarButton"
-                        onClick={this.onTogglePublish}>
-                        <span className="glyphicon glyphicon-send"></span>
+                        className={buttonClassNames}
+                        onClick={
+                            this.props.onToggleEditionPublished
+                            .bind(this.props.edition, !isPublished)
+                        }>
+                        <span className="glyphicon glyphicon-send">
+                        </span>
                         <span className="hidden-xs">
-                            {publishButtonText}
+                            {isPublished ? "Unpublish" : "Publish"}
                         </span>
                     </button>
                 </div>
-                <div className="btn-group editionModifyButtonGroup" role="group"
+                <div className="btn-group editionModifyButtonGroup"
+                    role="group"
                     aria-label="deleteEditionButton">
                     <button type="button" id="deleteEditionButton"
-                        className="btn btn-default editionModifyToolbarButton"
-                        data-toggle="modal"
-                        data-target={"#" + DeleteNewspaperEditionModalId}>
-                        <span className="glyphicon glyphicon-trash"></span>
+                        className={buttonClassNames}
+                        onClick={this.showDeleteEditionPrompt}>
+                        <span className="glyphicon glyphicon-trash">
+                        </span>
                         <span className="hidden-xs">
                             Delete
                         </span>
@@ -71,37 +86,48 @@ class NewspaperEditionView extends Component {
         )
     }
 
+    /*
+     * Returns the modal to display if we should display it (if we are currently
+     * prompting the user about deleting)
+     */
+    deleteEditionModal() {
+        if (this.state.isShowingDeletePrompt) {
+            return (
+                <ModalView title="Confirm Deletion" small cancelable
+                    onCancel={this.cancelDeleteEdition}
+                    onPrimaryClick={this.deleteEdition}
+                    primaryButtonText="Delete">
+                    Are you sure you want to delete this edition?
+                </ModalView>
+            )
+        } else {
+            return null;
+        }
+    }
+
+    // Modal view for displaying error messages (if any).
+    errorModal() {
+        if (this.props.latestDeleteError) {
+            return <ModalView title="Error" primaryButtonText="OK"
+                    onPrimaryClick={this.props.clearDeletedEditionError} small>
+                    {"Could not delete this edition: " +
+                        this.props.latestDeleteError.message +
+                        "  Please try again or refresh the page."}
+                   </ModalView>
+        } else {
+            return null;
+        }
+    }
+
   	render() {
         if (!this.props.edition) return null;
         return (
             <div>
-                <div className="modal fade" id={DeleteNewspaperEditionModalId}
-                    tabIndex="-1" role="dialog">
-                    <div className="modal-dialog modal-sm" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h4 className="modal-title">
-                                    Confirm Deletion
-                                </h4>
-                            </div>
-                            <div className="modal-body">
-                                Are you sure you want to delete this edition?
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button"
-                                    className="btn btn-default"
-                                    data-dismiss="modal">
-                                    Cancel
-                                </button>
-                                <button type="button"
-                                    className="btn btn-danger"
-                                    onClick={this.onDeleteEdition}>
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {/* Modal shown to confirm deletion of the edition */}
+                {this.deleteEditionModal()}
+
+                {/* Modal shown when there's a delete error */}
+                {this.errorModal()}
 
                 <div className="panel panel-default">
                     <div className="panel-heading">
@@ -119,7 +145,11 @@ class NewspaperEditionView extends Component {
 }
 
 NewspaperEditionView.propTypes = {
-	edition: PropTypes.object
+	edition: PropTypes.object,
+    latestDeleteError: PropTypes.object,
+    clearDeletedEditionError: PropTypes.func,
+    onDeleteEdition: PropTypes.func.isRequired
+
 };
 
 export default NewspaperEditionView;

@@ -24,8 +24,8 @@ import NewspaperEditionsView from "../components/NewspaperEditionsView";
  * the fetching state, and recent create and fetch errors, if any.
  * -----------------------
  */
-const mapStateToProps = state => {
-	var props = {
+const mapStateToProps = (state, ownProps) => {
+	return {
 		editionInfoNewestToOldest: state.editionsInfo
 			.editionIdsNewestToOldest.map(id => {
 			return {
@@ -35,18 +35,12 @@ const mapStateToProps = state => {
 			}
 		}),
 		isFetching: state.editionsInfo.isFetching,
+		selectedEditionId: state.editionsInfo.selectedEditionId,
 		hasFetched: state.editionsInfo.hasFetched,
+		deleted: state.editionsInfo.lastDeletedEditionId === ownProps.params.id,
 		latestFetchError: state.editionsInfo.latestServerErrors.fetchError,
 		latestCreateError: state.editionsInfo.latestServerErrors.createError
 	};
-
-	// Search the above array we just created for the selected edition's id
-	props.selectedEditionIndex = props
-		.editionInfoNewestToOldest.findIndex((elem, index) => {
-		return elem.id === state.editionsInfo.selectedEditionId;
-	});
-
-	return props;
 }
 
 /* 
