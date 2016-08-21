@@ -119,8 +119,8 @@ class NewspaperEditionsView extends Component {
          * (note - this modal view appears after mounting)
          */
         if (isViewingEdition && !isValidId) {
-            return <AlertModalView title="Whoops!"
-                    onClick={this.props.selectNewestEdition}>
+            return <AlertModalView title="Whoops!" primaryButtonText="OK"
+                    onPrimaryClick={this.props.selectNewestEdition} small>
                         We couldn't find that edition.  We'll redirect you to
                         the newest edition instead.
                    </AlertModalView>
