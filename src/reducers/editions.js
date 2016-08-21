@@ -56,20 +56,58 @@ function isFetching(state = false, action) {
 	}
 }
 
-// The error from the most recent server call (if any)
-function latestServerError(state = null, action) {
+function hasFetched(state = false, action) {
 	switch (action.type) {
+		case FETCHED_EDITIONS_SUCCESS:
+			return true;
+		default:
+			return state;
+	}
+}
+
+// Object containing the most recent errors from a fetch, create or delete op.
+function latestServerErrors(state = {}, action) {
+	return combineReducers({
+		fetchError,
+		createError,
+		deleteError
+	})(state, action);
+}
+
+// Most recent error from fetching all editions (if any)
+function fetchError(state = null, action) {
+	switch(action.type) {
 		case FETCHED_EDITIONS_ERROR:
-		case CREATED_EDITION_ERROR:
-		case DELETED_EDITION_ERROR:
 			return action.payload;
 		case FETCHED_EDITIONS_SUCCESS:
+			return null;
+		default:
+			return state;
+	}
+}
+
+// Most recent error from creating a new edition (if any)
+function createError(state = null, action) {
+	switch(action.type) {
+		case CREATED_EDITION_ERROR:
+			return action.payload;
 		case CREATED_EDITION_SUCCESS:
+			return null;
+		default:
+			return state;
+	}
+}
+
+// Most recent error from deleting an edition (if any)
+function deleteError(state = null, action) {
+	switch(action.type) {
+		case DELETED_EDITION_ERROR:
+			return action.payload;
 		case DELETED_EDITION_SUCCESS:
 			return null;
 		default:
 			return state;
-	} 
+	}
 }
 
 // The Edition object ID of the edition we are currently viewing
@@ -87,6 +125,7 @@ export default combineReducers({
 	editions,
 	editionIdsNewestToOldest,
 	isFetching,
-	latestServerError,
+	hasFetched,
+	latestServerErrors,
 	selectedEditionId
 });

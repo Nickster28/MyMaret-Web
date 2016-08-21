@@ -32,7 +32,8 @@ const mapStateToProps = state => {
 				isPublished: state.editionsInfo.editions[id].get("isPublished")
 			}
 		}),
-		isFetching: state.editionsInfo.isFetching
+		isFetching: state.editionsInfo.isFetching,
+		hasFetched: state.editionsInfo.hasFetched
 	};
 
 	// Search the above array we just created for the selected edition's id

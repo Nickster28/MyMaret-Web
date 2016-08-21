@@ -14,13 +14,13 @@ import { isValidNewspaperEditionName } from "../serverAPI";
 import DocumentTitle from "react-document-title";
 import EditionsDropdownView from "./EditionsDropdownView";
 import CreateEditionModalView from "./CreateEditionModalView";
+import AlertModalView from "./AlertModalView";
 import Loading from "react-loading-animation";
 import Config from "../config";
 import $ from "jquery";
 import "../stylesheets/NewspaperEditionsView.css";
 
 let CreateEditionModalViewId = "createEditionModal"; // id for "create" modal
-let InvalidEditionModalViewId = "invalidEditionModal"; // id for "invalid" modal
 class NewspaperEditionsView extends Component {
 
     constructor(props) {
@@ -29,8 +29,6 @@ class NewspaperEditionsView extends Component {
             this.handleShowCreateEditionModalView.bind(this);
         this.handleCreateEdition = this.handleCreateEdition.bind(this);
         this.handleVerifyEditionName = this.handleVerifyEditionName.bind(this);
-        this.hideInvalidEditionModalView =
-            this.hideInvalidEditionModalView.bind(this);
     }
 
     // Do a fetch on mount
@@ -45,38 +43,16 @@ class NewspaperEditionsView extends Component {
      */
     componentWillReceiveProps(nextProps) {
         var newPath = nextProps.location.pathname;
+        var isEditionsIndexPath = newPath === "/editions" ||
+            newPath === "/editions/";
         /*
          * If these props tell us that we're at /editions, not fetching,
          * and have editions to show, redirect to the newest one.
          */
-        if (newPath === "/editions" && !nextProps.isFetching &&
+        if (isEditionsIndexPath && !nextProps.isFetching &&
             nextProps.editionInfoNewestToOldest.length > 0) {
             nextProps.selectNewestEdition();
-
-        /*
-         * Otherwise, if we're going to /editions/edition/:id with an invalid
-         * id, show a modal alert.
-         */
-        } else if ((/\/editions\/edition\/.*/).exec(newPath) != null &&
-            !nextProps.isFetching) {
-
-            var isValidId = nextProps.editionInfoNewestToOldest.find(info => {
-                return nextProps.params.id === info.id;
-            }) !== undefined;
-
-            if (!isValidId) {
-                $("#" + InvalidEditionModalViewId).modal({
-                    keyboard: false,
-                    backdrop: "static"
-                });
-            }
         }
-    }
-
-    // When the modal "Ok" button is clicked, dismiss and reroute
-    hideInvalidEditionModalView() {
-        $("#" + InvalidEditionModalViewId).modal("hide");
-        this.props.selectNewestEdition();
     }
 
     // Show a modal screen to configure a new edition
@@ -126,6 +102,33 @@ class NewspaperEditionsView extends Component {
         }
     }
 
+    invalidEditionModal() {
+        // Whether we're done fetching and at a /editions/edition/:id URL
+        var isViewingEdition = (/\/editions\/edition\/.*/)
+        .exec(this.props.location.pathname) != null &&
+            !this.props.isFetching && this.props.hasFetched;
+
+        // Check if the ID the user provided is valid
+        var savedThis = this;
+        var isValidId = this.props.editionInfoNewestToOldest.find(info => {
+                return savedThis.props.params.id === info.id;
+            }) !== undefined;
+
+        /*
+         * If they specified an invalid edition, show an alert modal
+         * (note - this modal view appears after mounting)
+         */
+        if (isViewingEdition && !isValidId) {
+            return <AlertModalView title="Whoops!"
+                    onClick={this.props.selectNewestEdition}>
+                        We couldn't find that edition.  We'll redirect you to
+                        the newest edition instead.
+                   </AlertModalView>
+        } else {
+            return null;
+        }
+    }
+
   	render() {
     	return (
     		<DocumentTitle title={Config.APP_NAME + " | Editions"}>
@@ -144,28 +147,7 @@ class NewspaperEditionsView extends Component {
                         onVerify={this.handleVerifyEditionName}/>
 
                     {/* Modal displayed when an edition is invalid */}
-                    <div className="modal fade" id={InvalidEditionModalViewId}
-                        tabIndex="-1" role="dialog"
-                        aria-labelledby="invalid edition">
-                        <div className="modal-dialog modal-sm" role="document">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h4 className="modal-title">Whoops!</h4>
-                                </div>
-                                <div className="modal-body">
-                                    We couldn't find that edition.  We'll
-                                    redirect you to the newest edition instead.
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button"
-                                    className="btn btn-default"
-                                    onClick={this.hideInvalidEditionModalView}>
-                                        Ok
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {this.invalidEditionModal()}
 
                     {/* Display the edition's info within a single column */}
     				<div className="row">

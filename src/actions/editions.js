@@ -107,10 +107,9 @@ export function deleteEdition(edition) {
 	return dispatch => {
 		return deleteNewspaperEdition(edition).then(() => {
 			dispatch(deletedEditionSuccess(edition.id));
-			browserHistory.push("/editions");
+			dispatch(selectNewestEdition());
 		}, (error) => {
 			dispatch(deletedEditionError(error));
-			alert("The edition could not be deleted.  Please try again.");
 		});
 	}
 }
