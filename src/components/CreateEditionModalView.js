@@ -82,7 +82,9 @@ class CreateEditionModalView extends Component {
     // When the user cancels, clear our state and call our cancel handler
     handleCancelCreateEdition() {
         this.setState(defaultState);
-        this.props.onCancel();
+        if (this.props.onCancel) {
+            this.props.onCancel();
+        }
     }
 
     // Returns the text to display below the input field (error or general info)
@@ -164,7 +166,7 @@ class CreateEditionModalView extends Component {
  * -------------
  * onCreate - a required function that is called when a new edition is created.
  *          should take the name of the new edition as a parameter.
- * onCancel - a required function that is called when the user cancels creating
+ * onCancel - an optional function that is called when the user cancels creating
  *          an edition.
  * onVerify - function that returns a promise passing back whether a given
  *             edition name is valid or invalid.
@@ -172,7 +174,7 @@ class CreateEditionModalView extends Component {
  */
 CreateEditionModalView.propTypes = {
     onCreate: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
+    onCancel: PropTypes.func,
     onVerify: PropTypes.func.isRequired
 }
 
