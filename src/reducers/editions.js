@@ -2,7 +2,8 @@ import { combineReducers } from "redux";
 import {
 	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
 	SELECT_EDITION, CREATED_EDITION_SUCCESS, CREATED_EDITION_ERROR,
-	DELETED_EDITION_SUCCESS, DELETED_EDITION_ERROR
+	DELETED_EDITION_SUCCESS, DELETED_EDITION_ERROR,
+	CLEAR_FETCHED_EDITIONS_ERROR, CLEAR_CREATED_EDITION_ERROR
 } from "../constants";
 
 // Map of Edition object IDs to the Edition object
@@ -80,6 +81,7 @@ function fetchError(state = null, action) {
 		case FETCHED_EDITIONS_ERROR:
 			return action.payload;
 		case FETCHED_EDITIONS_SUCCESS:
+		case CLEAR_FETCHED_EDITIONS_ERROR:
 			return null;
 		default:
 			return state;
@@ -92,6 +94,7 @@ function createError(state = null, action) {
 		case CREATED_EDITION_ERROR:
 			return action.payload;
 		case CREATED_EDITION_SUCCESS:
+		case CLEAR_CREATED_EDITION_ERROR:
 			return null;
 		default:
 			return state;

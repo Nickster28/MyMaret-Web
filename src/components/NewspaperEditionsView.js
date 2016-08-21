@@ -24,16 +24,18 @@ class NewspaperEditionsView extends Component {
     constructor(props) {
         super(props);
         this.state = {isCreatingEdition: false};
+
         this.handleStartCreatingEdition =
             this.handleStartCreatingEdition.bind(this);
         this.handleFinishCreatingEdition =
             this.handleFinishCreatingEdition.bind(this);
         this.handleCancelCreatingEdition =
             this.handleCancelCreatingEdition.bind(this);
+        this.dismissErrorModal = this.dismissErrorModal.bind(this);
     }
 
     // Do a fetch on mount
-    componentDidMount() {
+    componentWillMount() {
         this.props.fetchEditions();
     }
 
@@ -51,6 +53,7 @@ class NewspaperEditionsView extends Component {
          * and have editions to show, redirect to the newest one.
          */
         if (isEditionsIndexPath && !nextProps.isFetching &&
+            !nextProps.latestFetchError &&
             nextProps.editionInfoNewestToOldest.length > 0) {
             nextProps.selectNewestEdition();
         }
@@ -72,14 +75,24 @@ class NewspaperEditionsView extends Component {
         this.setState({isCreatingEdition: false});
     }
 
+    // On dismiss, clear the error so we don't display it again
+    dismissErrorModal() {
+        if (this.props.latestFetchError) {
+            this.props.clearFetchedEditionsError();
+        } else if (this.props.latestCreateError) {
+            this.props.clearCreatedEditionError();
+        }
+    }
+
     /*
      * METHOD: editionsToolbarItem
      * ----------------------------
-     * Returns: if we are fetching, nothing.  If there are >0 editions, the
-     * selection view.  Otherwise, a "Create Edition" button.
+     * Returns: if we are fetching or errored, nothing.  If there are >0
+     * editions, the selection view.  Otherwise, a "Create Edition" button.
      */
     editionsToolbarItem() {
-        if (this.props.isFetching || this.props.selectedEditionIndex === -1) {
+        if (this.props.isFetching || this.props.latestFetchError ||
+            this.props.selectedEditionIndex === -1) {
             return null;
         } else if (this.props.editionInfoNewestToOldest.length > 0) {
             return (
@@ -111,7 +124,8 @@ class NewspaperEditionsView extends Component {
         // Whether we're done fetching and at a /editions/edition/:id URL
         var isViewingEdition = (/\/editions\/edition\/.*/)
         .exec(this.props.location.pathname) != null &&
-            !this.props.isFetching && this.props.hasFetched;
+            !this.props.isFetching && this.props.hasFetched &&
+            !this.props.latestFetchError;
 
         // Check if the ID the user provided is valid
         var savedThis = this;
@@ -128,6 +142,27 @@ class NewspaperEditionsView extends Component {
                     onPrimaryClick={this.props.selectNewestEdition} small>
                         We couldn't find that edition.  We'll redirect you to
                         the newest edition instead.
+                   </ModalView>
+        } else {
+            return null;
+        }
+    }
+
+    // Modal view for displaying error messages (if any).
+    errorModal() {
+        var errorMessage = null;
+        if (this.props.latestFetchError) {
+            errorMessage = "Could not fetch newspaper editions: " +
+                this.props.latestFetchError.message;
+        } else if (this.props.latestCreateError) {
+            errorMessage = "Could not create edition: " +
+                this.props.latestCreateError.message;
+        }
+
+        if (errorMessage) {
+            return <ModalView title="Error" primaryButtonText="OK"
+                    onPrimaryClick={this.dismissErrorModal} small>
+                    {errorMessage + "  Please try again or refresh the page."}
                    </ModalView>
         } else {
             return null;
@@ -170,10 +205,14 @@ class NewspaperEditionsView extends Component {
                     {/* Modal displayed when an edition is invalid */}
                     {this.invalidEditionModal()}
 
+                    {/* Modal displayed when a fetch or create error occurs */}
+                    {this.errorModal()}
+
                     {/* Display the edition's info within a single column */}
     				<div className="row">
     					<div className="col-xs-12">
-                            <Loading isLoading={this.props.isFetching}>
+                            <Loading isLoading={this.props.isFetching ||
+                                (this.props.latestFetchError ? true : false)}>
                                 {this.props.children}
                             </Loading>
     					</div>

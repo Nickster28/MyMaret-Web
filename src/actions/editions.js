@@ -13,7 +13,8 @@
  import {
 	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
 	SELECT_EDITION, CREATED_EDITION_SUCCESS, CREATED_EDITION_ERROR,
-	DELETED_EDITION_SUCCESS, DELETED_EDITION_ERROR
+	DELETED_EDITION_SUCCESS, DELETED_EDITION_ERROR,
+	CLEAR_FETCHED_EDITIONS_ERROR, CLEAR_CREATED_EDITION_ERROR
  } from "../constants";
 
 /*
@@ -70,6 +71,13 @@ function fetchedEditionsError(error) {
 	}
 }
 
+// Mark the error as "handled" aka remove it
+export function clearFetchedEditionsError() {
+	return {
+		type: CLEAR_FETCHED_EDITIONS_ERROR
+	}
+}
+
 // ACTION: create a new edition with the given name
 export function createEdition(name) {
 	return dispatch => {
@@ -78,7 +86,6 @@ export function createEdition(name) {
 			dispatch(selectEditionWithId(true, newEdition.id));
 		}, (error) => {
 			dispatch(createdEditionError(error));
-			alert("The edition could not be created.  Please try again.");
 		});
 	}
 }
@@ -99,6 +106,13 @@ export function createdEditionError(error) {
 		type: CREATED_EDITION_ERROR,
 		payload: error,
 		error: true
+	}
+}
+
+// Mark the error as "handled" aka remove it
+export function clearCreatedEditionError() {
+	return {
+		type: CLEAR_CREATED_EDITION_ERROR
 	}
 }
 
