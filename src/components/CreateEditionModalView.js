@@ -7,11 +7,13 @@
  * handler to be passed to it to use when an edition is created, which takes
  * the edition name as a parameter.  Should also take an onVerify handler that
  * takes an edition name and returns a Promise containing whether or not the
- * name is valid.  Also requires an id to put on the modal div.  Disables the
- * "Create" button if the entered name is invalid or if we're validating.
+ * name is valid.  Disables the "Create" button if the entered name is invalid
+ * or if we're validating.  Can be submitted on ENTER or by clicking the
+ * primary button, and canceled by clicking "Cancel", hitting ESC, or clicking
+ * outside the modal or on the "X".
  * --------------------------
  */
- // TODO: handle enter press?
+
 import React, { Component, PropTypes } from "react";
 import ModalView from "./ModalView";
 
