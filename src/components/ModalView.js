@@ -3,10 +3,13 @@
  * -----------------------
  * A simple Bootstrap modal component that contains a modal with a title,
  * body, and OK button.  Clients can specify the modal contents and actions.
- * The modal can also be specified as cancelable or not (cancelable means the
- * user can dismiss the modal by clicking "Cancel", hitting ESC, clicking
- * outside the modal, etc. - basically ways besides clicking the primary
- * button).
+ * The modal wraps its contents in a <form>, so if the body of the modal
+ * contains input fields it will submit both on ENTER or on clicking the primary
+ * button.  When this happens the confirm handler will be called.
+ *
+ * The modal can also be specified as cancelable, meaning that the action can be
+ * canceled by clicking "Cancel", the "X", outside the modal, or hitting ESC.
+ * When this happens, the cancel handler will be called.
  *
  * Note that this modal is displayed on componentDidMount(), negating the need
  * for the client to manually display the modal. Instead, it will appear as soon
@@ -24,6 +27,7 @@ class ModalView extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {didClickPrimaryButton: false};
+		this.onSubmit = this.onSubmit.bind(this);
 	}
 
 	/*
@@ -55,14 +59,16 @@ class ModalView extends Component {
 				savedThis.props.onCancel) {
 				savedThis.props.onCancel();
 			} else if (savedThis.state.didClickPrimaryButton &&
-				savedThis.props.onPrimaryClick) {
-				savedThis.props.onPrimaryClick();
+				savedThis.props.onConfirm) {
+				savedThis.props.onConfirm();
 			}
 		});
 	}
 
 	// Dismiss ourselves, and record that we exited via the primary button
-	onClick() {
+	onSubmit(e) {
+		e.preventDefault();
+
 		this.setState({didClickPrimaryButton: true});
 		$("#" + ModalViewId).modal("hide");
 	}
@@ -75,35 +81,44 @@ class ModalView extends Component {
 				role="dialog" aria-labelledby={this.props.title}>
 			    <div className={classNames} role="document">
 			        <div className="modal-content">
-			            <div className="modal-header">
+			            <form id="hi" onSubmit={this.onSubmit}>
 
-			            	{/* Add an "X" if this is cancel-able */}
-			            	{!this.props.cancelable ? null :
-			            		<button type="button" className="close"
-			            		data-dismiss="modal" aria-label="Close">
-			            			<span aria-hidden="true">&times;</span>
-			            		</button>
-			            	}
+			            	<div className="modal-header">
 
-			                <h4 className="modal-title">{this.props.title}</h4>
-			            </div>
-			            <div className="modal-body">{this.props.children}</div>
-			            <div className="modal-footer">
+			            		{/* Add an "X" if this is cancel-able */}
+			            		{!this.props.cancelable ? null :
+			            			<button type="button" className="close"
+			            			data-dismiss="modal" aria-label="Close">
+			            				<span aria-hidden="true">&times;</span>
+			            			</button>
+			            		}
 
-			            	{/* Add "Cancel" if this is cancel-able */}
-			            	{!this.props.cancelable ? null :
-			            		<button type="button" data-dismiss="modal"
-			            		className="btn btn-default">Cancel</button>
-			            	}
+			            	    <h4 className="modal-title">
+			            	    	{this.props.title}
+			            	    </h4>
+			            	</div>
 
-			                <button type="button" className="btn btn-primary"
-			                id="modalViewPrimaryButton"
-			                onClick={this.onClick.bind(this)}
-			                disabled={this.props.primaryButtonDisabled ?
-			                		"disabled" : ""}>
-			                	{this.props.primaryButtonText}
-			                </button>
-			            </div>
+			            	<div className="modal-body">
+			            		{this.props.children}
+			            	</div>
+
+			            	<div className="modal-footer">
+
+			            		{/* Add "Cancel" if this is cancel-able */}
+			            		{!this.props.cancelable ? null :
+			            			<button type="button" data-dismiss="modal"
+			            			className="btn btn-default">Cancel</button>
+			            		}
+
+			            	    <button type="submit"
+			            	    	id="modalViewPrimaryButton"
+			            	    	className="btn btn-primary"
+			            	    	disabled={this.props.primaryButtonDisabled ?
+			            	    		"disabled" : ""}>
+			            	    	{this.props.primaryButtonText}
+			            	    </button>
+			            	</div>
+			            </form>
 			        </div>
 			    </div>
 			</div>
@@ -115,8 +130,8 @@ class ModalView extends Component {
  * PROPTYPES
  * ------------
  * title - the title of the modal, displayed in Bold at the top
- * onPrimaryClick - an optional function to be called when the primary button is
- *					pressed.
+ * onConfirm - an optional function to be called when the primary button is
+ *					pressed, or the user hits ENTER.
  * onCancel - an optional function to be called when the modal is canceled (only
  *				valid if it's cancelable).
  * cancelable - whether the user should be able to close out a different way
@@ -130,7 +145,7 @@ class ModalView extends Component {
  */
 ModalView.propTypes = {
 	title: PropTypes.string.isRequired,
-	onPrimaryClick: PropTypes.func,
+	onConfirm: PropTypes.func,
 	onCancel: PropTypes.func,
 	cancelable: PropTypes.bool,
 	small: PropTypes.bool,

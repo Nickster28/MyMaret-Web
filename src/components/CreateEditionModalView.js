@@ -99,11 +99,11 @@ class CreateEditionModalView extends Component {
     }
 
     /*
-     * Return the modal body, which is a form with one input field.  Also,
+     * Return the modal body, which is has one input field.  Also,
      * depending on the validity check result, render a glyphicon with feedback
      * on whether the entered name is valid or invalid.
      */
-    bodyForm() {
+    formBody() {
         var classNames = "form-group";
         var ariaDescribedBy = "";
         var feedbackElem = "";
@@ -126,22 +126,20 @@ class CreateEditionModalView extends Component {
         }
 
         return (
-            <form>
-                <div className={classNames}>
-                    <label htmlFor="newEditionName" className="control-label">
-                        Edition Name:
-                    </label>
-                    <input type="text" id="newEditionName"
-                        className="form-control" value={this.state.editionName}
-                        onChange={this.handleEditionNameChange}
-                        aria-describedby={"helpBlock " + ariaDescribedBy}>
-                    </input>
-                    {feedbackElem}
-                    <span id="helpBlock" className="help-block">
-                        {this.helpText()}
-                    </span>
-                </div>
-            </form>
+            <div className={classNames}>
+                <label htmlFor="newEditionName" className="control-label">
+                    Edition Name:
+                </label>
+                <input type="text" id="newEditionName"
+                    className="form-control" value={this.state.editionName}
+                    onChange={this.handleEditionNameChange}
+                    aria-describedby={"helpBlock " + ariaDescribedBy}>
+                </input>
+                {feedbackElem}
+                <span id="helpBlock" className="help-block">
+                    {this.helpText()}
+                </span>
+            </div>
         )
     }
 
@@ -154,9 +152,9 @@ class CreateEditionModalView extends Component {
             <ModalView title="Create Edition" cancelable
                 primaryButtonText="Create"
                 primaryButtonDisabled={!canCreateEdition}
-                onPrimaryClick={this.handleCreateEdition}
+                onConfirm={this.handleCreateEdition}
                 onCancel={this.handleCancelCreateEdition}>
-                {this.bodyForm()}
+                {this.formBody()}
             </ModalView>
         )
     }

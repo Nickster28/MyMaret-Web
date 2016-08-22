@@ -194,7 +194,7 @@ class NewspaperEditionsView extends Component {
         // If there's an error, show a modal with a handler to clear the error
         if (errorMessage && handler) {
             return <ModalView title="An error occurred" primaryButtonText="OK"
-                    onPrimaryClick={handler} small>
+                    onConfirm={handler} small>
                     {errorMessage}
                    </ModalView>
         } else {
