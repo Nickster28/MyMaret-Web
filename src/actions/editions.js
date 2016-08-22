@@ -8,7 +8,7 @@
 
  import { fetchAllNewspaperEditions, 
  		createNewspaperEditionWithName,
- 		deleteNewspaperEdition, delay } from "../serverAPI";
+ 		deleteNewspaperEdition } from "../serverAPI";
  import { browserHistory } from "react-router";
  import {
 	FETCHED_EDITIONS_SUCCESS, SELECT_EDITION, CREATED_EDITION_SUCCESS,
@@ -25,20 +25,8 @@
  */
 export function fetchEditions() {
  	return dispatch => {
-
- 		var t0 = performance.now();
-
- 		// Query for Editions from the database
  		return fetchAllNewspaperEditions().then(editions => {
- 			/*
- 			 * Delay long enough that we can have a loading indicator appear.
- 			 * We want a min 2s loading time, so delay the difference.  Note
- 			 * that delay immediately resolves if the passed in delay time is
- 			 * negative or 0.
- 			 */
- 			return delay(2000 - (performance.now() - t0)).then(() => {
- 				dispatch(fetchedEditionsSuccess(editions));
- 			});
+ 			dispatch(fetchedEditionsSuccess(editions));
  		});
  	}
 }

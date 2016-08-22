@@ -77,22 +77,3 @@ export function createNewspaperEditionWithName(editionName) {
 export function deleteNewspaperEdition(edition) {
 	return edition.destroy();
 }
-
-/*
- * Utility function that returns a promise that resolves after the given
- * number of milliseconds.  If milliseconds <= 0, the promise immediately
- * resolves.
- */
-export function delay(milliseconds) {
-	var promise = new Parse.Promise();
-
-	if (milliseconds > 0) {
-		setTimeout(() => {
-			promise.resolve();
-		}, milliseconds);
-	} else {
-		promise.resolve();
-	}
-
-	return promise;
-}
