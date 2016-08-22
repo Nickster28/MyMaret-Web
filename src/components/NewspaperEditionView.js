@@ -41,13 +41,17 @@ class NewspaperEditionView extends Component {
     editionPanelTitle() {
         var isPublished = this.props.edition.get("isPublished");
         var buttonClassNames = "btn btn-default editionModifyToolbarButton";
+
+        // Whether we're in the middle of a server editing operation
+        var isEditing = this.state.isDeletingEdition;
+
         return (
             <h3 className="panel-title">
                 {this.props.edition.get("editionName")}
 
                 <div className="btn-group editionModifyButtonGroup"
                     role="group" aria-label="changeEditionButtons">
-                    <button type="button"
+                    <button type="button" disabled={isEditing ? "disabled" : ""}
                         className={buttonClassNames}>
                         <span className="glyphicon glyphicon-plus">
                         </span>
@@ -56,7 +60,8 @@ class NewspaperEditionView extends Component {
                         </span>
                     </button>
                     <button type="button" id="publishEditionButton"
-                        className={buttonClassNames}>
+                        className={buttonClassNames}
+                        disabled={isEditing ? "disabled" : ""}>
                         <span className="glyphicon glyphicon-send">
                         </span>
                         <span className="hidden-xs">
@@ -69,7 +74,7 @@ class NewspaperEditionView extends Component {
                     aria-label="deleteEditionButton">
                     <button type="button" id="deleteEditionButton"
                         className={buttonClassNames}
-                        disabled={this.state.isDeletingEdition ? "disabled": ""}
+                        disabled={isEditing ? "disabled" : ""}
                         onClick={() => {
                             this.setState({isShowingDeletePrompt: true});
                         }}>
