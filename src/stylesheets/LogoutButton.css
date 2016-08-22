@@ -1,3 +1,8 @@
+/* Add padding in between the logout icon and the button text */
+#logoutIcon {
+	padding-right: 5px;
+}
+
 /* Bug where .navbar-right element has -15px right margin, need to compensate */
 @media (min-width: 768px) {
     #logoutButton {

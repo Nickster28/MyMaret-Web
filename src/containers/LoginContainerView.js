@@ -2,28 +2,13 @@
  * CLASS: LoginContainerView
  * ------------------------------
  * A Redux container component aroung LoginView that passes in a login
- * handler that dispatches a login action, and passes in the login error
- * (if any) from our Redux store.
+ * handler that dispatches a login action.
  * ------------------------------
  */
 
 import { connect } from "react-redux";
 import { logIn } from "../actions/authentication";
 import LoginView from "../components/LoginView";
-
-/* 
- * REDUX: mapStateToProps
- * -----------------------
- * A function that takes the current Redux state and returns an object
- * that is set as the Login container's props.  The Login container only
- * needs the authentication error, if any.
- * -----------------------
- */
-const mapStateToProps = state => {
-	return {
-		loginError: state.authentication.error
-	}
-}
 
 /* 
  * REDUX: mapDispatchToProps
@@ -36,7 +21,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 	return {
 		onLogin: (username, password) => {
-			dispatch(logIn(username, password));
+			return dispatch(logIn(username, password));
 		}
 	}
 }
@@ -49,6 +34,6 @@ const mapDispatchToProps = dispatch => {
  * ----------------
  */
 export default connect(
-	mapStateToProps,
+	null,
 	mapDispatchToProps
 )(LoginView);

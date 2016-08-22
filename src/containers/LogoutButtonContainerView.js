@@ -2,28 +2,13 @@
  * CLASS: LogoutButtonContainerView
  * ------------------------------
  * A Redux container component aroung LogoutButton that passes in a logout
- * handler that dispatches a logout action, and passes in the logout error
- * (if any) from our Redux store.
+ * handler that dispatches a logout action.
  * ------------------------------
  */
 
 import { connect } from "react-redux";
 import { logOut } from "../actions/authentication";
 import LogoutButton from "../components/LogoutButton";
-
-/* 
- * REDUX: mapStateToProps
- * -----------------------
- * A function that takes the current Redux state and returns an object
- * that is set as the LogoutButton container's props.  The LogoutButton
- * container only needs the logout error, if any.
- * -----------------------
- */
-const mapStateToProps = state => {
-	return {
-		logoutError: state.authentication.error
-	}
-}
 
 /* 
  * REDUX: mapDispatchToProps
@@ -36,7 +21,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 	return {
 		onLogout: () => {
-			dispatch(logOut());
+			return dispatch(logOut());
 		}
 	}
 }
@@ -49,6 +34,6 @@ const mapDispatchToProps = dispatch => {
  * ----------------
  */
 export default connect(
-	mapStateToProps,
+	null,
 	mapDispatchToProps
 )(LogoutButton);
