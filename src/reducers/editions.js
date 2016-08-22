@@ -1,10 +1,7 @@
 import { combineReducers } from "redux";
 import {
-	FETCH_EDITIONS, FETCHED_EDITIONS_SUCCESS, FETCHED_EDITIONS_ERROR,
-	SELECT_EDITION, CREATED_EDITION_SUCCESS, CREATED_EDITION_ERROR,
-	DELETED_EDITION_SUCCESS, DELETED_EDITION_ERROR,
-	CLEAR_FETCHED_EDITIONS_ERROR, CLEAR_CREATED_EDITION_ERROR,
-	CLEAR_DELETED_EDITION_ERROR, DELETE_EDITION, CREATE_EDITION
+	FETCHED_EDITIONS_SUCCESS, SELECT_EDITION, CREATED_EDITION_SUCCESS,
+	DELETED_EDITION_SUCCESS
 } from "../constants";
 
 // Map of Edition object IDs to the Edition object
@@ -45,102 +42,6 @@ function editionIdsNewestToOldest(state = [], action) {
 	}
 }
 
-// Whether or not we are in the middle of fetching Editions from the server
-function isFetching(state = false, action) {
-	switch (action.type) {
-		case FETCH_EDITIONS:
-			return true;
-		case FETCHED_EDITIONS_SUCCESS:
-		case FETCHED_EDITIONS_ERROR:
-			return false;
-		default:
-			return state;
-	}
-}
-
-// Whether or not we are in the middle of deleting an edition
-function isDeleting(state = false, action) {
-	switch (action.type) {
-		case DELETE_EDITION:
-			return true;
-		case DELETED_EDITION_SUCCESS:
-		case DELETED_EDITION_ERROR:
-			return false;
-		default:
-			return state;
-	}
-}
-
-// Whether or not we are in the middle of creating an edition
-function isCreatingEdition(state = false, action) {
-	switch (action.type) {
-		case CREATE_EDITION:
-			return true;
-		case CREATED_EDITION_SUCCESS:
-		case CREATED_EDITION_ERROR:
-			return false;
-		default:
-			return state;
-	}
-}
-
-function hasFetched(state = false, action) {
-	switch (action.type) {
-		case FETCHED_EDITIONS_SUCCESS:
-			return true;
-		default:
-			return state;
-	}
-}
-
-// Object containing the most recent errors from a fetch, create or delete op.
-function latestServerErrors(state = {}, action) {
-	return combineReducers({
-		fetchError,
-		createError,
-		deleteError
-	})(state, action);
-}
-
-// Most recent error from fetching all editions (if any)
-function fetchError(state = null, action) {
-	switch(action.type) {
-		case FETCHED_EDITIONS_ERROR:
-			return action.payload;
-		case FETCHED_EDITIONS_SUCCESS:
-		case CLEAR_FETCHED_EDITIONS_ERROR:
-			return null;
-		default:
-			return state;
-	}
-}
-
-// Most recent error from creating a new edition (if any)
-function createError(state = null, action) {
-	switch(action.type) {
-		case CREATED_EDITION_ERROR:
-			return action.payload;
-		case CREATED_EDITION_SUCCESS:
-		case CLEAR_CREATED_EDITION_ERROR:
-			return null;
-		default:
-			return state;
-	}
-}
-
-// Most recent error from deleting an edition (if any)
-function deleteError(state = null, action) {
-	switch(action.type) {
-		case DELETED_EDITION_ERROR:
-			return action.payload;
-		case DELETED_EDITION_SUCCESS:
-		case CLEAR_DELETED_EDITION_ERROR:
-			return null;
-		default:
-			return state;
-	}
-}
-
 // The Edition object ID of the edition we are currently viewing
 function selectedEditionId(state = null, action) {
 	switch (action.type) {
@@ -165,11 +66,6 @@ function lastDeletedEditionId(state = null, action) {
 export default combineReducers({
 	editions,
 	editionIdsNewestToOldest,
-	isFetching,
-	isDeleting,
-	isCreatingEdition,
-	hasFetched,
 	lastDeletedEditionId,
-	latestServerErrors,
 	selectedEditionId
 });

@@ -6,10 +6,12 @@ class NewspaperEditionView extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {isShowingDeletePrompt: false};
+        this.state = {
+            isShowingDeletePrompt: false,
+            isDeletingEdition: false,
+            deleteError: null
+        };
 
-        this.onAddSection = this.onAddSection.bind(this);
-        this.showDeleteEditionPrompt = this.showDeleteEditionPrompt.bind(this);
         this.cancelDeleteEdition = this.cancelDeleteEdition.bind(this);
         this.deleteEdition = this.deleteEdition.bind(this);
     }
@@ -22,16 +24,14 @@ class NewspaperEditionView extends Component {
     // If the user confirms the deletion, call our delete handler
     deleteEdition() {
         this.cancelDeleteEdition();
-        this.props.onDeleteEdition(this.props.edition);
-    }
-
-    // If the user clicks the delete button, show our confirmation modal
-    showDeleteEditionPrompt() {
-        this.setState({isShowingDeletePrompt: true});
-    }
-
-    onAddSection() {
-
+        this.setState({isDeletingEdition: true});
+        var savedThis = this;
+        this.props.onDeleteEdition(this.props.edition).then(() => {
+            savedThis.setState({isDeletingEdition: false});
+            savedThis.props.selectNewestEdition();
+        }, error => {
+            savedThis.setState({isDeletingEdition: false, deleteError: error});
+        });
     }
 
     /*
@@ -48,8 +48,7 @@ class NewspaperEditionView extends Component {
                 <div className="btn-group editionModifyButtonGroup"
                     role="group" aria-label="changeEditionButtons">
                     <button type="button"
-                        className={buttonClassNames}
-                        onClick={this.onAddSection}>
+                        className={buttonClassNames}>
                         <span className="glyphicon glyphicon-plus">
                         </span>
                         <span className="hidden-xs">
@@ -57,11 +56,7 @@ class NewspaperEditionView extends Component {
                         </span>
                     </button>
                     <button type="button" id="publishEditionButton"
-                        className={buttonClassNames}
-                        onClick={
-                            this.props.onToggleEditionPublished
-                            .bind(this.props.edition, !isPublished)
-                        }>
+                        className={buttonClassNames}>
                         <span className="glyphicon glyphicon-send">
                         </span>
                         <span className="hidden-xs">
@@ -74,11 +69,13 @@ class NewspaperEditionView extends Component {
                     aria-label="deleteEditionButton">
                     <button type="button" id="deleteEditionButton"
                         className={buttonClassNames}
-                        disabled={this.props.isDeleting ? "disabled": ""}
-                        onClick={this.showDeleteEditionPrompt}>
+                        disabled={this.state.isDeletingEdition ? "disabled": ""}
+                        onClick={() => {
+                            this.setState({isShowingDeletePrompt: true});
+                        }}>
                         <span className="glyphicon glyphicon-trash">
                         </span>
-                        {this.props.isDeleting ? "Deleting..." :
+                        {this.state.isDeletingEdition ? "Deleting..." :
                             <span className="hidden-xs">Delete</span>
                         }
                     </button>
@@ -108,11 +105,13 @@ class NewspaperEditionView extends Component {
 
     // Modal view for displaying error messages (if any).
     errorModal() {
-        if (this.props.latestDeleteError) {
+        if (this.state.deleteError) {
             return <ModalView title="Error" primaryButtonText="OK"
-                    onPrimaryClick={this.props.clearDeletedEditionError} small>
+                    onPrimaryClick={() => {
+                        this.setState({deleteError: null});
+                    }} small>
                     {"Could not delete this edition: " +
-                        this.props.latestDeleteError.message +
+                        this.state.deleteError.message +
                         "  Please try again or refresh the page."}
                    </ModalView>
         } else {
@@ -147,11 +146,7 @@ class NewspaperEditionView extends Component {
 
 NewspaperEditionView.propTypes = {
 	edition: PropTypes.object,
-    latestDeleteError: PropTypes.object,
-    clearDeletedEditionError: PropTypes.func,
-    onDeleteEdition: PropTypes.func.isRequired,
-    isDeleting: PropTypes.bool.isRequired
-
+    onDeleteEdition: PropTypes.func.isRequired
 };
 
 export default NewspaperEditionView;

@@ -2,12 +2,12 @@
  * CLASS: NewspaperEditionContainerView
  * ---------------------------------
  * A Redux container component aroung NewspaperEditionView that passes in the
- * NewspaperEdition object to display.
+ * NewspaperEdition object to display, along with delete operation information.
  * ---------------------------------
  */
 
 import { connect } from "react-redux";
-import { deleteEdition, clearDeletedEditionError } from "../actions/editions";
+import { deleteEdition, selectNewestEdition } from "../actions/editions";
 import NewspaperEditionView from "../components/NewspaperEditionView";
 
 /* 
@@ -15,14 +15,12 @@ import NewspaperEditionView from "../components/NewspaperEditionView";
  * -----------------------
  * A function that takes the current Redux state and returns an object
  * that is set as the edition container's props.  The container needs the
- * Edition object to display and the latest delete error, if any.
+ * Edition object to display.
  * -----------------------
  */
 const mapStateToProps = (state, ownProps) => {
 	return {
-		edition: state.editionsInfo.editions[ownProps.params.id],
-		latestDeleteError: state.editionsInfo.latestServerErrors.deleteError,
-		isDeleting: state.editionsInfo.isDeleting
+		edition: state.editionsInfo.editions[ownProps.params.id]
 	}
 }
 
@@ -35,16 +33,12 @@ const mapStateToProps = (state, ownProps) => {
  * --------------------------
  */
 const mapDispatchToProps = dispatch => {
-	// TODO
 	return {
-		onToggleEditionPublished: function(edition, published) {
-
+		onDeleteEdition: edition => {
+			return dispatch(deleteEdition(edition));
 		},
-		onDeleteEdition: function(edition) {
-			dispatch(deleteEdition(edition));
-		},
-		clearDeletedEditionError: () => {
-			dispatch(clearDeletedEditionError());
+		selectNewestEdition: () => {
+			return dispatch(selectNewestEdition());
 		}
 	}
 }

@@ -1,17 +1,15 @@
 /*
  * CLASS: NewspaperEditionsContainerView
  * ---------------------------------
- * A Redux container component aroung NewspaperEditionsView that passes in a
- * sorted list of edition info (ids + names), which edition is currently
- * selected, and action dispatchers for creating a new edition and selecting an
- * edition to view.
+ * A Redux container component aroung NewspaperEditionsView that passes in info
+ * about the state of edition fetching and creating, edition info to pass to
+ * the dropdown view,  and actions to help select, fetch and create editions.
  * ---------------------------------
  */
 
 import { connect } from "react-redux";
 import { createEdition, fetchEditions,
-		selectEditionWithId, selectNewestEdition, clearFetchedEditionsError,
-		clearCreatedEditionError } from "../actions/editions";
+		selectEditionWithId, selectNewestEdition } from "../actions/editions";
 import NewspaperEditionsView from "../components/NewspaperEditionsView";
 
 /* 
@@ -31,13 +29,9 @@ const mapStateToProps = (state, ownProps) => {
 				isPublished: state.editionsInfo.editions[id].get("isPublished")
 			}
 		}),
-		isFetching: state.editionsInfo.isFetching,
-		isCreatingEdition: state.editionsInfo.isCreatingEdition,
 		selectedEditionId: state.editionsInfo.selectedEditionId,
-		hasFetched: state.editionsInfo.hasFetched,
-		deleted: state.editionsInfo.lastDeletedEditionId === ownProps.params.id,
-		latestFetchError: state.editionsInfo.latestServerErrors.fetchError,
-		latestCreateError: state.editionsInfo.latestServerErrors.createError
+		selectedEditionDeleted: state.editionsInfo.lastDeletedEditionId != null
+			&& state.editionsInfo.lastDeletedEditionId === ownProps.params.id
 	};
 }
 
@@ -52,22 +46,16 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		onCreateEdition: name => {
-			dispatch(createEdition(name));
+			return dispatch(createEdition(name));
 		},
 		selectEditionWithId: (shouldRedirect, editionId) => {
-			dispatch(selectEditionWithId(shouldRedirect, editionId));
+			return dispatch(selectEditionWithId(shouldRedirect, editionId));
 		},
 		selectNewestEdition: () => {
-			dispatch(selectNewestEdition());
+			return dispatch(selectNewestEdition());
 		},
 		fetchEditions: () => {
 			return dispatch(fetchEditions());
-		},
-		clearFetchedEditionsError: () => {
-			dispatch(clearFetchedEditionsError());
-		},
-		clearCreatedEditionError: () => {
-			dispatch(clearCreatedEditionError());
 		}
 	}
 }

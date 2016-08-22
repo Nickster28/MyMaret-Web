@@ -35,7 +35,7 @@ const mapStateToProps = state => {
  */
 const mapDispatchToProps = dispatch => {
 	return {
-		onLogout:() => {
+		onLogout: () => {
 			dispatch(logOut());
 		}
 	}
