@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import {
 	FETCHED_EDITIONS_SUCCESS, SELECT_EDITION, CREATED_EDITION_SUCCESS,
-	DELETED_EDITION_SUCCESS
+	DELETED_EDITION_SUCCESS, FETCHED_EDITIONS_ERROR, FETCH_EDITIONS
 } from "../constants";
 
 // Map of Edition object IDs to the Edition object
@@ -21,6 +21,45 @@ function editions(state = {}, action) {
 			var newEditionsMap = Object.assign({}, state);
 			delete newEditionsMap[action.payload.id];
 			return newEditionsMap;
+		default:
+			return state;
+	}
+}
+
+// Object containing booleans tracking different states, e.g. fetching, etc.
+function status(state = {}, action) {
+	return combineReducers({
+		isFetchingEditions
+	})(state, action);
+}
+
+// Whether or not we are currently in the middle of fetching editions
+function isFetchingEditions(state = false, action) {
+	switch (action.type) {
+		case FETCH_EDITIONS:
+			return true;
+		case FETCHED_EDITIONS_SUCCESS:
+		case FETCHED_EDITIONS_ERROR:
+			return false;
+		default:
+			return state;
+	}
+}
+
+// Object containing errors (if any) for different operations
+function errors(state = {}, action) {
+	return combineReducers({
+		fetchEditionsError
+	})(state, action);
+}
+
+// Error (if any) from most recent editions fetch
+function fetchEditionsError(state = null, action) {
+	switch (action.type) {
+		case FETCHED_EDITIONS_SUCCESS:
+			return null;
+		case FETCHED_EDITIONS_ERROR:
+			return action.payload;
 		default:
 			return state;
 	}
@@ -67,5 +106,7 @@ export default combineReducers({
 	editions,
 	editionIdsNewestToOldest,
 	lastDeletedEditionId,
+	errors,
+	status,
 	selectedEditionId
 });

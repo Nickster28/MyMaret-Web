@@ -12,12 +12,9 @@
  *                          a new edition to the server.
  *      isShowingCreateEditionModal - whether the modal for creating a new
  *                          edition is visible.
- *      isFetching - whether we're currently in the process of fetching all
- *                  editions from the server.
- *      hasFetched - whether, on this mount, we have already fetched editions.
- *      fetchError - an error, if any, from the most recent fetch that has not
- *                  been displayed to the user.  (null if there is no error,
- *                  or if there was an error but it was displayed to the user).
+ *      hasFetched - whether, on this view, we have already fetched editions.
+ *                   This resets on mount, or when we go from the editions
+ *                   detail view back to /editions.
  *      createError - an error, if any, from the most recent "CREATE" operation
  *                  that has not been displayed to the user.  (null if there is
  *                  no error, or if there was an error but it was displayed to
@@ -35,18 +32,18 @@ import Loading from "react-loading-animation";
 import Config from "../config";
 import "../stylesheets/NewspaperEditionsView.css";
 
+const initialState = {
+    isCreatingEdition: false,
+    isShowingCreateEditionModal: false,
+    hasFetched: false,
+    createError: null
+};
+
 class NewspaperEditionsView extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            isCreatingEdition: false,
-            isShowingCreateEditionModal: false,
-            isFetching: false,
-            hasFetched: false,
-            fetchError: null,
-            createError: null
-        };
+        this.state = initialState;
 
         this.handleStartCreatingEdition =
             this.handleStartCreatingEdition.bind(this);
@@ -58,23 +55,34 @@ class NewspaperEditionsView extends Component {
 
     // Do a fetch on mount
     componentWillMount() {
-        this.setState({isFetching: true});
+        this.props.fetchEditions();
+    }
 
-        var savedThis = this;
-        this.props.fetchEditions().then(() => {
-            savedThis.setState({isFetching: false, hasFetched: true});
+    // Check the latest status of our fetch, and our route pathname
+    componentWillReceiveProps(nextProps) {
 
-            // Navigate to the newest edition if we're at the /editions page
-            var pathname = savedThis.props.location.pathname;
-            var isEditionsIndexPath = pathname === "/editions" ||
-                pathname === "/editions/";
-            if (isEditionsIndexPath &&
-                savedThis.props.editionInfoNewestToOldest.length > 0) {
-                savedThis.props.selectNewestEdition();
+        var didFetch = (this.props.isFetching && !nextProps.isFetching) ||
+            this.state.hasFetched;
+
+        // If we're transitioning from detail to index, then reset
+        if (this.isEditionDetailViewURL(this.props.location.pathname) &&
+            this.isEditionsIndexURL(nextProps.location.pathname)) {
+
+            this.setState(initialState);
+            nextProps.fetchEditions();
+        /*
+         * Else, if we're done fetching without an error, check if we need to
+         * redirect to the latest edition.
+         */
+        } else if (didFetch && !nextProps.fetchError) {
+            this.setState({hasFetched: true});
+
+            // If we're at the /editions page with editions, go to the newest
+            if (this.isEditionsIndexURL(nextProps.location.pathname) &&
+                nextProps.editionInfoNewestToOldest.length > 0) {
+                nextProps.selectNewestEdition();
             }
-        }, error => {
-            savedThis.setState({isFetching: false, fetchError: error});
-        });
+        } 
     }
 
     // Reset our state on unmount
@@ -118,7 +126,7 @@ class NewspaperEditionsView extends Component {
         });
 
         // If we're fetching, errored, or have an invalid selected ID...
-        if (this.state.isFetching || this.state.fetchError ||
+        if (this.props.isFetching || this.props.fetchError ||
             (this.props.selectedEditionId != null &&
                 selectedEditionIndex === -1)) {
             return null;
@@ -153,15 +161,22 @@ class NewspaperEditionsView extends Component {
         }
     }
 
+    // Returns true if the url is an /editions/edition/:id URL, false otherwise.
+    isEditionDetailViewURL(url) {
+        var match = url.match(/\/editions\/edition\/.*/);
+        return match !== null && match[0] === url;
+    }
+
+    // Returns true if the url is /editions or /editions/, false otherwise.
+    isEditionsIndexURL(url) {
+        var match = url.match(/\/editions\/?/);
+        return match !== null && match[0] === url;
+    }
+
     // Returns true if we're at /editions/edition/:id with an invalid id
     displayingInvalidEditionId() {
-
-        // Whether we're at a /editions/edition/:id URL
-        var isViewingEdition = (/\/editions\/edition\/.*/)
-        .exec(this.props.location.pathname) != null;
-
-        var doneFetching = !this.state.isFetching && this.state.hasFetched &&
-            !this.state.fetchError;
+        var doneFetching = !this.props.isFetching && this.state.hasFetched &&
+            !this.props.fetchError;
 
         // Check if the ID the user provided is valid
         var savedThis = this;
@@ -169,19 +184,15 @@ class NewspaperEditionsView extends Component {
                 return savedThis.props.params.id === info.id;
             }) !== undefined;
 
-        return isViewingEdition && doneFetching && !isValidId &&
-            !this.props.selectedEditionDeleted;
+        return this.isEditionDetailViewURL(this.props.location.pathname) &&
+            doneFetching && !isValidId && !this.props.selectedEditionDeleted;
     }
 
-    // Modal view for displaying error messages (if any).
+    // Modal view for displaying create or invalid id error messages (if any).
     errorModal() {
         var errorMessage = null;
         var handler = null;
-        if (this.state.fetchError) {
-            errorMessage = "Could not fetch newspaper editions: " +
-                this.state.fetchError.message + "  Please try refreshing.";
-            handler = () => { this.setState({fetchError: null}); };
-        } else if (this.displayingInvalidEditionId()) {
+        if (this.displayingInvalidEditionId()) {
             errorMessage = "We couldn't find that edition.  We'll redirect " +
             "you to the main editions page instead.";
             handler = this.props.selectNewestEdition;
@@ -235,15 +246,21 @@ class NewspaperEditionsView extends Component {
                     {/* Modal displayed when the user is creating an edition */}
                     {this.createEditionModal()}
 
-                    {/* Displayed when a fetch, create, or id error occurs */}
+                    {/* Displayed when a create or id error occurs */}
                     {this.errorModal()}
 
                     {/* Display the edition's info within a single column */}
     				<div className="row">
     					<div className="col-xs-12">
-                            <Loading isLoading={this.state.isFetching ||
-                                (this.state.fetchError ? true : false)}>
-                                {this.props.children}
+                            <Loading isLoading={this.props.isFetching}>
+                                {!this.props.fetchError ? this.props.children :
+                                    <div className="alert alert-danger"
+                                        role="alert">
+                                        <strong>Fetch error: </strong>
+                                        {this.props.fetchError.message + "  "}
+                                        Please try refreshing the page.
+                                    </div>
+                                }
                             </Loading>
     					</div>
     				</div>
@@ -275,13 +292,17 @@ class NewspaperEditionsView extends Component {
  * ------------
  */
 NewspaperEditionsView.propTypes = {
-    editionInfoNewestToOldest: PropTypes.arrayOf(React.PropTypes.shape({
+    editionInfoNewestToOldest: PropTypes.arrayOf(PropTypes.shape({
         name: PropTypes.string.isRequired,
         id: PropTypes.string.isRequired,
         isPublished: PropTypes.bool.isRequired
     }).isRequired).isRequired,
     selectedEditionId: PropTypes.string,
     selectedEditionDeleted: PropTypes.bool.isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    fetchError: PropTypes.shape({
+        message: PropTypes.string.isRequired
+    }),
     onCreateEdition: PropTypes.func.isRequired,
     selectEditionWithId: PropTypes.func.isRequired,
     selectNewestEdition: PropTypes.func.isRequired,

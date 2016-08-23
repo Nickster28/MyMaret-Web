@@ -12,7 +12,7 @@
  import { browserHistory } from "react-router";
  import {
 	FETCHED_EDITIONS_SUCCESS, SELECT_EDITION, CREATED_EDITION_SUCCESS,
-	DELETED_EDITION_SUCCESS
+	DELETED_EDITION_SUCCESS, FETCHED_EDITIONS_ERROR, FETCH_EDITIONS
  } from "../constants";
 
 /*
@@ -20,13 +20,21 @@
  * -------------------------
  * Parameters: NA
  * Returns: a thunk that attempts to query for all Edition objects in our
- * 			database.  Dispatches a success action on success.
+ * 			database.  Dispatches a success action on success, and an error
+ *			action on failure.
  * -------------------------
  */
 export function fetchEditions() {
  	return dispatch => {
+
+ 		dispatch({
+ 			type: FETCH_EDITIONS
+ 		});
+
  		return fetchAllNewspaperEditions().then(editions => {
  			dispatch(fetchedEditionsSuccess(editions));
+ 		}, error => {
+ 			dispatch(fetchedEditionsError(error));
  		});
  	}
 }
@@ -39,6 +47,15 @@ function fetchedEditionsSuccess(editions) {
  			editions
  		}
  	}
+}
+
+// ACTION: representing a failed fetch of editions
+function fetchedEditionsError(error) {
+	return {
+		type: FETCHED_EDITIONS_ERROR,
+		payload: error,
+		error: true
+	}
 }
 
 // ACTION: create a new edition with the given name
