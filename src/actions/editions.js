@@ -12,7 +12,9 @@
  import { browserHistory } from "react-router";
  import {
 	FETCHED_EDITIONS_SUCCESS, SELECT_EDITION, CREATED_EDITION_SUCCESS,
-	DELETED_EDITION_SUCCESS, FETCHED_EDITIONS_ERROR, FETCH_EDITIONS
+	DELETED_EDITION_SUCCESS, FETCHED_EDITIONS_ERROR, FETCH_EDITIONS,
+	CREATE_EDITION, SHOW_CREATE_EDITION_MODAL_VIEW,
+	HIDE_CREATE_EDITION_MODAL_VIEW, CREATED_EDITION_ERROR
  } from "../constants";
 
 /*
@@ -58,23 +60,53 @@ function fetchedEditionsError(error) {
 	}
 }
 
-// ACTION: create a new edition with the given name
+// ACTION: show the create edition modal
+export function showCreateEditionModalView() {
+	return {
+		type: SHOW_CREATE_EDITION_MODAL_VIEW
+	}
+}
+
+// ACTION: hide the create edition modal
+export function hideCreateEditionModalView() {
+	return {
+		type: HIDE_CREATE_EDITION_MODAL_VIEW
+	}
+}
+
+// ACTION: create a new edition with the given name.
 export function createEdition(name) {
 	return dispatch => {
+
+		dispatch({
+			type: CREATE_EDITION
+		});
+
 		return createNewspaperEditionWithName(name).then(newEdition => {
 			dispatch(createdEditionSuccess(newEdition));
 			dispatch(selectEditionWithId(true, newEdition.id));
+		}, error => {
+			dispatch(createdEditionError(error));
 		});
 	}
 }
 
 // ACTION: the given new Edition was successfully uploaded to the server
-export function createdEditionSuccess(edition) {
+function createdEditionSuccess(edition) {
 	return {
 		type: CREATED_EDITION_SUCCESS,
 		payload: {
 			edition
 		}
+	}
+}
+
+// ACTION: the new edition failed to be created on the server
+function createdEditionError(error) {
+	return {
+		type: CREATED_EDITION_ERROR,
+		payload: error,
+		error: true
 	}
 }
 
@@ -88,7 +120,7 @@ export function deleteEdition(edition) {
 }
 
 // ACTION: the edition with the given ID was deleted successfully
-export function deletedEditionSuccess(id) {
+function deletedEditionSuccess(id) {
 	return {
 		type: DELETED_EDITION_SUCCESS,
 		payload: {
