@@ -2,8 +2,7 @@ import { combineReducers } from "redux";
 import {
 	FETCHED_EDITIONS_SUCCESS, SELECT_EDITION, CREATED_EDITION_SUCCESS,
 	DELETED_EDITION_SUCCESS, FETCHED_EDITIONS_ERROR, FETCH_EDITIONS,
-	CREATE_EDITION, CREATED_EDITION_ERROR, SHOW_CREATE_EDITION_MODAL_VIEW,
-	HIDE_CREATE_EDITION_MODAL_VIEW
+	SHOW_CREATE_EDITION_MODAL_VIEW, HIDE_CREATE_EDITION_MODAL_VIEW
 } from "../constants";
 
 // Map of Edition object IDs to the Edition object
@@ -32,8 +31,7 @@ function editions(state = {}, action) {
 function status(state = {}, action) {
 	return combineReducers({
 		isFetchingEditions,
-		createEditionModalViewVisible,
-		isCreatingEdition
+		createEditionModalViewVisible
 	})(state, action);
 }
 
@@ -62,24 +60,10 @@ function createEditionModalViewVisible(state = false, action) {
 	}
 }
 
-// Whether we are currently in the middle of creating an edition on the server
-function isCreatingEdition(state = false, action) {
-	switch (action.type) {
-		case CREATE_EDITION:
-			return true;
-		case CREATED_EDITION_SUCCESS:
-		case CREATED_EDITION_ERROR:
-			return false;
-		default:
-			return state;
-	}
-}
-
 // Object containing errors (if any) for different operations
 function errors(state = {}, action) {
 	return combineReducers({
-		fetchEditionsError,
-		createEditionError
+		fetchEditionsError
 	})(state, action);
 }
 
@@ -89,18 +73,6 @@ function fetchEditionsError(state = null, action) {
 		case FETCHED_EDITIONS_SUCCESS:
 			return null;
 		case FETCHED_EDITIONS_ERROR:
-			return action.payload;
-		default:
-			return state;
-	}
-}
-
-// Error (if any) from most recent edition creation
-function createEditionError(state = null, action) {
-	switch (action.type) {
-		case CREATED_EDITION_SUCCESS:
-			return null;
-		case CREATED_EDITION_ERROR:
 			return action.payload;
 		default:
 			return state;

@@ -98,7 +98,7 @@ class NewspaperEditionView extends Component {
             return (
                 <ModalView title="Confirm Deletion" small cancelable
                     onCancel={this.cancelDeleteEdition}
-                    onConfirm={this.deleteEdition}
+                    onSuccess={this.deleteEdition}
                     primaryButtonText="Delete">
                     Are you sure you want to delete this edition?
                 </ModalView>
@@ -112,7 +112,7 @@ class NewspaperEditionView extends Component {
     errorModal() {
         if (this.state.deleteError) {
             return <ModalView title="Error" primaryButtonText="OK"
-                    onConfirm={() => {
+                    afterDismiss={() => {
                         this.setState({deleteError: null});
                     }} small>
                     {"Could not delete this edition: " +

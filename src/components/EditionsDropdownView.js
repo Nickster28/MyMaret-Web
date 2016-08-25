@@ -6,8 +6,9 @@
  * dropdown along with a "create edition" button.  The current edition name is
  * bolded.  Published editions have a star next to them.
  * Also displays a divider followed by a "create edition" option.
- * Must be passed a sorted array of edition info from newest to oldest,
- * and a handler function for creating a new edition.
+ * Must be passed a sorted array of edition info from newest to oldest, which
+ * is selected, and a handler function for creating a new edition and
+ * selecting an edition.
  * ------------------------------
  */
 
@@ -70,11 +71,9 @@ class EditionsDropdownView extends Component {
 			<div className="dropdown">
 				<button className="btn btn-default dropdown-toggle"
 					type="button" id="editionsDropdown" data-toggle="dropdown"
-					aria-haspopup="true" aria-expanded="false"
-					disabled={this.props.isDisabled ? "disabled" : ""}>
-					{this.props.dropdownTitle ? this.props.dropdownTitle :
-						<div>{selectedEditionName}<span className="caret">
-						</span></div>}
+					aria-haspopup="true" aria-expanded="false">
+					<div>{selectedEditionName}<span className="caret"></span>
+					</div>
 				</button>
 				<ul className="dropdown-menu dropdown-menu-right"
 					aria-labelledby="editionsDropdown">
@@ -106,9 +105,6 @@ class EditionsDropdownView extends Component {
  *                          edition's name, id, and whether it's published.
  * selectedEditionIndex - index of selected edition's info in
  *                          editionInfoNewestToOldest
- * dropdownTitle - optional string to display on the dropdown button, overriding
- *					the default, which is the selected edition name.
- * isDisabled - true/false whether the dropdown button is disabled
  * ------------
  */
 EditionsDropdownView.propTypes = {
@@ -120,8 +116,6 @@ EditionsDropdownView.propTypes = {
         isPublished: PropTypes.bool.isRequired
     }).isRequired).isRequired,
     selectedEditionIndex: PropTypes.number.isRequired,
-    dropdownTitle: PropTypes.string,
-    isDisabled: PropTypes.bool
 }
 
 export default EditionsDropdownView;

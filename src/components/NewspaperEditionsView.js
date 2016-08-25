@@ -15,7 +15,6 @@
  */
 
 import React, { Component, PropTypes } from "react";
-import { isValidNewspaperEditionName } from "../serverAPI";
 import DocumentTitle from "react-document-title";
 import EditionsDropdownView from "./EditionsDropdownView";
 import CreateEditionModalView from "./CreateEditionModalView";
@@ -29,9 +28,6 @@ class NewspaperEditionsView extends Component {
     constructor(props) {
         super(props);
         this.state = {hasFetched: false};
-
-        this.handleFinishCreatingEdition =
-            this.handleFinishCreatingEdition.bind(this);
     }
 
     // Reset and do a fetch on mount
@@ -50,7 +46,7 @@ class NewspaperEditionsView extends Component {
         if (this.isEditionDetailViewURL(this.props.location.pathname) &&
             this.isEditionsIndexURL(nextProps.location.pathname)) {
 
-            this.setState(initialState);
+            this.setState({hasFetched: false});
             nextProps.fetchEditions();
         /*
          * Else, if we're done fetching without an error, check if we need to
@@ -65,12 +61,6 @@ class NewspaperEditionsView extends Component {
                 nextProps.selectNewestEdition();
             }
         } 
-    }
-
-    // Hide the modal screen and create the edition
-    handleFinishCreatingEdition(name) {
-        this.props.hideCreateEditionModalView();
-        this.props.onCreateEdition(name);
     }
 
     /*
@@ -102,9 +92,6 @@ class NewspaperEditionsView extends Component {
                         this.props.selectEditionWithId.bind(null, true)
                     }
                     onCreateEdition={this.props.showCreateEditionModalView}
-                    dropdownTitle={this.props.isCreatingEdition ?
-                        "Creating..." : null}
-                    isDisabled={this.props.isCreatingEdition}
                 />
             )
 
@@ -113,10 +100,8 @@ class NewspaperEditionsView extends Component {
             return (
                 <button id="createEditionButton" type="button"
                     className="btn btn-primary"
-                    disabled={this.props.isCreatingEdition ? "disabled" : ""}
                     onClick={this.props.showCreateEditionModalView}>
-                        {this.props.isCreatingEdition ? "Creating..." :
-                            "Create Edition"}
+                        Create Edition
                 </button>
             )
         }
@@ -149,25 +134,14 @@ class NewspaperEditionsView extends Component {
             doneFetching && !isValidId && !this.props.selectedEditionDeleted;
     }
 
-    // Modal view for displaying create or invalid id error messages (if any).
-    errorModal() {
-        var errorMessage = null;
-        var handler = null;
+    // Modal view for displaying an invalid id error message (if any).
+    invalidEditionIdErrorModalView() {
         if (this.displayingInvalidEditionId()) {
-            errorMessage = "We couldn't find that edition.  We'll redirect " +
-            "you to the main editions page instead.";
-            handler = this.props.selectNewestEdition;
-        } else if (this.props.createEditionError) {
-            errorMessage = "Could not create edition: " +
-                this.props.createEditionError.message + "  Please try again.";
-        }
-
-        // If there's an error, show a modal with a handler to clear the error
-        if (errorMessage) {
-            return <ModalView title="An error occurred" primaryButtonText="OK"
-                    onConfirm={handler} small>
-                    {errorMessage}
-                   </ModalView>
+            return <ModalView title="Whoops!" primaryButtonText="OK"
+                afterDismiss={this.props.selectNewestEdition} small>
+                We couldn't find that edition.  We'll redirect you to the main
+                editions page instead.
+            </ModalView>
         } else {
             return null;
         }
@@ -181,9 +155,14 @@ class NewspaperEditionsView extends Component {
         if (this.props.createEditionModalViewVisible) {
             return (
                 <CreateEditionModalView
-                    onCreate={this.handleFinishCreatingEdition}
-                    onCancel={this.props.hideCreateEditionModalView}
-                    onVerify={isValidNewspaperEditionName}/>
+                    afterDismiss={didCreateEdition => {
+                        this.props.hideCreateEditionModalView();
+
+                        if (didCreateEdition) {
+                            this.props.selectNewestEdition();
+                        }
+                    }}
+                    createEdition={this.props.createEdition}/>
             )
         } else {
             return null;
@@ -206,8 +185,8 @@ class NewspaperEditionsView extends Component {
                     {/* Modal displayed when the user is creating an edition */}
                     {this.createEditionModal()}
 
-                    {/* Displayed when a create or id error occurs */}
-                    {this.errorModal()}
+                    {/* Displayed when an id error occurs */}
+                    {this.invalidEditionIdErrorModalView()}
 
                     {/* Display the edition's info within a single column */}
     				<div className="row">
@@ -244,14 +223,14 @@ class NewspaperEditionsView extends Component {
  * isFetching - whether we are currently fetching editions from the server
  * fetchError - the error, if any, from the most recent fetch
  * createEditionModalViewVisible - whether the modal for creating editions is up
- * onCreateEdition - a function handler for creating a new edition.  Takes the
- *                  name of the edition to create as a parameter.
  * selectEditionWithId - a function handler for when an edition is selected to
  *                  view.  Should take the objectId of the edition to select,
  *                  and whether or not we should also redirect to its url.
  * selectNewestEdition - same as selectEditionWithId, but pre-populates with the
  *                      id of the newest edition.
  * fetchEditions - a function that triggers a fetch of all NewspaperEditions.
+ * createEdition - a function that takes an edition name to create and returns
+ *                  a promise creating that edition object.
  * showCreateEditionModalView - a function that makes the modal visible
  * hideCreateEditionModalView - a function that hides the modal view
  * ------------
@@ -263,20 +242,16 @@ NewspaperEditionsView.propTypes = {
         isPublished: PropTypes.bool.isRequired
     }).isRequired).isRequired,
     selectedEditionId: PropTypes.string,
-    selectedEditionDeleted: PropTypes.bool.isRequired,
+    selectedEditionDeleted: PropTypes.bool.isRequired, // TODO: needed?
     isFetching: PropTypes.bool.isRequired,
     fetchError: PropTypes.shape({
         message: PropTypes.string.isRequired
     }),
     createEditionModalViewVisible: PropTypes.bool.isRequired,
-    isCreatingEdition: PropTypes.bool.isRequired,
-    createEditionError: PropTypes.shape({
-        message: PropTypes.string.isRequired
-    }),
-    onCreateEdition: PropTypes.func.isRequired,
     selectEditionWithId: PropTypes.func.isRequired,
     selectNewestEdition: PropTypes.func.isRequired,
     fetchEditions: PropTypes.func.isRequired,
+    createEdition: PropTypes.func.isRequired,
     showCreateEditionModalView: PropTypes.func.isRequired,
     hideCreateEditionModalView: PropTypes.func.isRequired
 }

@@ -13,8 +13,7 @@
  import {
 	FETCHED_EDITIONS_SUCCESS, SELECT_EDITION, CREATED_EDITION_SUCCESS,
 	DELETED_EDITION_SUCCESS, FETCHED_EDITIONS_ERROR, FETCH_EDITIONS,
-	CREATE_EDITION, SHOW_CREATE_EDITION_MODAL_VIEW,
-	HIDE_CREATE_EDITION_MODAL_VIEW, CREATED_EDITION_ERROR
+	SHOW_CREATE_EDITION_MODAL_VIEW, HIDE_CREATE_EDITION_MODAL_VIEW
  } from "../constants";
 
 /*
@@ -77,16 +76,8 @@ export function hideCreateEditionModalView() {
 // ACTION: create a new edition with the given name.
 export function createEdition(name) {
 	return dispatch => {
-
-		dispatch({
-			type: CREATE_EDITION
-		});
-
 		return createNewspaperEditionWithName(name).then(newEdition => {
 			dispatch(createdEditionSuccess(newEdition));
-			dispatch(selectEditionWithId(true, newEdition.id));
-		}, error => {
-			dispatch(createdEditionError(error));
 		});
 	}
 }
@@ -98,15 +89,6 @@ function createdEditionSuccess(edition) {
 		payload: {
 			edition
 		}
-	}
-}
-
-// ACTION: the new edition failed to be created on the server
-function createdEditionError(error) {
-	return {
-		type: CREATED_EDITION_ERROR,
-		payload: error,
-		error: true
 	}
 }
 

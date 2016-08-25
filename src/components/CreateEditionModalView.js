@@ -3,26 +3,31 @@
  * --------------------------
  * Bootstrap modal component for creating a new NewspaperEdition.  Allows the
  * user to input an edition name, and then create the Edition or cancel.  When
- * the modal has been hidden, clears the input field.  Requires an onCreate
- * handler to be passed to it to use when an edition is created, which takes
- * the edition name as a parameter.  Should also take an onVerify handler that
- * takes an edition name and returns a Promise containing whether or not the
- * name is valid.  Disables the "Create" button if the entered name is invalid
- * or if we're validating.  Can be submitted on ENTER or by clicking the
- * primary button, and canceled by clicking "Cancel", hitting ESC, or clicking
- * outside the modal or on the "X".
+ * the modal has been hidden, clears the input field.
+ *
+ * Handles the process of creating an edition, including verifying the name is
+ * valid, creating the edition, and displaying an error, if any.  Requires
+ * an afterDismiss handler that is called when the user cancels or successfully
+ * creates an edition, and is passed a boolean whether or not the user created
+ * an edition.  The "Create" button is disabled if the entered name is
+ * invalid, if we're validating, or if we're creating.  Can be submitted on
+ * ENTER or by clicking the primary button, and canceled by clicking "Cancel",
+ * hitting ESC, or clicking outside the modal or on the "X".
  * --------------------------
  */
 
 import React, { Component, PropTypes } from "react";
+import { isValidNewspaperEditionName } from "../serverAPI";
 import ModalView from "./ModalView";
 
 const defaultState = {
     editionName: "",                // Currently entered edition name
-    nameIsValid: false,             // whether or not the name is valid
-    isValidating: false,            // whether we're in the middle of validating
+    nameIsValid: false,             // Whether or not the name is valid
+    isValidating: false,            // Whether we're in the middle of validating
     validityCheckTimerId: null,     // Last timer for validation check,
-    validationError: null           // Error from validation, if any
+    validationError: null,          // Error from validation, if any
+    createEditionError: null,       // Error from creating edition, if any
+    isCreatingEdition: false        // Whether we're in the middle of creating
 }
 
 class CreateEditionModalView extends Component {
@@ -31,8 +36,7 @@ class CreateEditionModalView extends Component {
         super(props);
         this.handleCreateEdition = this.handleCreateEdition.bind(this);
         this.handleEditionNameChange = this.handleEditionNameChange.bind(this);
-        this.handleCancelCreateEdition =
-            this.handleCancelCreateEdition.bind(this);
+        this.afterDismiss = this.afterDismiss.bind(this);
         this.state = defaultState;
     }
 
@@ -49,11 +53,13 @@ class CreateEditionModalView extends Component {
         var savedThis = this;
         var timerId = setTimeout(() => {
             savedThis.setState({validityCheckTimerId: null});
-            savedThis.props.onVerify(enteredName).then(nameIsValid => {
+            isValidNewspaperEditionName(enteredName).then(nameIsValid => {
                 savedThis.setState({
                     nameIsValid,
                     isValidating: false,
-                    validationError: null
+                    validationError: nameIsValid ? null : {
+                        message: "Must be unique."
+                    }
                 });
             }, error => {
                 savedThis.setState({
@@ -64,39 +70,58 @@ class CreateEditionModalView extends Component {
             });
         }, 500);
 
+        // Clear all errors, since they're obsolete
         this.setState({
             editionName: enteredName,
+            createEditionError: null,
+            validationError: null,
             isValidating: true,
             validityCheckTimerId: timerId
         });
     }
 
     /*
-     * Triggered when the user clicks "Create".  Pass along the entered name.
-     * Note that this can only be triggered when a valid edition name is
-     * entered since the "Create" button is disabled when a name is invalid.
+     * Triggered when the user clicks "Create".  Pass along the entered name to
+     * attempt to create a new edition.  On finish, update our state accordingly
+     * and hide ourselves on success. Note that this can only be triggered when
+     * a valid edition name is entered since the "Create" button is disabled
+     * when a name is invalid.
      */
-    handleCreateEdition() {
+    handleCreateEdition(hide) {
+        this.setState({isCreatingEdition: true});
         var name = this.state.editionName;
-        this.setState(defaultState);
-        this.props.onCreate(name);
+        var savedThis = this;
+
+        this.props.createEdition(name).then(() => {
+            savedThis.setState({
+                isCreatingEdition: false,
+                createEditionError: null
+            });
+            hide();
+        }, error => {
+            savedThis.setState({
+                isCreatingEdition: false,
+                createEditionError: error
+            });
+        });
     }
 
-    // When the user cancels, clear our state and call our cancel handler
-    handleCancelCreateEdition() {
+    // Called once the modal is dismissed.  Reset our state and call our client
+    afterDismiss(didCreateEdition) {
         this.setState(defaultState);
-        if (this.props.onCancel) {
-            this.props.onCancel();
-        }
+        this.props.afterDismiss(didCreateEdition);
     }
 
     // Returns the text to display below the input field (error or general info)
     helpText() {
-        if (this.state.validationError) {
+        if (this.state.createEditionError) {
+            return "An error occurred. (" +
+                this.state.createEditionError.message + ")";
+        } else if (this.state.validationError) {
             return "An error occurred. (" +
                 this.state.validationError.message + ")";
         } else {
-            return "Displayed in-app.  Must be unique.";
+            return null;
         }
     }
 
@@ -110,7 +135,8 @@ class CreateEditionModalView extends Component {
         var ariaDescribedBy = "";
         var feedbackElem = "";
         if (!this.state.isValidating && this.state.editionName.length > 0) {
-            var isValid = this.state.nameIsValid;
+            var isValid = this.state.nameIsValid &&
+                !this.state.createEditionError;
 
             classNames += " has-feedback " +
                 (isValid ? "has-success" : "has-error");
@@ -130,7 +156,7 @@ class CreateEditionModalView extends Component {
         return (
             <div className={classNames}>
                 <label htmlFor="newEditionName" className="control-label">
-                    Edition Name:
+                    Edition Name (displayed in-app):
                 </label>
                 <input type="text" id="newEditionName"
                     className="form-control" value={this.state.editionName}
@@ -148,14 +174,15 @@ class CreateEditionModalView extends Component {
     // Render a Bootstrap modal with an input field for edition name.
     render() {
         var canCreateEdition = this.state.nameIsValid &&
-            !this.state.isValidating;
+            !this.state.isValidating && !this.state.isCreatingEdition;
 
         return (
             <ModalView title="Create Edition" cancelable
-                primaryButtonText="Create"
+                primaryButtonText={this.state.isCreatingEdition ?
+                    "Creating..." : "Create"}
                 primaryButtonDisabled={!canCreateEdition}
-                onConfirm={this.handleCreateEdition}
-                onCancel={this.handleCancelCreateEdition}>
+                onPrimaryButtonClicked={this.handleCreateEdition}
+                afterDismiss={this.afterDismiss}>
                 {this.formBody()}
             </ModalView>
         )
@@ -165,18 +192,15 @@ class CreateEditionModalView extends Component {
 /*
  * PROPTYPES
  * -------------
- * onCreate - a required function that is called when a new edition is created.
- *          should take the name of the new edition as a parameter.
- * onCancel - an optional function that is called when the user cancels creating
- *          an edition.
- * onVerify - function that returns a promise passing back whether a given
- *             edition name is valid or invalid.
+ * afterDismiss - a required function called after the modal is dismissed, and
+ *                  passed a boolean whether or not a new edition was created.
+ * createEdition - a required function that should return a promise that creates
+ *                  a new edition object.
  * -------------
  */
 CreateEditionModalView.propTypes = {
-    onCreate: PropTypes.func.isRequired,
-    onCancel: PropTypes.func,
-    onVerify: PropTypes.func.isRequired
+    afterDismiss: PropTypes.func.isRequired,
+    createEdition: PropTypes.func.isRequired
 }
 
 export default CreateEditionModalView;

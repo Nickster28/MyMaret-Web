@@ -5,7 +5,8 @@
  * body, and OK button.  Clients can specify the modal contents and actions.
  * The modal wraps its contents in a <form>, so if the body of the modal
  * contains input fields it will submit both on ENTER or on clicking the primary
- * button.  When this happens the confirm handler will be called.
+ * button.  onPrimarybuttonButtonClicked and afterDismiss handlers can
+ * optionally be specified to further customize modal behavior.
  *
  * The modal can also be specified as cancelable, meaning that the action can be
  * canceled by clicking "Cancel", the "X", outside the modal, or hitting ESC.
@@ -28,6 +29,7 @@ class ModalView extends Component {
 		super(props);
 		this.state = {didClickPrimaryButton: false};
 		this.onSubmit = this.onSubmit.bind(this);
+		this.hide = this.hide.bind(this);
 	}
 
 	/*
@@ -38,38 +40,43 @@ class ModalView extends Component {
 		// Reset our state
 		this.setState({didClickPrimaryButton: false});
 
-		var modalSettings = {};
-		if (!this.props.cancelable) {
-			modalSettings = {
-			    keyboard: false,
-			    backdrop: "static"
-			};
-		}
+		var modalSettings = this.props.cancelable ? {} : {
+			keyboard: false,
+			backdrop: "static"
+		};
 
 		$("#" + ModalViewId).modal(modalSettings);
 
 		/*
-		 * After dismiss, if the user didn't click the primary button to dismiss
-		 * (only possible if cancelable = true), then call the cancel handler.
-		 * Otherwise, call the primary click handler, if any.
+		 * After dismiss, call the dismiss handler, passing in whether or not
+		 * the primary button was used to dismiss.
 		 */
 		var savedThis = this;
 		$("#" + ModalViewId).on("hidden.bs.modal", e => {
-			if (!savedThis.state.didClickPrimaryButton &&
-				savedThis.props.onCancel) {
-				savedThis.props.onCancel();
-			} else if (savedThis.state.didClickPrimaryButton &&
-				savedThis.props.onConfirm) {
-				savedThis.props.onConfirm();
+			if (savedThis.props.afterDismiss) {
+				savedThis.props.afterDismiss(savedThis.state
+					.didClickPrimaryButton);
 			}
 		});
 	}
 
-	// Dismiss ourselves, and record that we exited via the primary button
+	/*
+	 * If there's an onPrimaryButtonClicked handler, call that and pass in our
+	 * hide function.  Otherwise, just hide ourselves immediately.
+	 */
 	onSubmit(e) {
 		e.preventDefault();
 
 		this.setState({didClickPrimaryButton: true});
+		if (this.props.onPrimaryButtonClicked) {
+			this.props.onPrimaryButtonClicked(this.hide);
+		} else {
+			this.hide();
+		}
+	}
+
+	// Hides the modal
+	hide() {
 		$("#" + ModalViewId).modal("hide");
 	}
 
@@ -130,10 +137,16 @@ class ModalView extends Component {
  * PROPTYPES
  * ------------
  * title - the title of the modal, displayed in Bold at the top
- * onConfirm - an optional function to be called when the primary button is
- *					pressed, or the user hits ENTER.
- * onCancel - an optional function to be called when the modal is canceled (only
- *				valid if it's cancelable).
+ * onPrimaryButtonClicked - an optional function called when the primary modal
+ * 						button is clicked.  This function is called *before* the
+ *						modal is dismissed, and allows the client to e.g.
+ *						validate data before dismissing the modal.  This handler
+ *						is passed a "dismiss" handler that can be called if the
+ *						client wishes to dismiss the modal.
+ * afterDismiss - an optional function called after the modal has dismissed.
+ *					This function is passed 1 parameter, a boolean indicating
+ *					whether or not the dismiss was caused by the user clicking
+ *					the primary button.
  * cancelable - whether the user should be able to close out a different way
  * 				besides the primary button.  If this is true, adds a "Cancel"
  *				button, an "X" in the top right, and allows exiting by clicking
@@ -145,8 +158,8 @@ class ModalView extends Component {
  */
 ModalView.propTypes = {
 	title: PropTypes.string.isRequired,
-	onConfirm: PropTypes.func,
-	onCancel: PropTypes.func,
+	onPrimaryButtonClicked: PropTypes.func,
+	afterDismiss:PropTypes.func,
 	cancelable: PropTypes.bool,
 	small: PropTypes.bool,
 	primaryButtonText: PropTypes.string.isRequired,

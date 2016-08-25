@@ -8,9 +8,8 @@
  */
 
 import { connect } from "react-redux";
-import { createEdition, fetchEditions,
-		selectEditionWithId, selectNewestEdition,
-		showCreateEditionModalView,
+import { fetchEditions, selectEditionWithId, selectNewestEdition,
+		showCreateEditionModalView, createEdition,
 		hideCreateEditionModalView } from "../actions/editions";
 import NewspaperEditionsView from "../components/NewspaperEditionsView";
 
@@ -37,9 +36,7 @@ const mapStateToProps = (state, ownProps) => {
 		isFetching: state.editionsInfo.status.isFetchingEditions,
 		fetchError: state.editionsInfo.errors.fetchEditionsError,
 		createEditionModalViewVisible: state.editionsInfo.status
-			.createEditionModalViewVisible,
-		isCreatingEdition: state.editionsInfo.status.isCreatingEdition,
-		createEditionError: state.editionsInfo.errors.createEditionError
+			.createEditionModalViewVisible
 	};
 }
 
@@ -53,9 +50,6 @@ const mapStateToProps = (state, ownProps) => {
  */
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
-		onCreateEdition: name => {
-			return dispatch(createEdition(name));
-		},
 		selectEditionWithId: (shouldRedirect, editionId) => {
 			return dispatch(selectEditionWithId(shouldRedirect, editionId));
 		},
@@ -64,6 +58,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		},
 		fetchEditions: () => {
 			return dispatch(fetchEditions());
+		},
+		createEdition: name => {
+			return dispatch(createEdition(name));
 		},
 		showCreateEditionModalView: () => {
 			return dispatch(showCreateEditionModalView());
