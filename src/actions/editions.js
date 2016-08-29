@@ -13,7 +13,8 @@
  import {
 	FETCHED_EDITIONS_SUCCESS, SELECT_EDITION, CREATED_EDITION_SUCCESS,
 	DELETED_EDITION_SUCCESS, FETCHED_EDITIONS_ERROR, FETCH_EDITIONS,
-	SHOW_CREATE_EDITION_MODAL_VIEW, HIDE_CREATE_EDITION_MODAL_VIEW
+	SHOW_CREATE_EDITION_MODAL_VIEW, HIDE_CREATE_EDITION_MODAL_VIEW,
+	SHOW_DELETE_EDITION_MODAL_VIEW, HIDE_DELETE_EDITION_MODAL_VIEW
  } from "../constants";
 
 /*
@@ -89,6 +90,20 @@ function createdEditionSuccess(edition) {
 		payload: {
 			edition
 		}
+	}
+}
+
+// ACTION: show the delete edition modal
+export function showDeleteEditionModalView() {
+	return {
+		type: SHOW_DELETE_EDITION_MODAL_VIEW
+	}
+}
+
+// ACTION: hide the delete edition modal
+export function hideDeleteEditionModalView() {
+	return {
+		type: HIDE_DELETE_EDITION_MODAL_VIEW
 	}
 }
 

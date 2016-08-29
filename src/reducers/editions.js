@@ -2,7 +2,8 @@ import { combineReducers } from "redux";
 import {
 	FETCHED_EDITIONS_SUCCESS, SELECT_EDITION, CREATED_EDITION_SUCCESS,
 	DELETED_EDITION_SUCCESS, FETCHED_EDITIONS_ERROR, FETCH_EDITIONS,
-	SHOW_CREATE_EDITION_MODAL_VIEW, HIDE_CREATE_EDITION_MODAL_VIEW
+	SHOW_CREATE_EDITION_MODAL_VIEW, HIDE_CREATE_EDITION_MODAL_VIEW,
+	SHOW_DELETE_EDITION_MODAL_VIEW, HIDE_DELETE_EDITION_MODAL_VIEW
 } from "../constants";
 
 // Map of Edition object IDs to the Edition object
@@ -31,7 +32,8 @@ function editions(state = {}, action) {
 function status(state = {}, action) {
 	return combineReducers({
 		isFetchingEditions,
-		createEditionModalViewVisible
+		createEditionModalViewVisible,
+		deleteEditionModalViewVisible
 	})(state, action);
 }
 
@@ -54,6 +56,18 @@ function createEditionModalViewVisible(state = false, action) {
 		case SHOW_CREATE_EDITION_MODAL_VIEW:
 			return true;
 		case HIDE_CREATE_EDITION_MODAL_VIEW:
+			return false;
+		default:
+			return state;
+	}
+}
+
+// Whether or not the modal to delete an edition is currently visible
+function deleteEditionModalViewVisible(state = false, action) {
+	switch (action.type) {
+		case SHOW_DELETE_EDITION_MODAL_VIEW:
+			return true;
+		case HIDE_DELETE_EDITION_MODAL_VIEW:
 			return false;
 		default:
 			return state;

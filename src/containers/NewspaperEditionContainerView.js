@@ -7,7 +7,9 @@
  */
 
 import { connect } from "react-redux";
-import { deleteEdition, selectNewestEdition } from "../actions/editions";
+import { deleteEdition, selectNewestEdition,
+		showDeleteEditionModalView,
+		hideDeleteEditionModalView } from "../actions/editions";
 import NewspaperEditionView from "../components/NewspaperEditionView";
 
 /* 
@@ -20,7 +22,9 @@ import NewspaperEditionView from "../components/NewspaperEditionView";
  */
 const mapStateToProps = (state, ownProps) => {
 	return {
-		edition: state.editionsInfo.editions[ownProps.params.id]
+		edition: state.editionsInfo.editions[ownProps.params.id],
+		deleteEditionModalViewVisible: state.editionsInfo.status
+			.deleteEditionModalViewVisible
 	}
 }
 
@@ -34,11 +38,17 @@ const mapStateToProps = (state, ownProps) => {
  */
 const mapDispatchToProps = dispatch => {
 	return {
-		onDeleteEdition: edition => {
+		deleteEdition: edition => {
 			return dispatch(deleteEdition(edition));
 		},
 		selectNewestEdition: () => {
 			return dispatch(selectNewestEdition());
+		},
+		showDeleteEditionModalView: () => {
+			return dispatch(showDeleteEditionModalView());
+		},
+		hideDeleteEditionModalView: () => {
+			return dispatch(hideDeleteEditionModalView());
 		}
 	}
 }

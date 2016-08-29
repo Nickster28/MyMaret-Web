@@ -1,3 +1,9 @@
+/* Spacing above/below delete modal error message */
+#deleteEditionError {
+    margin-bottom: 0px;
+    margin-top: 10px;
+}
+
 /* Put space between each glyphicon and its button text */
 .editionModifyToolbarButton span {
 	padding-right: 10px;
