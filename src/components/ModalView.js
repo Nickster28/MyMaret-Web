@@ -44,8 +44,9 @@ class ModalView extends Component {
 	}
 }
 
+const InnerModalViewId = "ModalView"; // HTML elem id
+
 // The actual modal component that is animated in and out
-const InnerModalViewId = "ModalView";
 class InnerModalView extends Component {
 
 	constructor(props) {
