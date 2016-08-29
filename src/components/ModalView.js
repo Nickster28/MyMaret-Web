@@ -85,10 +85,10 @@ class InnerModalView extends Component {
 	componentWillLeave(callback) {
 		var savedThis = this;
 		$("#" + InnerModalViewId).on("hidden.bs.modal", () => {
-			if (savedThis.props.onModalDismissed) {
-				savedThis.props.onModalDismissed();
-			}
 			callback();
+			if (savedThis.props.onDismissed) {
+				savedThis.props.onDismissed();
+			}
 		});
 		$("#" + InnerModalViewId).modal("hide");
 	}
@@ -159,7 +159,7 @@ class InnerModalView extends Component {
  *				clicked.
  * onCancel - an optional function called when the modal is cancelled.  This
  *				is only relevant if the modal is cancelable.
- * onModalDismissed - an optional function called after the modal is dismissed.
+ * onDismissed - an optional function called after the modal is dismissed.
  * cancelable - whether the user should be able to close out a different way
  * 				besides the primary button.  If this is true, adds a "Cancel"
  *				button, an "X" in the top right, and allows exiting by clicking
@@ -174,7 +174,7 @@ ModalView.propTypes = {
 	visible: PropTypes.bool.isRequired,
 	onConfirm: PropTypes.func.isRequired,
 	onCancel: PropTypes.func,
-	onModalDismissed: PropTypes.func,
+	onDismissed: PropTypes.func,
 	cancelable: PropTypes.bool,
 	small: PropTypes.bool,
 	primaryButtonText: PropTypes.string.isRequired,
