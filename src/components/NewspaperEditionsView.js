@@ -6,11 +6,6 @@
  * one) or a "create edition button", and child components (either nothing,
  * or a NewspaperEditionContainerView for the selected edition).  Also in charge
  * of displaying a modal for fetch, create, and invalid ID errors.
- *
- * STATE:
- *      hasFetched - whether, on this view, we have already fetched editions.
- *                   This resets on mount, or when we go from the editions
- *                   detail view back to /editions.
  * -----------------
  */
 
@@ -23,21 +18,39 @@ import Loading from "react-loading-animation";
 import Config from "../config";
 import "../stylesheets/NewspaperEditionsView.css";
 
+
+/*
+ * STATE
+ * -------------
+ * hasFetched - whether we have already fetched editions.
+ * showedInvalidEditionIdModal - whether we have already showed the alert modal
+ *                          for an invalid edition Id to the user.  Used to know
+ *                          when to not make the modal visible.
+ * isCreatingEdition - same as this.props.createEditionModalViewVisible, but
+ *                      true through the modal's dismissal handling/animation.
+ * -------------
+ */
+const defaultState = {
+    hasFetched: false,
+    showedInvalidEditionIdModal: false,
+    isCreatingEdition: false
+};
+
 class NewspaperEditionsView extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {hasFetched: false};
-    }
-
-    // Reset and do a fetch on mount
-    componentWillMount() {
-        this.setState({hasFetched: false, showedInvalidEditionIdModal: false});
+        this.state = defaultState;
         this.props.fetchEditions();
     }
 
     // Check the latest status of our fetch, and our route pathname
     componentWillReceiveProps(nextProps) {
+
+        // isCreatingEdition is true whenever the modal is visible
+        if (nextProps.createEditionModalViewVisible) {
+            this.setState({isCreatingEdition: true});
+        }
 
         var didFetch = (this.props.isFetching && !nextProps.isFetching) ||
             this.state.hasFetched;
@@ -50,9 +63,12 @@ class NewspaperEditionsView extends Component {
             nextProps.fetchEditions();
         /*
          * Else, if we're done fetching without an error, check if we need to
-         * redirect to the latest edition.
+         * redirect to the latest edition (only if we're not currently creating
+         * an edition, which can cause new props).
          */
-        } else if (didFetch && !nextProps.fetchError) {
+        } else if (didFetch && !nextProps.fetchError &&
+            !this.state.isCreatingEdition) {
+
             this.setState({hasFetched: true});
 
             // If we're at the /editions page with editions, go to the newest
@@ -96,6 +112,7 @@ class NewspaperEditionsView extends Component {
             )
 
         // Otherwise, show the "create edition" button
+        } else {
             return (
                 <button id="createEditionButton" type="button"
                     className="btn btn-primary"
@@ -153,12 +170,12 @@ class NewspaperEditionsView extends Component {
                     {/* Modal displayed when the user is creating an edition */}
                     <CreateEditionModalView
                         visible={this.props.createEditionModalViewVisible}
-                        onDismiss={didCreateEdition => {
-                            this.props.hideCreateEditionModalView();
-
+                        onDismiss={this.props.hideCreateEditionModalView}
+                        onDismissed={didCreateEdition => {
                             if (didCreateEdition) {
                                 this.props.selectNewestEdition();
                             }
+                            this.setState({isCreatingEdition: false});
                         }}
                         onCreateEdition={this.props.createEdition}/>
 
@@ -168,7 +185,8 @@ class NewspaperEditionsView extends Component {
                         onConfirm={this.setState.bind(this, {
                             showedInvalidEditionIdModal: true
                         })}
-                        onModalDismissed={this.props.selectNewestEdition}>
+                        onDismissed={this.props.selectNewestEdition}>
+
                         We couldn't find that edition.  We'll redirect you to
                         the main editions page instead.
                     </ModalView>

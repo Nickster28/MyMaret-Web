@@ -27,7 +27,8 @@ const defaultState = {
     validityCheckTimerId: null,     // Last timer for validation check,
     validationError: null,          // Error from validation, if any
     createEditionError: null,       // Error from creating edition, if any
-    isCreatingEdition: false        // Whether we're in the middle of creating
+    isCreatingEdition: false,       // Whether we're in the middle of creating,
+    didCreateEdition: false         // Whether the user created an edition
 }
 
 const ValidationDelayMS = 500; // Validation delay after typing, in milliseconds
@@ -97,24 +98,16 @@ class CreateEditionModalView extends Component {
         this.props.onCreateEdition(name).then(() => {
             savedThis.setState({
                 isCreatingEdition: false,
-                createEditionError: null
+                createEditionError: null,
+                didCreateEdition: true
             });
-            savedThis.onDismiss(true);
+            savedThis.props.onDismiss();
         }, error => {
             savedThis.setState({
                 isCreatingEdition: false,
                 createEditionError: error
             });
         });
-    }
-
-    /*
-     * Reset our state and dismiss the modal.  Passes whether we created an
-     * edition to the client.
-     */
-    onDismiss(didCreateEdition) {
-        this.state = defaultState;
-        this.props.onDismiss(didCreateEdition);
     }
 
     // Returns the text to display below the input field (error or general info)
@@ -184,11 +177,15 @@ class CreateEditionModalView extends Component {
         return (
             <ModalView title="Create Edition" cancelable
                 visible={this.props.visible} onConfirm={this.onConfirm}
-                onCancel={this.onDismiss.bind(this, false)}
+                onCancel={this.props.onDismiss}
                 primaryButtonText={this.state.isCreatingEdition ?
                     "Creating..." : "Create"}
                 primaryButtonDisabled={!canCreateEdition}
-                >
+                onDismissed={() => {
+                    var didCreateEdition = this.state.didCreateEdition;
+                    this.setState(defaultState);
+                    this.props.onDismissed(didCreateEdition);
+                }}>
                 {this.formBody()}
             </ModalView>
         )
@@ -200,6 +197,8 @@ class CreateEditionModalView extends Component {
  * -------------
  * visible - whether this modal is visible.
  * onDismiss - a required function called to dismiss the modal.
+ * onDismissed - a required function called after the modal is dismissed.
+ *              Passed a boolean indicating whether an edition was created.
  * onCreateEdition - a required function that should return a promise that
  *                  creates a new edition object.
  * -------------
@@ -207,6 +206,7 @@ class CreateEditionModalView extends Component {
 CreateEditionModalView.propTypes = {
     visible: PropTypes.bool.isRequired,
     onDismiss: PropTypes.func.isRequired,
+    onDismissed: PropTypes.func.isRequired,
     onCreateEdition: PropTypes.func.isRequired
 }
 
