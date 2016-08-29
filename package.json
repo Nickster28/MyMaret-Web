@@ -2,15 +2,20 @@
   "name": "MyMaret-Web",
   "version": "0.0.1",
   "description": "A Parse+React+Flux web dashboard for MyMaret newspaper configuration and analytics.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nickster28/MyMaret-Web"
+  },
   "devDependencies": {
     "react-scripts": "0.2.1"
   },
   "dependencies": {
     "jquery": "^3.1.0",
     "parse": "^1.9.0",
-    "react": "^15.2.1",
+    "react": "^15.3.1",
+    "react-addons-transition-group": "^15.3.1",
     "react-document-title": "^2.0.2",
-    "react-dom": "^15.2.1",
+    "react-dom": "^15.3.1",
     "react-loading-animation": "^1.0.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.6.0",
