@@ -32,7 +32,7 @@ class NewspaperEditionsView extends Component {
 
     // Reset and do a fetch on mount
     componentWillMount() {
-        this.setState({hasFetched: false});
+        this.setState({hasFetched: false, showedInvalidEditionIdModal: false});
         this.props.fetchEditions();
     }
 
@@ -82,7 +82,7 @@ class NewspaperEditionsView extends Component {
                 selectedEditionIndex === -1)) {
             return null;
 
-        // If we have valid editions, show a dropdown (disabled while creating)
+        // If we have valid editions, show a dropdown
         } else if (this.props.editionInfoNewestToOldest.length > 0) {
             return (
                 <EditionsDropdownView editionInfoNewestToOldest={this.props
@@ -95,8 +95,7 @@ class NewspaperEditionsView extends Component {
                 />
             )
 
-        // Otherwise, show the "create edition" button (disabled while creating)
-        } else {
+        // Otherwise, show the "create edition" button
             return (
                 <button id="createEditionButton" type="button"
                     className="btn btn-primary"
@@ -119,8 +118,11 @@ class NewspaperEditionsView extends Component {
         return match !== null && match[0] === url;
     }
 
-    // Returns true if we're at /editions/edition/:id with an invalid id
-    displayingInvalidEditionId() {
+    /*
+     * Returns true if we're at /editions/edition/:id with an invalid id, and
+     * we haven't shown the error modal yet.
+     */
+    shouldDisplayInvalidEditionIdModal() {
         var doneFetching = !this.props.isFetching && this.state.hasFetched &&
             !this.props.fetchError;
 
@@ -131,42 +133,8 @@ class NewspaperEditionsView extends Component {
             }) !== undefined;
 
         return this.isEditionDetailViewURL(this.props.location.pathname) &&
-            doneFetching && !isValidId && !this.props.selectedEditionDeleted;
-    }
-
-    // Modal view for displaying an invalid id error message (if any).
-    invalidEditionIdErrorModalView() {
-        if (this.displayingInvalidEditionId()) {
-            return <ModalView title="Whoops!" primaryButtonText="OK"
-                afterDismiss={this.props.selectNewestEdition} small>
-                We couldn't find that edition.  We'll redirect you to the main
-                editions page instead.
-            </ModalView>
-        } else {
-            return null;
-        }
-    }
-
-    /* 
-     * Returns the modal to display if we should display it (if we are currently
-     * creating an edition)
-     */
-    createEditionModal() {
-        if (this.props.createEditionModalViewVisible) {
-            return (
-                <CreateEditionModalView
-                    afterDismiss={didCreateEdition => {
-                        this.props.hideCreateEditionModalView();
-
-                        if (didCreateEdition) {
-                            this.props.selectNewestEdition();
-                        }
-                    }}
-                    createEdition={this.props.createEdition}/>
-            )
-        } else {
-            return null;
-        }
+            doneFetching && !isValidId && !this.props.selectedEditionDeleted &&
+            !this.state.showedInvalidEditionIdModal;
     }
 
   	render() {
@@ -183,10 +151,27 @@ class NewspaperEditionsView extends Component {
     				</div>
 
                     {/* Modal displayed when the user is creating an edition */}
-                    {this.createEditionModal()}
+                    <CreateEditionModalView
+                        visible={this.props.createEditionModalViewVisible}
+                        onDismiss={didCreateEdition => {
+                            this.props.hideCreateEditionModalView();
+
+                            if (didCreateEdition) {
+                                this.props.selectNewestEdition();
+                            }
+                        }}
+                        onCreateEdition={this.props.createEdition}/>
 
                     {/* Displayed when an id error occurs */}
-                    {this.invalidEditionIdErrorModalView()}
+                    <ModalView title="Whoops!" primaryButtonText="OK" small
+                        visible={this.shouldDisplayInvalidEditionIdModal()}
+                        onConfirm={this.setState.bind(this, {
+                            showedInvalidEditionIdModal: true
+                        })}
+                        onModalDismissed={this.props.selectNewestEdition}>
+                        We couldn't find that edition.  We'll redirect you to
+                        the main editions page instead.
+                    </ModalView>
 
                     {/* Display the edition's info within a single column */}
     				<div className="row">

@@ -5,100 +5,115 @@
  * body, and OK button.  Clients can specify the modal contents and actions.
  * The modal wraps its contents in a <form>, so if the body of the modal
  * contains input fields it will submit both on ENTER or on clicking the primary
- * button.  onPrimarybuttonButtonClicked and afterDismiss handlers can
- * optionally be specified to further customize modal behavior.
+ * button.  onConfirm (required) and onCancel handlers are available to further
+ * customize behavior.
  *
- * The modal can also be specified as cancelable, meaning that the action can be
- * canceled by clicking "Cancel", the "X", outside the modal, or hitting ESC.
- * When this happens, the cancel handler will be called.
+ * The modal can be specified as cancelable, meaning that the action can be
+ * canceled by clicking "Cancel", or the "X" in the top right.  When this
+ * happens, onCancel will be called.
  *
- * Note that this modal is displayed on componentDidMount(), negating the need
- * for the client to manually display the modal. Instead, it will appear as soon
- * as it is added to the DOM.
+ * This modal is animated in on mount and out on unmount.  To achieve this, this
+ * file contains 2 modal classes - one wrapper class that just adds the
+ * animations via ReactTransitionGroup, and the InnerModalView class itself that
+ * contains the Bootstrap modal HTML.  All of the animation code is in
+ * InnerModalView, since ReactTransitionGroup calls its animation callbacks on
+ * its *direct children* components.
  * -----------------------
  */
 
 import React, { Component, PropTypes } from "react";
+import Visibility from "./Visibility";
+import ReactTransitionGroup from "react-addons-transition-group";
 import $ from "jquery";
 import "../stylesheets/ModalView.css";
 
-const ModalViewId = "ModalView";
+/*
+ * A wrapper class that adds the ReactTransitionGroup animations.  Note that
+ * InnerModalView must be a *direct* child of ReactTransitionGroup in order for
+ * it to be animated in/out.
+ */
 class ModalView extends Component {
+	render() {
+		return (
+			<ReactTransitionGroup>
+				{!this.props.visible ? null :
+					<InnerModalView {...this.props} />
+				}
+			</ReactTransitionGroup>
+		);
+	}
+}
+
+// The actual modal component that is animated in and out
+const InnerModalViewId = "ModalView";
+class InnerModalView extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {didClickPrimaryButton: false};
 		this.onSubmit = this.onSubmit.bind(this);
-		this.hide = this.hide.bind(this);
+		this.onCancel = this.onCancel.bind(this);
 	}
 
 	/*
-	 * Display the modal on mount.  If there's a cancel button, that means that
-	 * we should also allow exiting via clicking outside and hitting ESC.
+	 * Display the modal on mount.  Disable ESC and clicking outside the modal
+	 * so we can have full control over the cancel action (since we get no
+	 * callback if the user clicks outside the modal, for instance, but it
+	 * dismisses the modal).
 	 */
-	componentDidMount() {
-		// Reset our state
-		this.setState({didClickPrimaryButton: false});
-
-		var modalSettings = this.props.cancelable ? {} : {
+	componentWillEnter(callback) {
+		$("#" + InnerModalViewId).on("shown.bs.modal", callback);
+		$("#" + InnerModalViewId).modal({
 			keyboard: false,
 			backdrop: "static"
-		};
-
-		$("#" + ModalViewId).modal(modalSettings);
-
-		/*
-		 * After dismiss, call the dismiss handler, passing in whether or not
-		 * the primary button was used to dismiss.
-		 */
-		var savedThis = this;
-		$("#" + ModalViewId).on("hidden.bs.modal", e => {
-			if (savedThis.props.afterDismiss) {
-				savedThis.props.afterDismiss(savedThis.state
-					.didClickPrimaryButton);
-			}
 		});
 	}
 
-	/*
-	 * If there's an onPrimaryButtonClicked handler, call that and pass in our
-	 * hide function.  Otherwise, just hide ourselves immediately.
-	 */
+	// Call our given onConfirm handler when the primary button is clicked
 	onSubmit(e) {
 		e.preventDefault();
+		this.props.onConfirm();
+	}
 
-		this.setState({didClickPrimaryButton: true});
-		if (this.props.onPrimaryButtonClicked) {
-			this.props.onPrimaryButtonClicked(this.hide);
-		} else {
-			this.hide();
+	// Call our given onCancel handler when the cancel button or "X" are clicked
+	onCancel() {
+		if (this.props.onCancel) {
+			this.props.onCancel();
 		}
 	}
 
-	// Hides the modal
-	hide() {
-		$("#" + ModalViewId).modal("hide");
+	// Animate out on unmount, calling our dismiss handler, if any
+	componentWillLeave(callback) {
+		var savedThis = this;
+		$("#" + InnerModalViewId).on("hidden.bs.modal", () => {
+			if (savedThis.props.onModalDismissed) {
+				savedThis.props.onModalDismissed();
+			}
+			callback();
+		});
+		$("#" + InnerModalViewId).modal("hide");
 	}
 
 	// Render a small Bootstrap modal view
 	render() {
 		var classNames = "modal-dialog" + (this.props.small ? " modal-sm" : "");
+		var cancelable = this.props.cancelable ? true : false;
+
 		return (
-			<div className="modal fade" id={ModalViewId} tabIndex="-1"
+			<div className="modal fade" id={InnerModalViewId} tabIndex="-1"
 				role="dialog" aria-labelledby={this.props.title}>
 			    <div className={classNames} role="document">
 			        <div className="modal-content">
-			            <form id="hi" onSubmit={this.onSubmit}>
+			            <form onSubmit={this.onSubmit}>
 
 			            	<div className="modal-header">
 
 			            		{/* Add an "X" if this is cancel-able */}
-			            		{!this.props.cancelable ? null :
+			            		<Visibility visible={cancelable}>
 			            			<button type="button" className="close"
-			            			data-dismiss="modal" aria-label="Close">
+			            			onClick={this.onCancel} aria-label="Close">
 			            				<span aria-hidden="true">&times;</span>
 			            			</button>
-			            		}
+			            		</Visibility>
 
 			            	    <h4 className="modal-title">
 			            	    	{this.props.title}
@@ -112,10 +127,11 @@ class ModalView extends Component {
 			            	<div className="modal-footer">
 
 			            		{/* Add "Cancel" if this is cancel-able */}
-			            		{!this.props.cancelable ? null :
-			            			<button type="button" data-dismiss="modal"
+			            		<Visibility visible={cancelable}>
+			            			<button type="button"
+			            			onClick={this.onCancel}
 			            			className="btn btn-default">Cancel</button>
-			            		}
+			            		</Visibility>
 
 			            	    <button type="submit"
 			            	    	id="modalViewPrimaryButton"
@@ -137,16 +153,13 @@ class ModalView extends Component {
  * PROPTYPES
  * ------------
  * title - the title of the modal, displayed in Bold at the top
- * onPrimaryButtonClicked - an optional function called when the primary modal
- * 						button is clicked.  This function is called *before* the
- *						modal is dismissed, and allows the client to e.g.
- *						validate data before dismissing the modal.  This handler
- *						is passed a "dismiss" handler that can be called if the
- *						client wishes to dismiss the modal.
- * afterDismiss - an optional function called after the modal has dismissed.
- *					This function is passed 1 parameter, a boolean indicating
- *					whether or not the dismiss was caused by the user clicking
- *					the primary button.
+ * visible - whether the modal is visible or not.  Fades in and out when this
+ *			changes.
+ * onConfirm - a required function called when the primary modal button is
+ *				clicked.
+ * onCancel - an optional function called when the modal is cancelled.  This
+ *				is only relevant if the modal is cancelable.
+ * onModalDismissed - an optional function called after the modal is dismissed.
  * cancelable - whether the user should be able to close out a different way
  * 				besides the primary button.  If this is true, adds a "Cancel"
  *				button, an "X" in the top right, and allows exiting by clicking
@@ -158,8 +171,10 @@ class ModalView extends Component {
  */
 ModalView.propTypes = {
 	title: PropTypes.string.isRequired,
-	onPrimaryButtonClicked: PropTypes.func,
-	afterDismiss:PropTypes.func,
+	visible: PropTypes.bool.isRequired,
+	onConfirm: PropTypes.func.isRequired,
+	onCancel: PropTypes.func,
+	onModalDismissed: PropTypes.func,
 	cancelable: PropTypes.bool,
 	small: PropTypes.bool,
 	primaryButtonText: PropTypes.string.isRequired,
