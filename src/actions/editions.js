@@ -8,13 +8,16 @@
 
  import { fetchAllNewspaperEditions, 
  		createNewspaperEditionWithName,
- 		deleteNewspaperEdition } from "../serverAPI";
+ 		deleteNewspaperEdition,
+ 		setEditionPublished } from "../serverAPI";
  import { browserHistory } from "react-router";
  import {
 	FETCHED_EDITIONS_SUCCESS, SELECT_EDITION, CREATED_EDITION_SUCCESS,
 	DELETED_EDITION_SUCCESS, FETCHED_EDITIONS_ERROR, FETCH_EDITIONS,
 	SHOW_CREATE_EDITION_MODAL_VIEW, HIDE_CREATE_EDITION_MODAL_VIEW,
-	SHOW_DELETE_EDITION_MODAL_VIEW, HIDE_DELETE_EDITION_MODAL_VIEW
+	SHOW_DELETE_EDITION_MODAL_VIEW, HIDE_DELETE_EDITION_MODAL_VIEW,
+	SHOW_TOGGLE_EDITION_PUBLISHED_MODAL_VIEW,
+	HIDE_TOGGLE_EDITION_PUBLISHED_MODAL_VIEW, TOGGLED_EDITION_PUBLISHED_SUCCESS
  } from "../constants";
 
 /*
@@ -122,6 +125,43 @@ function deletedEditionSuccess(id) {
 		type: DELETED_EDITION_SUCCESS,
 		payload: {
 			id
+		}
+	}
+}
+
+// ACTION: show the modal for publishing/unpublishing an edition
+export function showToggleEditionPublishedModalView() {
+	return {
+		type: SHOW_TOGGLE_EDITION_PUBLISHED_MODAL_VIEW
+	}
+}
+
+// ACTION: hide the modal for publishing/unpublishing an edition
+export function hideToggleEditionPublishedModalView() {
+	return {
+		type: HIDE_TOGGLE_EDITION_PUBLISHED_MODAL_VIEW
+	}
+}
+
+// ACTION: publish/unpublish the given edition on the server
+export function toggleEditionPublished(edition) {
+	return dispatch => {
+		return setEditionPublished(edition, !edition.get("isPublished"))
+			.then(updatedEdition => {
+			dispatch(toggledEditionPublishedSuccess(updatedEdition));
+		});
+	}
+}
+
+/*
+ * ACTION: the given edition had its published status updated (the given object
+ * is the updated object).
+ */
+function toggledEditionPublishedSuccess(updatedEdition) {
+	return {
+		type: TOGGLED_EDITION_PUBLISHED_SUCCESS,
+		payload: {
+			updatedEdition
 		}
 	}
 }

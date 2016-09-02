@@ -7,9 +7,11 @@
  */
 
 import { connect } from "react-redux";
-import { deleteEdition, selectNewestEdition,
+import { deleteEdition, selectNewestEdition, toggleEditionPublished,
 		showDeleteEditionModalView,
-		hideDeleteEditionModalView } from "../actions/editions";
+		hideDeleteEditionModalView,
+		showToggleEditionPublishedModalView,
+		hideToggleEditionPublishedModalView } from "../actions/editions";
 import NewspaperEditionView from "../components/NewspaperEditionView";
 
 /* 
@@ -17,14 +19,16 @@ import NewspaperEditionView from "../components/NewspaperEditionView";
  * -----------------------
  * A function that takes the current Redux state and returns an object
  * that is set as the edition container's props.  The container needs the
- * Edition object to display.
+ * Edition object to display and info about visible modals.
  * -----------------------
  */
 const mapStateToProps = (state, ownProps) => {
 	return {
 		edition: state.editionsInfo.editions[ownProps.params.id],
 		deleteEditionModalViewVisible: state.editionsInfo.status
-			.deleteEditionModalViewVisible
+			.deleteEditionModalViewVisible,
+		toggleEditionPublishedModalViewVisible: state.editionsInfo.status
+			.toggleEditionPublishedModalViewVisible
 	}
 }
 
@@ -49,6 +53,15 @@ const mapDispatchToProps = dispatch => {
 		},
 		hideDeleteEditionModalView: () => {
 			return dispatch(hideDeleteEditionModalView());
+		},
+		toggleEditionPublished: edition => {
+			return dispatch(toggleEditionPublished(edition));
+		},
+		showToggleEditionPublishedModalView: () => {
+			return dispatch(showToggleEditionPublishedModalView());
+		},
+		hideToggleEditionPublishedModalView: () => {
+			return dispatch(hideToggleEditionPublishedModalView());
 		}
 	}
 }

@@ -13,26 +13,34 @@ import ModalView from "./ModalView";
 import Visibility from "./Visibility";
 import "../stylesheets/NewspaperEditionView.css";
 
+// TODO: prevent publish modal from changing on publish
 /*
  * STATE
  * --------------
  * isDeletingEdition - whether we're currently deleting an edition on the server
  * deleteEditionError - an error (if any) from the most recent delete attempt
  * didDeleteEdition - whether or not the user confirmed the edition deletion
+ * isTogglingEditionPublished - whether we're changing the "published" status
+ * togglingEditionPublishedError - an error (if any) from the most recent
+ *                              attempt to change the published status
  * --------------
  */
-const defaultProps = {
+const defaultState = {
     isDeletingEdition: false,
     deleteEditionError: null,
-    didDeleteEdition: false
+    didDeleteEdition: false,
+    isTogglingEditionPublished: false,
+    toggleEditionPublishedError: null
 }
 
 class NewspaperEditionView extends Component {
 
     constructor(props) {
         super(props);
-        this.state = defaultProps;
+        this.state = defaultState;
         this.onDeleteEdition = this.onDeleteEdition.bind(this);
+        this.onToggleEditionPublished =
+            this.onToggleEditionPublished.bind(this);
     }
 
     // If the user confirms the deletion, call our delete handler
@@ -51,6 +59,28 @@ class NewspaperEditionView extends Component {
             savedThis.setState({
                 isDeletingEdition: false,
                 deleteEditionError: error
+            });
+        });
+    }
+
+    // If the user confirms the publish/unpublish change, call our handler
+    onToggleEditionPublished() {
+        this.setState({
+            isTogglingEditionPublished: true,
+            toggleEditionPublishedError: null
+        });
+
+        var savedThis = this;
+        this.props.toggleEditionPublished(this.props.edition).then(() => {
+            savedThis.setState({
+                isTogglingEditionPublished: false,
+                toggleEditionPublishedError: null
+            });
+            savedThis.props.hideToggleEditionPublishedModalView();
+        }, error => {
+            savedThis.setState({
+                isTogglingEditionPublished: false,
+                togglingEditionPublishedError: error
             });
         });
     }
@@ -75,7 +105,9 @@ class NewspaperEditionView extends Component {
                         <span className="hidden-xs">Add Section</span>
                     </button>
                     <button type="button" id="publishEditionButton"
-                        className={buttonClassNames}>
+                        className={buttonClassNames}
+                        onClick={this.props
+                            .showToggleEditionPublishedModalView}>
                         <span className="glyphicon glyphicon-send"></span>
                         <span className="hidden-xs">
                             {isPublished ? "Unpublish" : "Publish"}
@@ -129,6 +161,30 @@ class NewspaperEditionView extends Component {
         )
     }
 
+    // Returns the modal displayed to publish/unpublish an edition
+    toggleEditionPublishedModalView() {
+        var modalTitle = "Confirm " +
+            (this.props.edition.get("isPublished") ? "Unpublish" : "Publish");
+        var confirmButtonTitle = this.props.edition.get("isPublished") ?
+            "Unpublish" : "Publish";
+        var publishStatus = confirmButtonTitle.toLowerCase();
+
+        return (
+            <ModalView title={modalTitle} small cancelable
+                visible={this.props.toggleEditionPublishedModalViewVisible}
+                onConfirm={this.onToggleEditionPublished}
+                onCancel={this.props.hideToggleEditionPublishedModalView}
+                onDismissed={this.setState.bind(this, {
+                    toggleEditionPublishedError: null
+                })}
+                primaryButtonText={this.state.isTogglingEditionPublished ?
+                    confirmButtonTitle + "ing..." : confirmButtonTitle}
+                primaryButtonDisabled={this.state.isTogglingEditionPublished}>
+                Are you sure you want to {publishStatus} this edition?
+            </ModalView>
+        )
+    }
+
   	render() {
         return (
             <div>
@@ -141,13 +197,17 @@ class NewspaperEditionView extends Component {
                 {(() => {
                     if (!this.props.edition) return null;
                     return (
-                        <div className="panel panel-default">
-                            <div className="panel-heading">
-                                {this.editionPanelTitle()}
-                            </div>
-                            <div className="panel-body">
-                                <div className="row">
+                        <div>
+                            {this.toggleEditionPublishedModalView()}
 
+                            <div className="panel panel-default">
+                                <div className="panel-heading">
+                                    {this.editionPanelTitle()}
+                                </div>
+                                <div className="panel-body">
+                                    <div className="row">
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -168,6 +228,12 @@ class NewspaperEditionView extends Component {
  * selectNewestEdition - a function that routes to the newest edition
  * showDeleteEditionModalView - a function that makes the delete modal visible
  * hideDeleteEditionModalView - a function that makes the delete modal hidden
+ * toggleEditionPublished - a function that returns a promise that toggles the
+ *                          published status of the given edition
+ * showToggleEditionPublishedModalView - a function that makes the publish/
+ *                                  unpublish modal visible.
+ * hideToggleEditionPublishedModalView - a function that makes the publish/
+ *                                  unpublish modal hidden.
  * --------------
  */
 NewspaperEditionView.propTypes = {
@@ -176,7 +242,10 @@ NewspaperEditionView.propTypes = {
     deleteEdition: PropTypes.func.isRequired,
     selectNewestEdition: PropTypes.func.isRequired,
     showDeleteEditionModalView: PropTypes.func.isRequired,
-    hideDeleteEditionModalView: PropTypes.func.isRequired
+    hideDeleteEditionModalView: PropTypes.func.isRequired,
+    toggleEditionPublished: PropTypes.func.isRequired,
+    showToggleEditionPublishedModalView: PropTypes.func.isRequired,
+    hideToggleEditionPublishedModalView: PropTypes.func.isRequired
 };
 
 export default NewspaperEditionView;

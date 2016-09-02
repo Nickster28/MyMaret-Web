@@ -3,7 +3,9 @@ import {
 	FETCHED_EDITIONS_SUCCESS, SELECT_EDITION, CREATED_EDITION_SUCCESS,
 	DELETED_EDITION_SUCCESS, FETCHED_EDITIONS_ERROR, FETCH_EDITIONS,
 	SHOW_CREATE_EDITION_MODAL_VIEW, HIDE_CREATE_EDITION_MODAL_VIEW,
-	SHOW_DELETE_EDITION_MODAL_VIEW, HIDE_DELETE_EDITION_MODAL_VIEW
+	SHOW_DELETE_EDITION_MODAL_VIEW, HIDE_DELETE_EDITION_MODAL_VIEW,
+	SHOW_TOGGLE_EDITION_PUBLISHED_MODAL_VIEW,
+	HIDE_TOGGLE_EDITION_PUBLISHED_MODAL_VIEW, TOGGLED_EDITION_PUBLISHED_SUCCESS
 } from "../constants";
 
 // Map of Edition object IDs to the Edition object
@@ -23,6 +25,11 @@ function editions(state = {}, action) {
 			var newEditionsMap = Object.assign({}, state);
 			delete newEditionsMap[action.payload.id];
 			return newEditionsMap;
+		case TOGGLED_EDITION_PUBLISHED_SUCCESS:
+			var newEditionsMap = Object.assign({}, state);
+			newEditionsMap[action.payload.updatedEdition.id] =
+				action.payload.updatedEdition;
+			return newEditionsMap;
 		default:
 			return state;
 	}
@@ -33,7 +40,8 @@ function status(state = {}, action) {
 	return combineReducers({
 		isFetchingEditions,
 		createEditionModalViewVisible,
-		deleteEditionModalViewVisible
+		deleteEditionModalViewVisible,
+		toggleEditionPublishedModalViewVisible
 	})(state, action);
 }
 
@@ -68,6 +76,18 @@ function deleteEditionModalViewVisible(state = false, action) {
 		case SHOW_DELETE_EDITION_MODAL_VIEW:
 			return true;
 		case HIDE_DELETE_EDITION_MODAL_VIEW:
+			return false;
+		default:
+			return state;
+	}
+}
+
+// Whether or not the modal to publish/unpublish an edition is currently visible
+function toggleEditionPublishedModalViewVisible(state = false, action) {
+	switch (action.type) {
+		case SHOW_TOGGLE_EDITION_PUBLISHED_MODAL_VIEW:
+			return true;
+		case HIDE_TOGGLE_EDITION_PUBLISHED_MODAL_VIEW:
 			return false;
 		default:
 			return state;
