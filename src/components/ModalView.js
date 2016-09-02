@@ -109,12 +109,19 @@ class InnerModalView extends Component {
 			            	<div className="modal-header">
 
 			            		{/* Add an "X" if this is cancel-able */}
-			            		<Visibility visible={cancelable}>
-			            			<button type="button" className="close"
-			            			onClick={this.onCancel} aria-label="Close">
-			            				<span aria-hidden="true">&times;</span>
-			            			</button>
-			            		</Visibility>
+			            		<Visibility visible={cancelable}
+			            			createElement={() => {
+			            				return (
+			            					<button type="button"
+			            						className="close"
+			            						onClick={this.onCancel}
+			            						aria-label="Close">
+			            							<span aria-hidden="true">
+			            								&times;
+			            							</span>
+			            					</button>
+			            				);
+			            			}} />
 
 			            	    <h4 className="modal-title">
 			            	    	{this.props.title}
@@ -128,11 +135,16 @@ class InnerModalView extends Component {
 			            	<div className="modal-footer">
 
 			            		{/* Add "Cancel" if this is cancel-able */}
-			            		<Visibility visible={cancelable}>
-			            			<button type="button"
-			            			onClick={this.onCancel}
-			            			className="btn btn-default">Cancel</button>
-			            		</Visibility>
+			            		<Visibility visible={cancelable}
+			            			createElement={() => {
+			            				return (
+			            					<button type="button"
+			            					onClick={this.onCancel}
+			            					className="btn btn-default">
+			            						Cancel
+			            					</button>
+			            				);
+			            		}} />
 
 			            	    <button type="submit"
 			            	    	id="modalViewPrimaryButton"

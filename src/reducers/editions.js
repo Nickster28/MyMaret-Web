@@ -22,14 +22,14 @@ function editions(state = {}, action) {
 				[action.payload.edition.id]: action.payload.edition
 			});
 		case DELETED_EDITION_SUCCESS:
-			var newEditionsMap = Object.assign({}, state);
-			delete newEditionsMap[action.payload.id];
-			return newEditionsMap;
+			let smallerEditionsMap = Object.assign({}, state);
+			delete smallerEditionsMap[action.payload.id];
+			return smallerEditionsMap;
 		case TOGGLED_EDITION_PUBLISHED_SUCCESS:
-			var newEditionsMap = Object.assign({}, state);
-			newEditionsMap[action.payload.updatedEdition.id] =
+			let updatedEditionsMap = Object.assign({}, state);
+			updatedEditionsMap[action.payload.updatedEdition.id] =
 				action.payload.updatedEdition;
-			return newEditionsMap;
+			return updatedEditionsMap;
 		default:
 			return state;
 	}

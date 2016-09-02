@@ -1,0 +1,5 @@
+/* Spacing above/below delete modal error message */
+#confirmationModalViewError {
+    margin-bottom: 0px;
+    margin-top: 10px;
+}
