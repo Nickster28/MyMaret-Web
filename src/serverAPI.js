@@ -61,6 +61,7 @@ export function isValidNewspaperEditionName(name) {
 export function fetchAllNewspaperEditions() {
 	var editionQuery = new Parse.Query(NewspaperEdition);
 	editionQuery.descending("createdAt");
+	editionQuery.include("sections");
 	return editionQuery.find();
 }
 
