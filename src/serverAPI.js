@@ -70,7 +70,7 @@ export function fetchAllNewspaperEditions() {
  */
 export function createNewspaperEditionWithName(editionName) {
 	var edition = new NewspaperEdition();
-	return edition.save({editionName, isPublished: false});
+	return edition.save({editionName});
 }
 
 // Returns a promise that deletes the given edition from the server
