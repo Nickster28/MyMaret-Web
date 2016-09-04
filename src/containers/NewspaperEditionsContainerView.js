@@ -9,7 +9,7 @@
 
 import { connect } from "react-redux";
 import { fetchEditions, selectEditionWithId, selectNewestEdition,
-		showCreateEditionModalView, createEdition,
+		createEdition, deleteEdition, hideDeleteEditionModalView,
 		hideCreateEditionModalView } from "../actions/editions";
 import NewspaperEditionsView from "../components/NewspaperEditionsView";
 
@@ -34,7 +34,11 @@ const mapStateToProps = (state, ownProps) => {
 		isFetching: state.editionsInfo.status.isFetchingEditions,
 		fetchError: state.editionsInfo.errors.fetchEditionsError,
 		createEditionModalViewVisible: state.editionsInfo.status
-			.createEditionModalViewVisible
+			.createEditionModalViewVisible,
+		deleteEditionModalViewVisible: state.editionsInfo.status
+			.deleteEditionModalViewVisible,
+		edition: state.editionsInfo
+			.editions[state.editionsInfo.selectedEditionId]
 	};
 }
 
@@ -65,6 +69,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		},
 		hideCreateEditionModalView: () => {
 			return dispatch(hideCreateEditionModalView());
+		},
+		deleteEdition: edition => {
+			return dispatch(deleteEdition(edition));
+		},
+		hideDeleteEditionModalView: () => {
+			return dispatch(hideDeleteEditionModalView());
 		}
 	}
 }

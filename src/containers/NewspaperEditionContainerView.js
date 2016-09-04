@@ -7,9 +7,8 @@
  */
 
 import { connect } from "react-redux";
-import { deleteEdition, selectNewestEdition, toggleEditionPublished,
+import { selectNewestEdition, toggleEditionPublished,
 		showDeleteEditionModalView,
-		hideDeleteEditionModalView,
 		showToggleEditionPublishedModalView,
 		hideToggleEditionPublishedModalView } from "../actions/editions";
 import NewspaperEditionView from "../components/NewspaperEditionView";
@@ -25,8 +24,6 @@ import NewspaperEditionView from "../components/NewspaperEditionView";
 const mapStateToProps = (state, ownProps) => {
 	return {
 		edition: state.editionsInfo.editions[ownProps.params.id],
-		deleteEditionModalViewVisible: state.editionsInfo.status
-			.deleteEditionModalViewVisible,
 		toggleEditionPublishedModalViewVisible: state.editionsInfo.status
 			.toggleEditionPublishedModalViewVisible
 	}
@@ -42,17 +39,8 @@ const mapStateToProps = (state, ownProps) => {
  */
 const mapDispatchToProps = dispatch => {
 	return {
-		deleteEdition: edition => {
-			return dispatch(deleteEdition(edition));
-		},
 		selectNewestEdition: () => {
 			return dispatch(selectNewestEdition());
-		},
-		showDeleteEditionModalView: () => {
-			return dispatch(showDeleteEditionModalView());
-		},
-		hideDeleteEditionModalView: () => {
-			return dispatch(hideDeleteEditionModalView());
 		},
 		toggleEditionPublished: edition => {
 			return dispatch(toggleEditionPublished(edition));
@@ -62,6 +50,9 @@ const mapDispatchToProps = dispatch => {
 		},
 		hideToggleEditionPublishedModalView: () => {
 			return dispatch(hideToggleEditionPublishedModalView());
+		},
+		showDeleteEditionModalView: () => {
+			return dispatch(showDeleteEditionModalView());
 		}
 	}
 }

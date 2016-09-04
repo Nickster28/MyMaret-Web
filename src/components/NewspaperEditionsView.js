@@ -14,6 +14,7 @@ import DocumentTitle from "react-document-title";
 import EditionsDropdownView from "./EditionsDropdownView";
 import CreateEditionModalView from "./CreateEditionModalView";
 import ModalView from "./ModalView";
+import ConfirmationModalView from "./ConfirmationModalView";
 import Loading from "react-loading-animation";
 import Config from "../config";
 import "../stylesheets/NewspaperEditionsView.css";
@@ -191,6 +192,23 @@ class NewspaperEditionsView extends Component {
                         the main editions page instead.
                     </ModalView>
 
+                    {/* Displayed when the user wants to delete an edition */}
+                    <ConfirmationModalView title="Confirm Deletion"
+                        visible={this.props.deleteEditionModalViewVisible}
+                        primaryButtonText="Delete"
+                        primaryButtonConfirmingText="Deleting..."
+                        onConfirm={() => {
+                            return this.props.deleteEdition(this.props.edition);
+                        }}
+                        onHide={this.props.hideDeleteEditionModalView}
+                        onDismissed={(didConfirm) => {
+                            if (didConfirm) {
+                                this.props.selectNewestEdition();
+                            }
+                        }}>
+                        Are you sure you want to delete this edition?
+                    </ConfirmationModalView>
+
                     {/* Display the edition's info within a single column */}
     				<div className="row">
     					<div className="col-xs-12">
@@ -233,6 +251,10 @@ class NewspaperEditionsView extends Component {
  *                  a promise creating that edition object.
  * showCreateEditionModalView - a function that makes the modal visible
  * hideCreateEditionModalView - a function that hides the modal view
+ * deleteEditionModalViewVisible - whether the delete modal is visible
+ * deleteEdition - a function that deletes the given edition from the server
+ * hideDeleteEditionModalView - a function that makes the delete modal hidden
+ * edition - the edition object currently selected (or none if there is none)
  * ------------
  */
 NewspaperEditionsView.propTypes = {
@@ -252,7 +274,11 @@ NewspaperEditionsView.propTypes = {
     fetchEditions: PropTypes.func.isRequired,
     createEdition: PropTypes.func.isRequired,
     showCreateEditionModalView: PropTypes.func.isRequired,
-    hideCreateEditionModalView: PropTypes.func.isRequired
+    hideCreateEditionModalView: PropTypes.func.isRequired,
+    deleteEditionModalViewVisible: PropTypes.bool.isRequired,
+    deleteEdition: PropTypes.func.isRequired,
+    hideDeleteEditionModalView: PropTypes.func.isRequired,
+    edition: PropTypes.object
 }
 
 export default NewspaperEditionsView;

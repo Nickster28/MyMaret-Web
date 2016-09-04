@@ -59,10 +59,10 @@ export function isValidNewspaperEditionName(name) {
  * order from newest to oldest.
  */
 export function fetchAllNewspaperEditions() {
-	var editionQuery = new Parse.Query(NewspaperEdition);
-	editionQuery.descending("createdAt");
-	editionQuery.include("sections");
-	return editionQuery.find();
+	var editionsQuery = new Parse.Query(NewspaperEdition);
+	editionsQuery.descending("createdAt");
+	editionsQuery.include("sections");
+	return editionsQuery.find();
 }
 
 /*
@@ -71,7 +71,11 @@ export function fetchAllNewspaperEditions() {
  */
 export function createNewspaperEditionWithName(editionName) {
 	var edition = new NewspaperEdition();
-	return edition.save({editionName});
+	return edition.save({editionName}).then(newEdition => {
+		var editionQuery = new Parse.Query(NewspaperEdition);
+		editionQuery.include("sections");
+		return editionQuery.get(newEdition.id);
+	});
 }
 
 // Returns a promise that deletes the given edition from the server

@@ -58,27 +58,6 @@ class NewspaperEditionView extends Component {
         )
     }
 
-    // Returns the modal displayed to confirm edition deletion
-    deleteModalView() {
-        return (
-            <ConfirmationModalView title="Confirm Deletion"
-                visible={this.props.deleteEditionModalViewVisible}
-                primaryButtonText="Delete"
-                primaryButtonConfirmingText="Deleting..."
-                onConfirm={() => {
-                    return this.props.deleteEdition(this.props.edition);
-                }}
-                onHide={this.props.hideDeleteEditionModalView}
-                onDismissed={(didConfirm) => {
-                    if (didConfirm) {
-                        this.props.selectNewestEdition();
-                    }
-                }}>
-                Are you sure you want to delete this edition?
-            </ConfirmationModalView>
-        );
-    }
-
     // Returns the modal displayed to publish/unpublish an edition
     toggleEditionPublishedModalView() {
         var modalTitle = "Confirm " +
@@ -120,33 +99,24 @@ class NewspaperEditionView extends Component {
     }
 
   	render() {
+        if (!this.props.edition) {
+            return null;
+        }
+
         return (
             <div>
-                {/* Modal shown to confirm deletion of the edition.  Always
-                    visible, even if there's no edition, since the edition may
-                    be deleted out from under it and we need it to stay visible.
-                    */}
-                {this.deleteModalView()}
+                {this.toggleEditionPublishedModalView()}
 
-                {(() => {
-                    if (!this.props.edition) return null;
-                    return (
-                        <div>
-                            {this.toggleEditionPublishedModalView()}
-
-                            <div className="panel panel-default">
-                                <div className="panel-heading">
-                                    {this.editionPanelTitle()}
-                                </div>
-                                <div className="panel-body">
-                                    <div className="row">
-                                        {this.sectionElements()}
-                                    </div>
-                                </div>
-                            </div>
+                <div className="panel panel-default">
+                    <div className="panel-heading">
+                        {this.editionPanelTitle()}
+                    </div>
+                    <div className="panel-body">
+                        <div className="row">
+                            {this.sectionElements()}
                         </div>
-                    );
-                })()}
+                    </div>
+                </div>
             </div>
         );
   	}
@@ -157,29 +127,26 @@ class NewspaperEditionView extends Component {
  * --------------
  * edition - the edition object to display info about (could be none if
  *              the specified edition ID is invalid)
- * deleteEditionModalViewVisible - whether the delete modal is visible
- * deleteEdition - a function that deletes the given edition from the server
+ * toggleEditionPublishedModalViewVisible - whether the publish/unpublish modal
+ *                                          is visible.
  * selectNewestEdition - a function that routes to the newest edition
- * showDeleteEditionModalView - a function that makes the delete modal visible
- * hideDeleteEditionModalView - a function that makes the delete modal hidden
  * toggleEditionPublished - a function that returns a promise that toggles the
  *                          published status of the given edition
  * showToggleEditionPublishedModalView - a function that makes the publish/
  *                                  unpublish modal visible.
  * hideToggleEditionPublishedModalView - a function that makes the publish/
  *                                  unpublish modal hidden.
+ * showDeleteEditionModalView - a function that makes the delete modal visible
  * --------------
  */
 NewspaperEditionView.propTypes = {
 	edition: PropTypes.object,
-    deleteEditionModalViewVisible: PropTypes.bool.isRequired,
-    deleteEdition: PropTypes.func.isRequired,
+    toggleEditionPublishedModalViewVisible: PropTypes.bool.isRequired,
     selectNewestEdition: PropTypes.func.isRequired,
-    showDeleteEditionModalView: PropTypes.func.isRequired,
-    hideDeleteEditionModalView: PropTypes.func.isRequired,
     toggleEditionPublished: PropTypes.func.isRequired,
     showToggleEditionPublishedModalView: PropTypes.func.isRequired,
-    hideToggleEditionPublishedModalView: PropTypes.func.isRequired
+    hideToggleEditionPublishedModalView: PropTypes.func.isRequired,
+    showDeleteEditionModalView: PropTypes.func.isRequired
 };
 
 export default NewspaperEditionView;
