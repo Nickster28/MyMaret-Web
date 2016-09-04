@@ -1,4 +1,6 @@
 import React, { Component, PropTypes } from "react";
+import NewspaperArticleView from "./NewspaperArticleView";
+
 import "../stylesheets/NewspaperSectionView.css";
 
 class NewspaperSectionView extends Component {
@@ -10,7 +12,7 @@ class NewspaperSectionView extends Component {
     }
 
     onAddArticle() {
-        alert("Hi");
+
     }
 
     onDeleteSection() {
@@ -30,11 +32,14 @@ class NewspaperSectionView extends Component {
                     </h3>
                 </div>
                 <ul className="list-group">
-                    <li className="list-group-item">{"Item " + 1}</li>
-                    <li className="list-group-item">{"Item " + 2}</li>
-                    <li className="list-group-item">{"Item " + 3}</li>
-                    <li className="list-group-item">{"Item " + 4}</li>
-                    <li className="list-group-item">{"Item " + 5}</li>
+                    {this.props.section.get("articles").map(article => {
+                        return (
+                            <li className="list-group-item">
+                                <NewspaperArticleView article={{"TODO": 1}} />
+                            </li>
+                        );
+                    })}
+
                     <a id="addArticleRow" className="list-group-item"
                         onClick={this.onAddArticle}>
                         <span id="createEditionPlus"
@@ -49,7 +54,7 @@ class NewspaperSectionView extends Component {
 }
 
 NewspaperSectionView.propTypes = {
-    section: PropTypes.object.isRequired
+    section: PropTypes.object
 }
 
 export default NewspaperSectionView;
