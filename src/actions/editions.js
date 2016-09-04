@@ -172,7 +172,7 @@ function toggledEditionPublishedSuccess(updatedEdition) {
  */
 export function selectEditionWithId(shouldRedirect, id) {
 	return (dispatch, getState) => {
-		if (id !== getState().editionsInfo.selectedEditionId) {
+		if (id && id !== getState().editionsInfo.selectedEditionId) {
 			dispatch({
 				type: SELECT_EDITION,
 				payload: {

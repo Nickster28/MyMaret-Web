@@ -47,6 +47,10 @@ class NewspaperEditionsView extends Component {
     // Check the latest status of our fetch, and our route pathname
     componentWillReceiveProps(nextProps) {
 
+        if (this.state.isInvalidEdition && nextProps.edition) {
+                this.setState({isInvalidEdition: false});
+        }
+
         var didFetch = (this.props.isFetching && !nextProps.isFetching) ||
             this.state.hasFetched;
 
@@ -76,10 +80,6 @@ class NewspaperEditionsView extends Component {
             } else if (this.isEditionDetailViewURL(nextProps.location.pathname)
                 && !nextProps.edition) {
                 this.setState({isInvalidEdition: true});
-
-            // If we changed to a non-invalid edition...
-            } else if (this.state.isInvalidEdition && nextProps.edition) {
-                this.setState({isInvalidEdition: false});
             }
         } 
     }
@@ -161,7 +161,7 @@ class NewspaperEditionsView extends Component {
                 <div className="alert alert-warning" role="alert">
                     <strong>Whoops! </strong>
                     We couldn't find that edition.  Please select another one
-                    from the dropdown up above.
+                    from the dropdown up above, or create a new one.
                 </div>
             );
         } else {
@@ -211,8 +211,8 @@ class NewspaperEditionsView extends Component {
                         onDismissed={(didConfirm) => {
                             if (didConfirm) {
                                 this.props.selectNewestEdition();
-                                this.setState({isDeletingEdition: false});
                             }
+                            this.setState({isDeletingEdition: false});
                         }}>
                         Are you sure you want to delete this edition?  This will
                         also delete all sections and articles in this edition.
