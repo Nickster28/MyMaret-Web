@@ -147,10 +147,10 @@ class NewspaperEditionsView extends Component {
         var savedThis = this;
         var isValidId = this.props.editionInfoNewestToOldest.find(info => {
                 return savedThis.props.params.id === info.id;
-            }) !== undefined;
+            }) !== undefined || this.props.selectedEditionId === null;
 
         return this.isEditionDetailViewURL(this.props.location.pathname) &&
-            doneFetching && !isValidId && !this.props.selectedEditionDeleted &&
+            doneFetching && !isValidId &&
             !this.state.showedInvalidEditionIdModal;
     }
 
@@ -220,9 +220,6 @@ class NewspaperEditionsView extends Component {
  *                          edition's name, id, and whether it's published.
  *                          Used primarily to configure the dropdown.
  * selectedEditionId - id of selected edition.  Used to update render.
- * selectedEditionDeleted - true/false whether the currently-selected edition
- *          was deleted. Used to make sure we don't display an error about an
- *          unknown edition when an edition is actually just being deleted.
  * isFetching - whether we are currently fetching editions from the server
  * fetchError - the error, if any, from the most recent fetch
  * createEditionModalViewVisible - whether the modal for creating editions is up
@@ -245,7 +242,6 @@ NewspaperEditionsView.propTypes = {
         isPublished: PropTypes.bool.isRequired
     }).isRequired).isRequired,
     selectedEditionId: PropTypes.string,
-    selectedEditionDeleted: PropTypes.bool.isRequired, // TODO: needed?
     isFetching: PropTypes.bool.isRequired,
     fetchError: PropTypes.shape({
         message: PropTypes.string.isRequired

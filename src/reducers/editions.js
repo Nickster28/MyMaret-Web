@@ -134,16 +134,12 @@ function selectedEditionId(state = null, action) {
 	switch (action.type) {
 		case SELECT_EDITION:
 			return action.payload.id;
-		default:
-			return state;
-	}
-}
-
-// The most recently-deleted edition id
-function lastDeletedEditionId(state = null, action) {
-	switch (action.type) {
 		case DELETED_EDITION_SUCCESS:
-			return action.payload.id;
+			if (action.payload.id === state) {
+				return null;
+			} else {
+				return state;
+			}
 		default:
 			return state;
 	}
@@ -153,7 +149,6 @@ function lastDeletedEditionId(state = null, action) {
 export default combineReducers({
 	editions,
 	editionIdsNewestToOldest,
-	lastDeletedEditionId,
 	errors,
 	status,
 	selectedEditionId

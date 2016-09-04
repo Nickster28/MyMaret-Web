@@ -31,8 +31,6 @@ const mapStateToProps = (state, ownProps) => {
 			}
 		}),
 		selectedEditionId: state.editionsInfo.selectedEditionId,
-		selectedEditionDeleted: state.editionsInfo.lastDeletedEditionId != null
-			&& state.editionsInfo.lastDeletedEditionId === ownProps.params.id,
 		isFetching: state.editionsInfo.status.isFetchingEditions,
 		fetchError: state.editionsInfo.errors.fetchEditionsError,
 		createEditionModalViewVisible: state.editionsInfo.status
