@@ -87,8 +87,9 @@ class NewspaperEditionsView extends Component {
     /*
      * METHOD: editionsToolbarItem
      * ----------------------------
-     * Returns: if we are fetching or errored, nothing.  If there are >0
-     * editions, the selection view.  Otherwise, a "Create Edition" button.
+     * Returns: if we haven't fetched, are fetching, or errored, nothing.  If
+     * there are >0 editions, the selection view.  Otherwise, a "Create Edition"
+     * button.
      */
     editionsToolbarItem() {
         var savedThis = this;
@@ -98,8 +99,9 @@ class NewspaperEditionsView extends Component {
                 savedThis.props.edition.id : null);
         });
 
-        // If we're fetching or errored, don't display anything
-        if (this.props.isFetching || this.props.fetchError) {
+        // If we haven't fetched, are fetching, or errored, show nothing
+        if (!this.state.hasFetched || this.props.isFetching
+            || this.props.fetchError) {
             return null;
 
         // If there are editions (or the selected on is invalid) show a dropdown
