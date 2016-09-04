@@ -47,7 +47,9 @@ class NewspaperEditionsView extends Component {
     // Check the latest status of our fetch, and our route pathname
     componentWillReceiveProps(nextProps) {
 
-        if (this.state.isInvalidEdition && nextProps.edition) {
+        // We're not invalid if we now have an edition or are at the main page
+        if ((this.state.isInvalidEdition && nextProps.edition) ||
+            this.isEditionsIndexURL(nextProps.location.pathname)) {
                 this.setState({isInvalidEdition: false});
         }
 
