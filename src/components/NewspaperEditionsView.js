@@ -13,7 +13,6 @@ import React, { Component, PropTypes } from "react";
 import DocumentTitle from "react-document-title";
 import EditionsDropdownView from "./EditionsDropdownView";
 import CreateEditionModalView from "./CreateEditionModalView";
-import ModalView from "./ModalView";
 import ConfirmationModalView from "./ConfirmationModalView";
 import Loading from "react-loading-animation";
 import Config from "../config";
@@ -24,17 +23,16 @@ import "../stylesheets/NewspaperEditionsView.css";
  * STATE
  * -------------
  * hasFetched - whether we have already fetched editions.
- * showedInvalidEditionIdModal - whether we have already showed the alert modal
- *                          for an invalid edition Id to the user.  Used to know
- *                          when to not make the modal visible.
  * isCreatingEdition - same as this.props.createEditionModalViewVisible, but
  *                      true through the modal's dismissal handling/animation.
+ * isInvalidEdition - whether the edition specified is invalid (and thus we
+ *                  should show an error).
  * -------------
  */
 const defaultState = {
     hasFetched: false,
-    showedInvalidEditionIdModal: false,
-    isCreatingEdition: false
+    isCreatingEdition: false,
+    isInvalidEdition: true
 };
 
 class NewspaperEditionsView extends Component {
@@ -65,7 +63,7 @@ class NewspaperEditionsView extends Component {
         /*
          * Else, if we're done fetching without an error, check if we need to
          * redirect to the latest edition (only if we're not currently creating
-         * an edition, which can cause new props).
+         * an edition, which can cause new props) or have an invalid edition.
          */
         } else if (didFetch && !nextProps.fetchError &&
             !this.state.isCreatingEdition) {
@@ -76,6 +74,15 @@ class NewspaperEditionsView extends Component {
             if (this.isEditionsIndexURL(nextProps.location.pathname) &&
                 nextProps.editionInfoNewestToOldest.length > 0) {
                 nextProps.selectNewestEdition();
+
+            // If we're viewing an edition, but it doesn't exist, it's invalid
+            } else if (this.isEditionDetailViewURL(nextProps.location.pathname)
+                && !nextProps.edition) {
+                this.setState({isInvalidEdition: true});
+
+            // If we changed to a non-invalid edition...
+            } else if (this.state.isInvalidEdition && nextProps.edition) {
+                this.setState({isInvalidEdition: false});
             }
         } 
     }
@@ -90,16 +97,15 @@ class NewspaperEditionsView extends Component {
         var savedThis = this;
         var selectedEditionIndex = this.props.editionInfoNewestToOldest
             .findIndex((elem, index) => {
-            return elem.id === savedThis.props.selectedEditionId;
+            return elem.id === (savedThis.props.edition ?
+                savedThis.props.edition.id : null);
         });
 
-        // If we're fetching, errored, or have an invalid selected ID...
-        if (this.props.isFetching || this.props.fetchError ||
-            (this.props.selectedEditionId != null &&
-                selectedEditionIndex === -1)) {
+        // If we're fetching or errored, don't display anything
+        if (this.props.isFetching || this.props.fetchError) {
             return null;
 
-        // If we have valid editions, show a dropdown
+        // If there are editions (or the selected on is invalid) show a dropdown
         } else if (this.props.editionInfoNewestToOldest.length > 0) {
             return (
                 <EditionsDropdownView editionInfoNewestToOldest={this.props
@@ -136,27 +142,32 @@ class NewspaperEditionsView extends Component {
         return match !== null && match[0] === url;
     }
 
-    /*
-     * Returns true if we're at /editions/edition/:id with an invalid id, and
-     * we haven't shown the error modal yet.
-     */
-    shouldDisplayInvalidEditionIdModal() {
-        var doneFetching = !this.props.isFetching && this.state.hasFetched &&
-            !this.props.fetchError;
-
+    // Returns what's displayed once we're done loading (error or children)
+    bodyElement() {
         /*
-         * Check if the ID the user provided is valid (which is only true
-         * If we're in a consistent state - aka what we're viewing is what is
-         * selected.  If that's not the case, we must be in the middle of a
-         * delete, and shouldn't show the modal.
+         * Prioritize fetchError first since if we get a fetch error we will
+         * also get an invalid edition error (since a fetch error also fulfills
+         * all the requirements of an invalid edition error).
          */
-        var isValidId = (this.props.edition !== undefined
-            || this.props.selectedEditionId === null) &&
-            this.props.params.id === this.props.selectedEditionId;
-
-        return this.isEditionDetailViewURL(this.props.location.pathname) &&
-            doneFetching && !isValidId &&
-            !this.state.showedInvalidEditionIdModal;
+        if (this.props.fetchError) {
+            return (
+                <div className="alert alert-danger" role="alert">
+                    <strong>Fetch error: </strong>
+                    {this.props.fetchError.message + "  "}
+                    Please try refreshing the page.
+                </div>
+            );
+        } else if (this.state.isInvalidEdition) {
+            return (
+                <div className="alert alert-warning" role="alert">
+                    <strong>Whoops! </strong>
+                    We couldn't find that edition.  Please select another one
+                    from the dropdown up above.
+                </div>
+            );
+        } else {
+            return this.props.children;
+        }
     }
 
   	render() {
@@ -182,19 +193,8 @@ class NewspaperEditionsView extends Component {
                             }
                             this.setState({isCreatingEdition: false});
                         }}
-                        onCreateEdition={this.props.createEdition}/>
-
-                    {/* Displayed when an id error occurs */}
-                    <ModalView title="Whoops!" primaryButtonText="OK" small
-                        visible={this.shouldDisplayInvalidEditionIdModal()}
-                        onConfirm={this.setState.bind(this, {
-                            showedInvalidEditionIdModal: true
-                        })}
-                        onDismissed={this.props.selectNewestEdition}>
-
-                        We couldn't find that edition.  We'll redirect you to
-                        the main editions page instead.
-                    </ModalView>
+                        onCreateEdition={this.props.createEdition}
+                    />
 
                     {/* Displayed when the user wants to delete an edition */}
                     <ConfirmationModalView title="Confirm Deletion"
@@ -214,21 +214,10 @@ class NewspaperEditionsView extends Component {
                         also delete all sections and articles in this edition.
                     </ConfirmationModalView>
 
-                    {/* Display the edition's info within a single column */}
-    				<div className="row">
-    					<div className="col-xs-12">
-                            <Loading isLoading={this.props.isFetching}>
-                                {!this.props.fetchError ? this.props.children :
-                                    <div className="alert alert-danger"
-                                        role="alert">
-                                        <strong>Fetch error: </strong>
-                                        {this.props.fetchError.message + "  "}
-                                        Please try refreshing the page.
-                                    </div>
-                                }
-                            </Loading>
-    					</div>
-    				</div>
+                    {/* Show our body element once we're done loading */}
+    				<Loading isLoading={this.props.isFetching}>
+                        {this.bodyElement()}
+                    </Loading>
     			</div>
     		</DocumentTitle>
     	)
@@ -242,7 +231,6 @@ class NewspaperEditionsView extends Component {
  *                          newest to oldest.  Each object should contain that
  *                          edition's name, id, and whether it's published.
  *                          Used primarily to configure the dropdown.
- * selectedEditionId - id of selected edition.  Used to update render.
  * isFetching - whether we are currently fetching editions from the server
  * fetchError - the error, if any, from the most recent fetch
  * createEditionModalViewVisible - whether the modal for creating editions is up
@@ -268,7 +256,6 @@ NewspaperEditionsView.propTypes = {
         id: PropTypes.string.isRequired,
         isPublished: PropTypes.bool.isRequired
     }).isRequired).isRequired,
-    selectedEditionId: PropTypes.string,
     isFetching: PropTypes.bool.isRequired,
     fetchError: PropTypes.shape({
         message: PropTypes.string.isRequired

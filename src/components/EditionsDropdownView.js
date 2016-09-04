@@ -59,7 +59,7 @@ class EditionsDropdownView extends Component {
 		 * /editions/edition/:id is replaced by /404.  We just need this
 		 * so there are no rendering errors preventing that replcacement)
 		 */
-		var selectedEditionName = "Loading...";
+		var selectedEditionName = "Select Edition";
 		if (this.props.selectedEditionIndex >= 0 &&
 			this.props.selectedEditionIndex < this.props
 			.editionInfoNewestToOldest.length) {

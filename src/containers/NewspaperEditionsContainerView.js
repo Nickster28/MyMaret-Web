@@ -31,7 +31,6 @@ const mapStateToProps = (state, ownProps) => {
 				isPublished: state.editionsInfo.editions[id].get("isPublished")
 			}
 		}),
-		selectedEditionId: state.editionsInfo.selectedEditionId,
 		isFetching: state.editionsInfo.status.isFetchingEditions,
 		fetchError: state.editionsInfo.errors.fetchEditionsError,
 		createEditionModalViewVisible: state.editionsInfo.status
