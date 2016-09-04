@@ -84,7 +84,6 @@ export function deleteNewspaperEdition(edition) {
 }
 
 // Returns a promise that updates the edition's published state
-// TOOD: make a cloud function
 export function setEditionPublished(edition, isPublished) {
 	return edition.save("isPublished", isPublished);
 }

@@ -9,7 +9,8 @@
 
 import { connect } from "react-redux";
 import { fetchEditions, selectEditionWithId, selectNewestEdition,
-		createEdition, deleteEdition, hideDeleteEditionModalView,
+		showCreateEditionModalView, createEdition, deleteEdition,
+		hideDeleteEditionModalView,
 		hideCreateEditionModalView } from "../actions/editions";
 import NewspaperEditionsView from "../components/NewspaperEditionsView";
 

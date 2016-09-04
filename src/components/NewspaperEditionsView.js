@@ -144,11 +144,15 @@ class NewspaperEditionsView extends Component {
         var doneFetching = !this.props.isFetching && this.state.hasFetched &&
             !this.props.fetchError;
 
-        // Check if the ID the user provided is valid
-        var savedThis = this;
-        var isValidId = this.props.editionInfoNewestToOldest.find(info => {
-                return savedThis.props.params.id === info.id;
-            }) !== undefined || this.props.selectedEditionId === null;
+        /*
+         * Check if the ID the user provided is valid (which is only true
+         * If we're in a consistent state - aka what we're viewing is what is
+         * selected.  If that's not the case, we must be in the middle of a
+         * delete, and shouldn't show the modal.
+         */
+        var isValidId = (this.props.edition !== undefined
+            || this.props.selectedEditionId === null) &&
+            this.props.params.id === this.props.selectedEditionId;
 
         return this.isEditionDetailViewURL(this.props.location.pathname) &&
             doneFetching && !isValidId &&
