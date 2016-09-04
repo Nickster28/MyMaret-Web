@@ -18,5 +18,5 @@
 /* Add pointer cursor and make the row gray whenever we hover over it */
 #addArticleRow:hover {
 	cursor: pointer;
-	background-color: #f5f5f5;
+	background-color: #fbfbfb;
 }
