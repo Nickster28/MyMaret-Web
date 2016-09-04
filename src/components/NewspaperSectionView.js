@@ -25,6 +25,7 @@ class NewspaperSectionView extends Component {
                 <div className="panel-heading">
                     <h3 className="panel-title">
                         {this.props.section.get("sectionName")}
+
                         <a id="deleteSectionButton"
                             onClick={this.onDeleteSection}>
                             <span className="glyphicon glyphicon-remove"></span>
@@ -32,6 +33,8 @@ class NewspaperSectionView extends Component {
                     </h3>
                 </div>
                 <ul className="list-group">
+
+                    {/* Make a row for each article */}
                     {this.props.section.get("articles").map(article => {
                         return (
                             <li className="list-group-item">
@@ -40,6 +43,7 @@ class NewspaperSectionView extends Component {
                         );
                     })}
 
+                    {/* Row to add a new article to this edition */}
                     <a id="addArticleRow" className="list-group-item"
                         onClick={this.onAddArticle}>
                         <span id="createEditionPlus"
@@ -54,7 +58,7 @@ class NewspaperSectionView extends Component {
 }
 
 NewspaperSectionView.propTypes = {
-    section: PropTypes.object
+    section: PropTypes.object.isRequired
 }
 
 export default NewspaperSectionView;
