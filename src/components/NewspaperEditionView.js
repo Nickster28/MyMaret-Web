@@ -9,6 +9,8 @@
 
 import React, { Component, PropTypes } from "react";
 import ConfirmationModalView from "./ConfirmationModalView";
+import NewspaperSectionView from "./NewspaperSectionView";
+
 import "../stylesheets/NewspaperEditionView.css";
 
 class NewspaperEditionView extends Component {
@@ -102,6 +104,21 @@ class NewspaperEditionView extends Component {
         );
     }
 
+    /*
+     * Returns a list of elements that display each section in this edition.
+     * The elements are styled with the bootstrap grid system, and shows 1
+     * section per row in xs, 2 in sm and md, and 3 in lg and above.
+     */
+    sectionElements() {
+        return this.props.edition.get("sections").map((section, i) => {
+            return (
+                <div key={i} className="col-xs-12 col-sm-6 col-lg-4">
+                    <NewspaperSectionView section={section}/>
+                </div>
+            )
+        });
+    }
+
   	render() {
         return (
             <div>
@@ -123,7 +140,7 @@ class NewspaperEditionView extends Component {
                                 </div>
                                 <div className="panel-body">
                                     <div className="row">
-
+                                        {this.sectionElements()}
                                     </div>
                                 </div>
                             </div>

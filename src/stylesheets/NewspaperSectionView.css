@@ -1,16 +1,22 @@
-a span.removeSectionButton {
+/* Push the delete button to the right and set the tint color to red */
+#deleteSectionButton {
 	color: red;
 	float: right;
 }
 
-a span.addArticleButton, a span.editSectionNameButton {
+/* Add pointer cursor when we hover over the delete button */
+#deleteSectionButton:hover {
+	cursor: pointer;
+}
+
+/* Center the "add article" row and set the tint color */
+#addArticleRow {
+	text-align: center;
 	color: #009444;
 }
 
-a span.editSectionNameButton {
-	margin-left: 10px;
-}
-
-.addArticleButton {
-	float:right;
+/* Add pointer cursor and make the row gray whenever we hover over it */
+#addArticleRow:hover {
+	cursor: pointer;
+	background-color: #f5f5f5;
 }
