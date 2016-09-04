@@ -23,16 +23,17 @@ import "../stylesheets/NewspaperEditionsView.css";
  * STATE
  * -------------
  * hasFetched - whether we have already fetched editions.
- * isCreatingEdition - same as this.props.createEditionModalViewVisible, but
- *                      true through the modal's dismissal handling/animation.
- * isInvalidEdition - whether the edition specified is invalid (and thus we
- *                  should show an error).
+ * isCreatingEdition - whether we're in the middle of a server create operation
+ * isInvalidEdition - whether the specified edition is invalid, in which case
+ *                  we should show an error.
+ * isDeletingEdition - whether we're in the middle of a server delete operation
  * -------------
  */
 const defaultState = {
     hasFetched: false,
     isCreatingEdition: false,
-    isInvalidEdition: true
+    isInvalidEdition: false,
+    isDeletingEdition: false
 };
 
 class NewspaperEditionsView extends Component {
@@ -46,11 +47,6 @@ class NewspaperEditionsView extends Component {
     // Check the latest status of our fetch, and our route pathname
     componentWillReceiveProps(nextProps) {
 
-        // isCreatingEdition is true whenever the modal is visible
-        if (nextProps.createEditionModalViewVisible) {
-            this.setState({isCreatingEdition: true});
-        }
-
         var didFetch = (this.props.isFetching && !nextProps.isFetching) ||
             this.state.hasFetched;
 
@@ -63,10 +59,11 @@ class NewspaperEditionsView extends Component {
         /*
          * Else, if we're done fetching without an error, check if we need to
          * redirect to the latest edition (only if we're not currently creating
-         * an edition, which can cause new props) or have an invalid edition.
+         * or deleting an edition, which can cause new props) or have an invalid
+         * edition.
          */
         } else if (didFetch && !nextProps.fetchError &&
-            !this.state.isCreatingEdition) {
+            !this.state.isCreatingEdition && !this.state.isDeletingEdition) {
 
             this.setState({hasFetched: true});
 
@@ -186,6 +183,10 @@ class NewspaperEditionsView extends Component {
                     {/* Modal displayed when the user is creating an edition */}
                     <CreateEditionModalView
                         visible={this.props.createEditionModalViewVisible}
+                        onCreateEdition={editionName => {
+                            this.setState({isCreatingEdition: true});
+                            return this.props.createEdition(editionName);
+                        }}
                         onDismiss={this.props.hideCreateEditionModalView}
                         onDismissed={didCreateEdition => {
                             if (didCreateEdition) {
@@ -193,7 +194,6 @@ class NewspaperEditionsView extends Component {
                             }
                             this.setState({isCreatingEdition: false});
                         }}
-                        onCreateEdition={this.props.createEdition}
                     />
 
                     {/* Displayed when the user wants to delete an edition */}
@@ -202,12 +202,14 @@ class NewspaperEditionsView extends Component {
                         primaryButtonText="Delete"
                         primaryButtonConfirmingText="Deleting..."
                         onConfirm={() => {
+                            this.setState({isDeletingEdition: true});
                             return this.props.deleteEdition(this.props.edition);
                         }}
                         onHide={this.props.hideDeleteEditionModalView}
                         onDismissed={(didConfirm) => {
                             if (didConfirm) {
                                 this.props.selectNewestEdition();
+                                this.setState({isDeletingEdition: false});
                             }
                         }}>
                         Are you sure you want to delete this edition?  This will
