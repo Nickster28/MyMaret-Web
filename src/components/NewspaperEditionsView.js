@@ -210,7 +210,8 @@ class NewspaperEditionsView extends Component {
                                 this.props.selectNewestEdition();
                             }
                         }}>
-                        Are you sure you want to delete this edition?
+                        Are you sure you want to delete this edition?  This will
+                        also delete all sections and articles in this edition.
                     </ConfirmationModalView>
 
                     {/* Display the edition's info within a single column */}
