@@ -1,4 +1,14 @@
-import { combineReducers } from "redux";
+/*
+ * REDUCER: authentication
+ * --------------------------
+ * Handles all state regarding users/auth.  The state structure is:
+ * {
+ *		user // the server user object representing the logged-in user
+ * }
+ * --------------------------
+ */
+
+import { combineReducers } from "redux-immutable";
 import { getCurrentUserFromCookie } from "../serverAPI";
 import { LOGGED_IN_SUCCESS, LOGGED_OUT_SUCCESS } from "../constants";
 

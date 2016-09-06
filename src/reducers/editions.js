@@ -1,4 +1,19 @@
-import { combineReducers } from "redux";
+/*
+ * REDUCER: editions
+ * --------------------
+ * Handles all state regarding editions.  The state structure is:
+ *
+ * {
+ *		editions // an Immutable Map of edition IDs to edition objects
+ *		editionIdsNewestToOldest // an Immutable List of edition IDs new to old
+ *		errors // an Immutable Map of errors (only key is "fetchEditionsError")
+ *		status // an Immutable Map of bool statuses (e.g. "isFetchingEditions")
+ *		selectedEditionId // a string representing the current selected edition
+ * }
+ * --------------------
+ */
+
+import { combineReducers } from "redux-immutable";
 import {
 	FETCHED_EDITIONS_SUCCESS, SELECT_EDITION, CREATED_EDITION_SUCCESS,
 	DELETED_EDITION_SUCCESS, FETCHED_EDITIONS_ERROR, FETCH_EDITIONS,
@@ -7,36 +22,27 @@ import {
 	SHOW_TOGGLE_EDITION_PUBLISHED_MODAL_VIEW,
 	HIDE_TOGGLE_EDITION_PUBLISHED_MODAL_VIEW, TOGGLED_EDITION_PUBLISHED_SUCCESS
 } from "../constants";
+import { Map as immutableMap, List as immutableList } from "immutable";
 
 // Map of Edition object IDs to the Edition object
-function editions(state = {}, action) {
+function editions(state = immutableMap(), action) {
 	switch (action.type) {
 		case FETCHED_EDITIONS_SUCCESS:
-			var editionsMap = {};
-			action.payload.editions.forEach(edition => {
-				editionsMap[edition.id] = edition;
-			});
-			return editionsMap;
+			return action.payload.editions.reduce((map, edition) => {
+				return map.set(edition.id, edition);
+			}, immutableMap());
 		case CREATED_EDITION_SUCCESS:
-			return Object.assign({}, state, {
-				[action.payload.edition.id]: action.payload.edition
-			});
-		case DELETED_EDITION_SUCCESS:
-			let smallerEditionsMap = Object.assign({}, state);
-			delete smallerEditionsMap[action.payload.id];
-			return smallerEditionsMap;
 		case TOGGLED_EDITION_PUBLISHED_SUCCESS:
-			let updatedEditionsMap = Object.assign({}, state);
-			updatedEditionsMap[action.payload.updatedEdition.id] =
-				action.payload.updatedEdition;
-			return updatedEditionsMap;
+			return state.set(action.payload.edition.id, action.payload.edition);
+		case DELETED_EDITION_SUCCESS:
+			return state.delete(action.payload.id);
 		default:
 			return state;
 	}
 }
 
 // Object containing booleans tracking different states, e.g. fetching, etc.
-function status(state = {}, action) {
+function status(state = immutableMap(), action) {
 	return combineReducers({
 		isFetchingEditions,
 		createEditionModalViewVisible,
@@ -95,7 +101,7 @@ function toggleEditionPublishedModalViewVisible(state = false, action) {
 }
 
 // Object containing errors (if any) for different operations
-function errors(state = {}, action) {
+function errors(state = immutableMap(), action) {
 	return combineReducers({
 		fetchEditionsError
 	})(state, action);
@@ -114,16 +120,14 @@ function fetchEditionsError(state = null, action) {
 }
 
 // Array of Edition object IDs, sorted from newest to oldest
-function editionIdsNewestToOldest(state = [], action) {
+function editionIdsNewestToOldest(state = immutableList(), action) {
 	switch (action.type) {
 		case FETCHED_EDITIONS_SUCCESS:
 			return action.payload.editions.map(edition => edition.id);
 		case CREATED_EDITION_SUCCESS:
-			return [action.payload.edition.id, ...state];
+			return state.unshift(action.payload.edition.id);
 		case DELETED_EDITION_SUCCESS:
-			return state.filter(elem => {
-				return elem !== action.payload.id
-			});
+			return state.filter(elem => elem !== action.payload.id);
 		default:
 			return state;
 	}
@@ -135,11 +139,7 @@ function selectedEditionId(state = null, action) {
 		case SELECT_EDITION:
 			return action.payload.id;
 		case DELETED_EDITION_SUCCESS:
-			if (action.payload.id === state) {
-				return null;
-			} else {
-				return state;
-			}
+			return action.payload.id === state ? null : state;
 		default:
 			return state;
 	}

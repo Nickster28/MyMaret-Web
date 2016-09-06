@@ -62,10 +62,10 @@ class EditionsDropdownView extends Component {
 		var selectedEditionName = "Select Edition";
 		if (this.props.selectedEditionIndex >= 0 &&
 			this.props.selectedEditionIndex < this.props
-			.editionInfoNewestToOldest.length) {
+			.editionInfoNewestToOldest.size) {
 			
 			selectedEditionName = this.props
-			.editionInfoNewestToOldest[this.props.selectedEditionIndex].name;
+			.editionInfoNewestToOldest.get(this.props.selectedEditionIndex).name;
 		}
 		return (
 			<div className="dropdown">
@@ -110,11 +110,7 @@ class EditionsDropdownView extends Component {
 EditionsDropdownView.propTypes = {
     onSelectEdition: PropTypes.func.isRequired,
     onCreateEdition: PropTypes.func.isRequired,
-    editionInfoNewestToOldest: PropTypes.arrayOf(React.PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        id: PropTypes.string.isRequired,
-        isPublished: PropTypes.bool.isRequired
-    }).isRequired).isRequired,
+    editionInfoNewestToOldest: PropTypes.object.isRequired,
     selectedEditionIndex: PropTypes.number.isRequired,
 }
 

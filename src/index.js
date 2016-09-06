@@ -17,11 +17,11 @@ import { Router, Route, browserHistory, IndexRedirect,
 
 // Import Redux components
 import { Provider } from "react-redux";
-import { createStore, applyMiddleware, compose, combineReducers } from "redux";
+import { createStore, applyMiddleware, compose } from "redux";
 import thunkMiddleware from "redux-thunk";
 import createLogger from "redux-logger";
-import * as reducers from "./reducers";
-import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
+import rootReducer from "./reducers";
+import { syncHistoryWithStore } from 'react-router-redux';
 import { selectEditionWithId } from "./actions/editions";
 
 // Import the top-level components used
@@ -46,11 +46,8 @@ import "./bootstrap-modified.js";
  * Create the Redux store with our reducer, react router reducer, 
  * logging+thunk middlewares, and support for the Redux Chrome Devtool.
  */
-let store = createStore(
-	combineReducers({
-		...reducers,
-		routing: routerReducer
-	}),
+const store = createStore(
+	rootReducer,
 	compose(
 		applyMiddleware(
 			thunkMiddleware,
@@ -62,14 +59,14 @@ let store = createStore(
 
 // Check if user has not logged in yet, and redirect to login page
 function requireLogin(nextState, replace) {
-	if (!store.getState().authentication.user) {
+	if (!store.getState().get("authentication").get("user")) {
 		replace("/login");
 	}
 }
 
 // Check if user is already logged in, and redirect to main page
 function checkLoginBypass(nextState, replace) {
-	if (store.getState().authentication.user) {
+	if (store.getState().get("authentication").get("user")) {
 		replace("/");
 	}
 }
@@ -80,7 +77,11 @@ function selectEdition(nextState, replace) {
 }
 
 // Create an enhanced history that syncs navigation events with the store
-const history = syncHistoryWithStore(browserHistory, store);
+const history = syncHistoryWithStore(browserHistory, store, {
+	selectLocationState(state) {
+		return state.get("routing").toJS();
+	}
+});
 
 // Define the app router configuration
 ReactDOM.render((

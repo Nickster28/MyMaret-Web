@@ -23,9 +23,10 @@ import NewspaperEditionView from "../components/NewspaperEditionView";
  */
 const mapStateToProps = (state, ownProps) => {
 	return {
-		edition: state.editionsInfo.editions[ownProps.params.id],
-		toggleEditionPublishedModalViewVisible: state.editionsInfo.status
-			.toggleEditionPublishedModalViewVisible
+		edition: state.get("editionsInfo").get("editions")
+			.get(ownProps.params.id),
+		toggleEditionPublishedModalViewVisible: state.get("editionsInfo")
+			.get("status").get("toggleEditionPublishedModalViewVisible")
 	}
 }
 

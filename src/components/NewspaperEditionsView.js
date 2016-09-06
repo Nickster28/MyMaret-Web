@@ -41,6 +41,9 @@ class NewspaperEditionsView extends Component {
     constructor(props) {
         super(props);
         this.state = defaultState;
+    }
+
+    componentWillMount() {
         this.props.fetchEditions();
     }
 
@@ -75,7 +78,7 @@ class NewspaperEditionsView extends Component {
 
             // If we're at the /editions page with editions, go to the newest
             if (this.isEditionsIndexURL(nextProps.location.pathname) &&
-                nextProps.editionInfoNewestToOldest.length > 0) {
+                nextProps.editionInfoNewestToOldest.size > 0) {
                 nextProps.selectNewestEdition();
 
             // If we're viewing an edition, but it doesn't exist, it's invalid
@@ -107,7 +110,7 @@ class NewspaperEditionsView extends Component {
             return null;
 
         // If there are editions (or the selected on is invalid) show a dropdown
-        } else if (this.props.editionInfoNewestToOldest.length > 0) {
+        } else if (this.props.editionInfoNewestToOldest.size > 0) {
             return (
                 <EditionsDropdownView editionInfoNewestToOldest={this.props
                     .editionInfoNewestToOldest}
@@ -257,11 +260,7 @@ class NewspaperEditionsView extends Component {
  * ------------
  */
 NewspaperEditionsView.propTypes = {
-    editionInfoNewestToOldest: PropTypes.arrayOf(PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        id: PropTypes.string.isRequired,
-        isPublished: PropTypes.bool.isRequired
-    }).isRequired).isRequired,
+    editionInfoNewestToOldest: PropTypes.object.isRequired,
     isFetching: PropTypes.bool.isRequired,
     fetchError: PropTypes.shape({
         message: PropTypes.string.isRequired

@@ -19,6 +19,7 @@
 	SHOW_TOGGLE_EDITION_PUBLISHED_MODAL_VIEW,
 	HIDE_TOGGLE_EDITION_PUBLISHED_MODAL_VIEW, TOGGLED_EDITION_PUBLISHED_SUCCESS
  } from "../constants";
+ import { List as immutableList } from "immutable";
 
 /*
  * FUNCTION: fetchEditions
@@ -37,7 +38,7 @@ export function fetchEditions() {
  		});
 
  		return fetchAllNewspaperEditions().then(editions => {
- 			dispatch(fetchedEditionsSuccess(editions));
+ 			dispatch(fetchedEditionsSuccess(immutableList(editions)));
  		}, error => {
  			dispatch(fetchedEditionsError(error));
  		});
@@ -161,7 +162,7 @@ function toggledEditionPublishedSuccess(updatedEdition) {
 	return {
 		type: TOGGLED_EDITION_PUBLISHED_SUCCESS,
 		payload: {
-			updatedEdition
+			edition: updatedEdition
 		}
 	}
 }
@@ -172,7 +173,9 @@ function toggledEditionPublishedSuccess(updatedEdition) {
  */
 export function selectEditionWithId(shouldRedirect, id) {
 	return (dispatch, getState) => {
-		if (id && id !== getState().editionsInfo.selectedEditionId) {
+		if (id && id !== getState().get("editionsInfo")
+			.get("selectedEditionId")) {
+
 			dispatch({
 				type: SELECT_EDITION,
 				payload: {
@@ -192,7 +195,8 @@ export function selectEditionWithId(shouldRedirect, id) {
 // ACTION: select the most recent edition to view
 export function selectNewestEdition() {
 	return (dispatch, getState) => {
-		var editionId = getState().editionsInfo.editionIdsNewestToOldest[0];
+		var editionId = getState().get("editionsInfo")
+			.get("editionIdsNewestToOldest").get(0);
 		dispatch(selectEditionWithId(true, editionId ? editionId : null));
 	}
 }

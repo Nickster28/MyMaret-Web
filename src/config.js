@@ -6,7 +6,7 @@
  * ------------------
  */
  
-let configObject = {
+const configObject = {
 	SCHOOL_NAME: "Maret",
 	API_APP_ID: "mymaret-api-frogs",
 	API_URL: "https://mymaret-api.herokuapp.com/parse"

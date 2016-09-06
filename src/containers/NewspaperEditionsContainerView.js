@@ -23,22 +23,26 @@ import NewspaperEditionsView from "../components/NewspaperEditionsView";
  */
 const mapStateToProps = (state, ownProps) => {
 	return {
-		editionInfoNewestToOldest: state.editionsInfo
-			.editionIdsNewestToOldest.map(id => {
-			return {
-				name: state.editionsInfo.editions[id].get("editionName"),
-				id,
-				isPublished: state.editionsInfo.editions[id].get("isPublished")
-			}
+		editionInfoNewestToOldest: state.get("editionsInfo")
+			.get("editionIdsNewestToOldest").map(id => {
+				const edition = state.get("editionsInfo").get("editions")
+					.get(id);
+				return {
+					name: edition.get("editionName"),
+					id,
+					isPublished: edition.get("isPublished")
+				}
 		}),
-		isFetching: state.editionsInfo.status.isFetchingEditions,
-		fetchError: state.editionsInfo.errors.fetchEditionsError,
-		createEditionModalViewVisible: state.editionsInfo.status
-			.createEditionModalViewVisible,
-		deleteEditionModalViewVisible: state.editionsInfo.status
-			.deleteEditionModalViewVisible,
-		edition: state.editionsInfo
-			.editions[state.editionsInfo.selectedEditionId]
+		isFetching: state.get("editionsInfo").get("status")
+			.get("isFetchingEditions"),
+		fetchError: state.get("editionsInfo").get("errors")
+			.get("fetchEditionsError"),
+		createEditionModalViewVisible: state.get("editionsInfo").get("status")
+			.get("createEditionModalViewVisible"),
+		deleteEditionModalViewVisible: state.get("editionsInfo").get("status")
+			.get("deleteEditionModalViewVisible"),
+		edition: state.get("editionsInfo").get("editions")
+			.get(state.get("editionsInfo").get("selectedEditionId"))
 	};
 }
 
