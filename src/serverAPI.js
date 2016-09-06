@@ -14,6 +14,7 @@ Parse.initialize(Config.API_APP_ID);
 Parse.serverURL = Config.API_URL;
 
 const NewspaperEdition = Parse.Object.extend("NewspaperEdition");
+const WebAppError = Parse.Object.extend("WebAppError");
 
 
 // Returns the current user, according to Parse's client SDK
@@ -86,4 +87,18 @@ export function deleteNewspaperEdition(edition) {
 // Returns a promise that updates the edition's published state
 export function setEditionPublished(edition, isPublished) {
 	return edition.save("isPublished", isPublished);
+}
+
+// Submits an error object to our server with the error and current app state.
+export function errorHandler(error, getState) {
+	const errorObject = new WebAppError();
+	return errorObject.save({
+		error: "" + error,
+		state: JSON.stringify(getState())
+	}).then(() => {
+		console.error(error + ".  Error reported.")
+	}, parseError => {
+		console.error(error + ".  Error not reported - " +
+			JSON.stringify(parseError));
+	});
 }

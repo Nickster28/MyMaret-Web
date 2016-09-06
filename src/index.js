@@ -15,12 +15,15 @@ import ReactDOM from "react-dom";
 import { Router, Route, browserHistory, IndexRedirect,
 		Redirect } from "react-router";
 
+import { errorHandler } from "./serverAPI";
+
 // Import Redux components
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, compose } from "redux";
 import thunkMiddleware from "redux-thunk";
 import createLogger from "redux-logger";
 import rootReducer from "./reducers";
+import reduxCatch from "redux-catch";
 import { syncHistoryWithStore } from 'react-router-redux';
 import { selectEditionWithId } from "./actions/editions";
 
@@ -44,12 +47,14 @@ import "./bootstrap-modified.js";
 
 /*
  * Create the Redux store with our reducer, react router reducer, 
- * logging+thunk middlewares, and support for the Redux Chrome Devtool.
+ * logging+thunk+error-handler middlewares, and support for the
+ * Redux Chrome Devtool.
  */
 const store = createStore(
 	rootReducer,
 	compose(
 		applyMiddleware(
+			reduxCatch(errorHandler),
 			thunkMiddleware,
 			createLogger()
 		),
