@@ -50,11 +50,11 @@ class CreateEditionModalView extends Component {
             clearTimeout(this.state.validityCheckTimerId);
         }
 
-        var enteredName = e.target.value;
-        var savedThis = this;
+        const enteredName = e.target.value;
+        const savedThis = this;
 
         // Delay, and then validate the entered text
-        var timerId = setTimeout(() => {
+        const timerId = setTimeout(() => {
             savedThis.setState({validityCheckTimerId: null});
             isValidNewspaperEditionName(enteredName).then(nameIsValid => {
                 savedThis.setState({
@@ -92,8 +92,8 @@ class CreateEditionModalView extends Component {
      */
     onConfirm() {
         this.setState({isCreatingEdition: true});
-        var name = this.state.editionName;
-        var savedThis = this;
+        const name = this.state.editionName;
+        const savedThis = this;
 
         this.props.onCreateEdition(name).then(() => {
             savedThis.setState({
@@ -129,11 +129,11 @@ class CreateEditionModalView extends Component {
      * on whether the entered name is valid or invalid.
      */
     formBody() {
-        var classNames = "form-group";
-        var ariaDescribedBy = "";
-        var feedbackElem = "";
+        let classNames = "form-group";
+        let ariaDescribedBy = "";
+        let feedbackElem = "";
         if (!this.state.isValidating && this.state.editionName.length > 0) {
-            var isValid = this.state.nameIsValid &&
+            const isValid = this.state.nameIsValid &&
                 !this.state.createEditionError;
 
             classNames += " has-feedback " +
@@ -141,7 +141,7 @@ class CreateEditionModalView extends Component {
             ariaDescribedBy = "editionNameValidity";
 
             // The glyphicon for feedback, and a screenreader span describing it
-            var feedbackGlyphiconClassName = "glyphicon form-control-feedback "
+            const feedbackGlyphiconClassName = "glyphicon form-control-feedback "
                 + (isValid ? "glyphicon-ok" : "glyphicon-remove");
             feedbackElem = [
                 <span key="0" className={feedbackGlyphiconClassName}
@@ -171,7 +171,7 @@ class CreateEditionModalView extends Component {
 
     // Render a Bootstrap modal with an input field for edition name.
     render() {
-        var canCreateEdition = this.state.nameIsValid &&
+        const canCreateEdition = this.state.nameIsValid &&
             !this.state.isValidating && !this.state.isCreatingEdition;
 
         return (
@@ -182,7 +182,7 @@ class CreateEditionModalView extends Component {
                     "Creating..." : "Create"}
                 primaryButtonDisabled={!canCreateEdition}
                 onDismissed={() => {
-                    var didCreateEdition = this.state.didCreateEdition;
+                    const didCreateEdition = this.state.didCreateEdition;
                     this.setState(defaultState);
                     this.props.onDismissed(didCreateEdition);
                 }}>

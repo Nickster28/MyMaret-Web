@@ -48,7 +48,7 @@ class LoginView extends Component {
 		e.preventDefault();
 		this.setState({isLoggingIn: true});
 
-		var savedThis = this;
+		const savedThis = this;
 		this.props.onLogin(this.state.username, this.state.password)
 		.then(() => {
 			savedThis.setState({isLoggingIn: false, error: null});

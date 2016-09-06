@@ -56,7 +56,7 @@ class NewspaperEditionsView extends Component {
                 this.setState({isInvalidEdition: false});
         }
 
-        var didFetch = (this.props.isFetching && !nextProps.isFetching) ||
+        const didFetch = (this.props.isFetching && !nextProps.isFetching) ||
             this.state.hasFetched;
 
         // If we're transitioning from detail to index, then reset
@@ -97,8 +97,8 @@ class NewspaperEditionsView extends Component {
      * button.
      */
     editionsToolbarItem() {
-        var savedThis = this;
-        var selectedEditionIndex = this.props.editionInfoNewestToOldest
+        const savedThis = this;
+        const selectedEditionIndex = this.props.editionInfoNewestToOldest
             .findIndex((elem, index) => {
             return elem.id === (savedThis.props.edition ?
                 savedThis.props.edition.id : null);
@@ -136,13 +136,13 @@ class NewspaperEditionsView extends Component {
 
     // Returns true if the url is an /editions/edition/:id URL, false otherwise.
     isEditionDetailViewURL(url) {
-        var match = url.match(/\/editions\/edition\/.*/);
+        const match = url.match(/\/editions\/edition\/.*/);
         return match !== null && match[0] === url;
     }
 
     // Returns true if the url is /editions or /editions/, false otherwise.
     isEditionsIndexURL(url) {
-        var match = url.match(/\/editions\/?/);
+        const match = url.match(/\/editions\/?/);
         return match !== null && match[0] === url;
     }
 

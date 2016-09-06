@@ -84,7 +84,7 @@ class InnerModalView extends Component {
 
 	// Animate out on unmount, calling our dismiss handler, if any
 	componentWillLeave(callback) {
-		var savedThis = this;
+		const savedThis = this;
 		$("#" + InnerModalViewId).on("hidden.bs.modal", () => {
 			callback();
 			if (savedThis.props.onDismissed) {
@@ -96,8 +96,8 @@ class InnerModalView extends Component {
 
 	// Render a small Bootstrap modal view
 	render() {
-		var classNames = "modal-dialog" + (this.props.small ? " modal-sm" : "");
-		var cancelable = this.props.cancelable ? true : false;
+		const classNames = "modal-dialog" + (this.props.small ? " modal-sm" : "");
+		const cancelable = this.props.cancelable ? true : false;
 
 		return (
 			<div className="modal fade" id={InnerModalViewId} tabIndex="-1"

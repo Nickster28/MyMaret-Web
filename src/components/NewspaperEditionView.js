@@ -20,8 +20,8 @@ class NewspaperEditionView extends Component {
      * and publish/unpublish buttons.
      */
     editionPanelTitle() {
-        var isPublished = this.props.edition.get("isPublished");
-        var buttonClassNames = "btn btn-default editionModifyToolbarButton";
+        const isPublished = this.props.edition.get("isPublished");
+        const buttonClassNames = "btn btn-default editionModifyToolbarButton";
 
         return (
             <h3 className="panel-title">
@@ -60,9 +60,9 @@ class NewspaperEditionView extends Component {
 
     // Returns the modal displayed to publish/unpublish an edition
     toggleEditionPublishedModalView() {
-        var modalTitle = "Confirm " +
+        const modalTitle = "Confirm " +
             (this.props.edition.get("isPublished") ? "Unpublish" : "Publish");
-        var confirmButtonTitle = this.props.edition.get("isPublished") ?
+        const confirmButtonTitle = this.props.edition.get("isPublished") ?
             "Unpublish" : "Publish";
 
         return (

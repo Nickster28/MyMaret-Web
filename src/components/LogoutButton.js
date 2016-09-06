@@ -28,7 +28,7 @@ class LogoutButton extends Component {
 		e.preventDefault();
 		this.setState({isLoggingOut: true});
 
-		var savedThis = this;
+		const savedThis = this;
 		this.props.onLogout().then(() => {
 			savedThis.setState({isLoggingOut: false, error: null});
 

@@ -43,7 +43,7 @@ class ConfirmationModalView extends Component {
  			confirmationError: null
  		});
 
- 		var savedThis = this;
+ 		const savedThis = this;
  		this.props.onConfirm().then(() => {
  			savedThis.setState({
  				isConfirming: false,

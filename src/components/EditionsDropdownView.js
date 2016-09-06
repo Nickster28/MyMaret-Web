@@ -25,17 +25,17 @@ class EditionsDropdownView extends Component {
 	 * is to keep the edition names aligned.
 	 */
 	editionNamesList() {
-		var selectedEditionIndex = this.props.selectedEditionIndex;
-		var onSelectEdition = this.props.onSelectEdition;
+		const selectedEditionIndex = this.props.selectedEditionIndex;
+		const onSelectEdition = this.props.onSelectEdition;
 		return this.props.editionInfoNewestToOldest.map(
 			(editionInfo, index) => {
 
 			// See if we should bold this one or not
-			var elemId = index === selectedEditionIndex ?
+			const elemId = index === selectedEditionIndex ?
 				"selectedEdition" :"";
 
 			// All elements have a glyphicon - but for non-published it's hidden
-			var publishedIconClassNames =
+			const publishedIconClassNames =
 				"glyphicon glyphicon-send dropdownPublishedIcon" +
 				(editionInfo.isPublished ? "" : " dropdownPublishedIconHidden");
 
@@ -59,13 +59,14 @@ class EditionsDropdownView extends Component {
 		 * /editions/edition/:id is replaced by /404.  We just need this
 		 * so there are no rendering errors preventing that replcacement)
 		 */
-		var selectedEditionName = "Select Edition";
+		let selectedEditionName = "Select Edition";
 		if (this.props.selectedEditionIndex >= 0 &&
 			this.props.selectedEditionIndex < this.props
 			.editionInfoNewestToOldest.size) {
 			
 			selectedEditionName = this.props
-			.editionInfoNewestToOldest.get(this.props.selectedEditionIndex).name;
+				.editionInfoNewestToOldest.get(this.props
+				.selectedEditionIndex).name;
 		}
 		return (
 			<div className="dropdown">
