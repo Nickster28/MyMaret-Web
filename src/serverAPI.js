@@ -24,7 +24,12 @@ export function getCurrentUserFromCookie() {
 
 // Returns a promise that logs out the current user (if any)
 export function serverLogOut() {
-	return Parse.User.logOut();
+	return Parse.User.logOut().then(() => {}, error => {
+		// Log the error, and pass it along
+		return errorHandler(error, null, "serverLogOut").then(() => {
+			return Parse.Promise.error(error);
+		});
+	});
 }
 
 /*
@@ -44,6 +49,12 @@ export function serverLogIn(username, password) {
 				});
 			}
 		});
+	}, error => {
+		// Log the error and pass it along
+		const stateString = "serverLogIn - username = \"" + username + "\"";
+		return errorHandler(error, null, stateString).then(() => {
+			return Parse.Promise.error(error);
+		});
 	});
 }
 
@@ -52,7 +63,17 @@ export function serverLogIn(username, password) {
  * non-emptiness.
  */
 export function isValidNewspaperEditionName(name) {
-	return Parse.Cloud.run("IsValidNewspaperEditionName", {name});
+	return Parse.Cloud.run("IsValidNewspaperEditionName", {name})
+		.then(isValid => {
+		return isValid;
+	}, error => {
+		// Log the error and pass it along
+		const stateString = "isValidNewspaperEditionName - name = \""
+			+ name + "\"";
+		return errorHandler(error, null, stateString).then(() => {
+			return Parse.Promise.error(error);
+		});
+	});
 }
 
 /*
@@ -63,7 +84,15 @@ export function fetchAllNewspaperEditions() {
 	const editionsQuery = new Parse.Query(NewspaperEdition);
 	editionsQuery.descending("createdAt");
 	editionsQuery.include("sections");
-	return editionsQuery.find();
+	return editionsQuery.find().then(editions => {
+		return editions;
+	}, error => {
+		// Log the error and pass it along
+		return errorHandler(error, null, "fetchAllNewspaperEditions")
+			.then(() => {
+				return Parse.Promise.error(error);
+		});
+	});
 }
 
 /*
@@ -76,29 +105,54 @@ export function createNewspaperEditionWithName(editionName) {
 		const editionQuery = new Parse.Query(NewspaperEdition);
 		editionQuery.include("sections");
 		return editionQuery.get(newEdition.id);
+	}, error => {
+		// Log the error and pass it along
+		const stateString = "createNewspaperEditionWithName - " + editionName;
+		return errorHandler(error, null, stateString).then(() => {
+			return Parse.Promise.error(error);
+		});
 	});
 }
 
 // Returns a promise that deletes the given edition from the server
 export function deleteNewspaperEdition(edition) {
-	return edition.destroy();
+	return edition.destroy().then(deletedEdition => {
+		return deletedEdition;
+	}, error => {
+		// Log the error and pass it along
+		const stateString = "deleteNewspaperEdition - "
+			+ JSON.stringify(edition);
+		return errorHandler(error, null, stateString).then(() => {
+			return Parse.Promise.error(error);
+		});
+	});
 }
 
 // Returns a promise that updates the edition's published state
 export function setEditionPublished(edition, isPublished) {
-	return edition.save("isPublished", isPublished);
+	return edition.save("isPublished", isPublished).then(savedEdition => {
+		return savedEdition;
+	}, error => {
+		// Log the error and pass it along
+		const stateString = "setEditionPublished - " + isPublished + " - "
+			+ JSON.stringify(edition);
+		return errorHandler(error, null, stateString).then(() => {
+			return Parse.Promise.error(error);
+		});
+	});
 }
 
-// Submits an error object to our server with the error and current app state.
-export function errorHandler(error, getState) {
+// Submits an error object to our server with the error and optional app state.
+export function errorHandler(error, getState, state) {
 	const errorObject = new WebAppError();
 	return errorObject.save({
-		error: "" + error,
-		state: JSON.stringify(getState())
-	}).then(() => {
-		console.error(error + ".  Error reported.")
+		error: JSON.stringify(error),
+		state: getState ? JSON.stringify(getState()) : state
+	}).then(savedErrorObject => {
+		console.error(savedErrorObject);
+		console.log("Error reported.")
 	}, parseError => {
-		console.error(error + ".  Error not reported - " +
-			JSON.stringify(parseError));
+		console.error("Error not reported.");
+		console.error(parseError);
 	});
 }
