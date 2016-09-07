@@ -99,7 +99,7 @@ ReactDOM.render((
 		   		<Route component={HomeView}>
 		   			<Route path="analytics" component={AnalyticsView}
 		   				onEnter={requireLogin} />
-		   			<Route path="editions"
+		   			<Route path="editions" onEnter={requireLogin}
 		   				component={NewspaperEditionsContainerView}>
 		   				<Route path="edition/:id" onEnter={selectEdition}
 		   					component={NewspaperEditionContainerView} />
